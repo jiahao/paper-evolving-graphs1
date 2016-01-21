@@ -258,14 +258,14 @@ We prove that the two algorithms (graph notation and algebra notation) are equiv
 
 % GraphBlas related ideas
 
-This paper is organized as follows. The evolving-graph BFS algorithm is described
-and analyzed using graph notation in Section \ref{sec:breadth-first-search}. Section \ref{sec:evolv-graph-algor} considers the algebraic representation of the algorithm: 
-A sparse matrix representation
-of an evolving graph is presented in \ref{sec:representation}. 
-The algorithm is presented in \ref{sec:breadth-first-search-1} and 
-the properties of the search tree is discussed in \ref{sec:short-temp-path}.
-The connection between a temporal path and a matrix-matrix multiplication is considered and discussed in \ref{sec:matr-matr-mult}. Finally, 
-an application of the evolving-graph BFS in mining citation networks is described in Section \ref{sec:applications}.
+% This paper is organized as follows. The evolving-graph BFS algorithm is described
+% and analyzed using graph notation in Section \ref{sec:breadth-first-search}. Section \ref{sec:evolv-graph-algor} considers the algebraic representation of the algorithm: 
+% A sparse matrix representation
+% of an evolving graph is presented in \ref{sec:representation}. 
+% The algorithm is presented in \ref{sec:breadth-first-search-1} and 
+% the properties of the search tree is discussed in \ref{sec:short-temp-path}.
+% The connection between a temporal path and a matrix-matrix multiplication is considered and discussed in \ref{sec:matr-matr-mult}. Finally, 
+% an application of the evolving-graph BFS in mining citation networks is described in Section \ref{sec:applications}.
 
 \section{Breadth-First Search for Evolving Graphs}
 \label{sec:breadth-first-search}
@@ -395,35 +395,9 @@ from $(s,t)$ to $(v_i, t_i)$ is $k$.}
  \label{alg:bfs}
 \end{algorithm}
 
-\subsection{Analysis}
-\label{sec:analysis}
-
-For the graph $G^{[i]} = (V^{[i]}, E^{[i]})$ at timestamp $i$, 
-we denote the active node set of $V^{[i]}$ as $\tilde V^{[i]}$, 
-where we have $\tilde V^{[i]} \subseteq V^{[i]}$.
-Step $10$ of  Algorithm \ref{alg:bfs} ensures each active node-timestamp pair in $G_n$ is enqueued in $next$ (and then $frontier$) at most once. 
-And so \texttt{forward-neighbors} loops through each 
-active node-timestamp pair at most once. 
-The operations of enqueuing take $O(1)$ time.
-Thus the total operations of enqueuing are 
-$O(\sum_{i=1}^n|\tilde V^{[i]}|)$, where $|\cdot|$ represents the number of elements of a set.  Let $\sum_i |\tilde V^{[i]}| = |\tilde V|$ and $\sum_i |E^{[i]}| = |\hat E|$.
-Then the time of scanning
-\texttt{forward-neighbors} is 
-\[
-\sum_{i=1}^n\sum_{v \in \tilde V^{[i]}} \texttt{forward-neighbors}(v) = 
-O(|\hat E|),
-\]
-by the definition of forward-neighbors.
-Hence the total running time is $O(|\hat E|+ |\tilde V|)$.
-
-Note that the number of adjacency lists is the same as the number
-of active nodes in $G_n$. So for large $n$, this representation can use a large amount of memory.
 %Also need to consider the operations for matrix lists.
 
-\section{Traversing Evolving Graphs Using Linear Algebraic Operations}
-\label{sec:evolv-graph-algor}
-
-\subsection{Representation}
+\subsection{Algebraic Evolving-Graph BFS}
 \label{sec:representation}
 As before, let $G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]}\rangle$ be an evolving graph with $n$ timestamps. For each graph $G^{[t]}$, we use $A^{[t]}$ to denote
 the corresponding adjacency matrix.
@@ -459,10 +433,8 @@ can be represented as
  \end{bmatrix}
 \Big\rangle
 \]
-We assume $A_n$ is stored as an array of sparse matrices in compressed sparse column (CSC) format.
 
-\subsection{Forward and Backward Searching}
-\label{sec:breadth-first-search-1}
+
 
 There exits a duality between vector matrix multiplication and the BFS
 for graphs \cite{kegi11}. Let $G = (V, E)$ be a (directed or undirected) graph
@@ -673,6 +645,31 @@ Algorithm \ref{alg:bfsla} outlines the basic idea of an algebraic evolving-graph
 But in practice we don't need to form $\bm{A}$ and $\bm{b}$ explicitly at step $4$ and $6$. By realizing the dependency between these sparse matrices, 
 we can compute  the result in parallel. 
 
+\subsection{Analysis}
+\label{sec:analysis}
+
+% adjacency matrices
+Suppose $G_n$ is represented by adjacency lists.
+Then the number of adjacency lists is the same as the number
+of active nodes in $G_n$. So for large $n$, this representation 
+can use a large amount of memory.
+For the graph $G^{[i]} = (V^{[i]}, E^{[i]})$ at timestamp $i$, 
+we denote the active node set of $V^{[i]}$ as $\tilde V^{[i]}$, 
+where we have $\tilde V^{[i]} \subseteq V^{[i]}$.
+Step $10$ of  Algorithm \ref{alg:bfs} ensures each active node-timestamp pair in $G_n$ is enqueued in $next$ (and then $frontier$) at most once. 
+And so \texttt{forward-neighbors} loops through each 
+active node-timestamp pair at most once. 
+The operations of enqueuing take $O(1)$ time.
+Thus the total operations of enqueuing are 
+$O(\sum_{i=1}^n|\tilde V^{[i]}|)$, where $|\cdot|$ represents the number of elements of a set.  Let $\sum_i |\tilde V^{[i]}| = |\tilde V|$ and $\sum_i |E^{[i]}| = |\hat E|$.
+Then the time of scanning
+\texttt{forward-neighbors} is 
+\[
+\sum_{i=1}^n\sum_{v \in \tilde V^{[i]}} \texttt{forward-neighbors}(v) = 
+O(|\hat E|),
+\]
+by the definition of forward-neighbors.
+Hence the total running time is $O(|\hat E|+ |\tilde V|)$.
 
 \begin{thm}[Correctness of evolving-graph BFS]
 Let an evolving graph $G_n$ and a starting node $(s,t_0)$ be given. 
@@ -703,6 +700,7 @@ active nodes will not be visited twice, which is equivalent to step $10$
 of Algorithm \ref{alg:bfs}. Finally, a dictionary $dict$ is used in both algorithms 
 to keep record of the distance of each node from the source $(s,t)$.
 \endproof
+
 
 \subsection{Search Tree}
 \label{sec:short-temp-path}
@@ -738,8 +736,19 @@ from $(s,t_1)$ to $(v,t)$ and so $(v,t) \in T(s,t_1)$.
 % at timestamp $n+1$. How to update the tree components while minimize the computation?
 % The forward-neighbors at timestamp $$
 
-\subsection{Matrix-Matrix Multiplication}
+\section{Node Activeness}
 \label{sec:matr-matr-mult}
+
+
+\subsection{Temporal Path}
+\label{sec:temporal-path}
+
+In this subsection, we compare with the ``wrong'' way of traveling an evolving graph
+and show the importance of node activeness. 
+
+
+\subsection{Matrix-Matrix Multiplication}
+\label{sec:matr-matr-mult-1}
 
 For adjacency matrices $A^{[s]}$ and $A^{[t]}$, where $s < t$, a nonzero entry
 $(i,j)$ of $A^{[s]} A^{[t]}$ indicates a temporal path from $(i,s)$ to $(j,t)$ via
@@ -760,6 +769,13 @@ $\langle(1, t_1), (1, t_2), (3,t_2)\rangle$ is a temporal path of Figure \ref{fi
 % \sum_{i,j,\ldots,k}A^{[1]}A^{[i]}A^{[j]}\cdots A^{[k]}A^{[n]},
 % \]
 % indicates temporal paths  from temporal paths from timestamp $1$ to $n$.
+
+\section{Implementation in Julia}
+\label{sec:implementation-julia}
+
+In order to study evolving graphs and experiment with various graph types, we have developed EvolvingGraphs.jl \cite{zhang15}, a software package in the Julia language \cite{bkse12} for the creation, manipulation, and study of dynamic networks.  
+
+In Julia,  $A_n$ is stored as an array of sparse matrices in compressed sparse column (CSC) format. 
 
 \section{Application in Citation Networks}
 \label{sec:applications}
@@ -788,8 +804,6 @@ by ranking algorithms like PageRank or machine-learning based preference ranking
 
 In this paper, we have introduced and analyzed the evolving-graph BFS in both 
 graph and algebraic notation. 
-In order to study evolving graphs and experiment with various graph types, we have developed EvolvingGraphs.jl \cite{zhang15}, a software package in the Julia language \cite{bkse12} for the creation, manipulation, and study of dynamic networks.  
-
 This paper leaves important extensions open for further research. First, it is 
 of interest to extend the evolving-graph BFS algorithm for weighted evolving graphs, which can provide more valuable information when the degree of connectivity is available in the data. 
 Second, efficient algebraic representations and algorithms need to be addressed. 
