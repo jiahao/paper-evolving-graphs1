@@ -245,16 +245,16 @@ there is only one set of layers for time.
 A temporal path is the basic element to
  define almost  all important evolving graph algorithms.
 Matrix-matrix multiplication between consecutive adjacency matrices
-were commonly used as a means of determining temporal paths \cite{gphe11} \cite{grihig13}. However, we show
+were commonly used as a means of determining temporal paths \cite{gphe11,grihig13}. However, we show
 in one specific case it fails to include all the temporal paths and thus should not be used
 for searching evolving graphs in general.
 
 Breadth-first search is probably the most basic graph searching algorithm and
 it is also the building block of other graph algorithms like minimum spanning tree
 and shortest path \cite{ckrs09}.
-Despite the fact that graph metrics \cite{ntmm13} \cite{tmml09} \cite{tsmm09} and
-various centrality measures (including Katz  \cite{gphe11} \cite{grihig13},
-betweenness \cite{alhi15}, and closeness  \cite{tmml10})
+Despite the fact that graph metrics \cite{ntmm13,tmml09,tsmm09} and
+various centrality measures like Katz centrality~\cite{gphe11,grihig13},
+betweenness \cite{alhi15}, and closeness \cite{tmml10})
 have been generalized for evolving graphs,
 a BFS for evolving graphs, which we shall call it \emph{evolving-graph BFS},
 was never explicitly described or verified.
