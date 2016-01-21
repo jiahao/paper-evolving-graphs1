@@ -773,9 +773,14 @@ $\langle(1, t_1), (1, t_2), (3,t_2)\rangle$ is a temporal path of Figure \ref{fi
 \section{Implementation in Julia}
 \label{sec:implementation-julia}
 
-In order to study evolving graphs and experiment with various graph types, we have developed EvolvingGraphs.jl \cite{zhang15}, a software package in the Julia language \cite{bkse12} for the creation, manipulation, and study of dynamic networks.  
-
-In Julia,  $A_n$ is stored as an array of sparse matrices in compressed sparse column (CSC) format. 
+In order to study evolving graphs and experiment with various graph types, we have developed EvolvingGraphs.jl  \cite{zhang15}, a software package in the Julia language \cite{bkse12} for the creation, manipulation, and study of dynamic networks.  
+Julia is a high-level, high-performance dynamic programming language for technical
+computing. When we implement EvolvingGraphs.jl, we make particular use of 
+the parameterizable type system and multiple dispatch in Julia. 
+We define a data type  \texttt{MatrixList}, which represents an evolving graph
+as a sequence of sparse matrices stored in compressed sparse column (CSC) format. 
+Many basic graph functions are defined for \texttt{MatrixList}, including 
+retrieving nodes, timestamps, and matrices.
 
 \section{Application in Citation Networks}
 \label{sec:applications}
