@@ -463,9 +463,9 @@ matrix--vector products.
 Introduce a new operator $\odot$, a variation on the ordinary matrix--vector
 product such that
 \[
-A \odot b =
+A^T \odot b =
 \begin{cases}
-b & \mbox{if $Ab \ne 0$,} \\
+b & \mbox{if $A^Tb \ne 0$,} \\
 0 & \mbox{otherwise.}
 \end{cases}
 \]
@@ -479,13 +479,14 @@ The forward-neighbors at time stamp $t$ are the nonzero indices of the $t$-th el
 Hence given $A_n$ and a vector $b$, we can use \eqref{eq:out_ne} to
 get a $1$-step BFS tree. In Figure \ref{fig:eg_shortest_path}, the forward-neighbors
 of node $(1, t_1)$ can be computed by
-\[
-\Big\langle
+
+\begin{align*}
+\left\langle
   \begin{bmatrix}
     0 & 0 & 0 \\
     1 & 0 & 0 \\
     0 & 0 & 0
-  \end{bmatrix}
+  \end{bmatrix}\!\!\!\!
 \begin{bmatrix}
 1 \\
 0 \\
@@ -496,8 +497,8 @@ of node $(1, t_1)$ can be computed by
    0 & 0 & 0 \\
    0 & 0 & 0 \\
    1 & 0 & 0
- \end{bmatrix}
-\odot
+ \end{bmatrix}\!\!
+\odot\!\!
 \begin{bmatrix}
 1 \\
 0 \\
@@ -508,18 +509,17 @@ of node $(1, t_1)$ can be computed by
   0 & 0 & 0 \\
   0 & 0 & 0 \\
   0 & 1 & 0
- \end{bmatrix}
-\odot
+ \end{bmatrix}\!\!
+\odot\!\!
 \begin{bmatrix}
 1 \\
 0 \\
 0
 \end{bmatrix}
-\Big\rangle
-\]
-which is equal to
-\[
-\Big\langle
+\right\rangle
+\\
+=
+\left\langle
 \begin{bmatrix}
 0 \\
 1 \\
@@ -535,8 +535,8 @@ which is equal to
 0 \\
 0
 \end{bmatrix}
-\Big\rangle
-\]
+\right\rangle
+\end{align*}
 This means node $(2,t_1)$ and $(1,t_2)$ are the forward-neighbors of $(1,t_1)$.
 
 Let $(A^{[i]})^Tb = c_i$.
