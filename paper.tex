@@ -164,21 +164,28 @@ A preliminary discussion on mining citation networks is also presented.
 
 \section{Introduction}
 
-Let's imagine a game played by three people $A$, $B$ and $C$.
-Suppose we give a piece of information $X$ to $A$ and ask 
-$A$ talks to $B$ first without $C$'s presence and then ask $B$ talks to $C$ without $A$'s presence.
-In a different day, we give a piece of information $Y$ to $A$ again.
-But this time, we ask $B$ talks to $C$ first and 
-then ask $A$ talks to $B$ without $C$'s presence. 
-We now ask the question ``Will $C$ find out what $X$ is ? Will $C$ find out
-what $Y$ is?''  
-
-Evolving graphs are models to study this kind of scenario where the 
-interrelations between entities are time-dependent.
+Let's imagine a game played by three people
+$A$, $B$, and $C$. Suppose each of them has a piece of information,
+say $X$, $Y$, and $Z$ respectively. The goal of the game is 
+to get information from other people as much as possible. 
+Suppose $A$ talks to $B$ first and then $B$ talks to $C$, 
+then $C$ may has all three pieces of information $X$, $Y$, and $Z$ even 
+if $C$ has never talked to $A$. 
+However, if $B$ talks to $C$ first and then $A$ talks to $B$, then
+no matter how smart $C$ is, $C$ can never get information 
+$X$.  Time is an important factor for information flow. 
+ 
+We can analyze the spread of information between $A$, $B$, and $C$
+as a process on a graph that changes over time.  
+Such graphs are known as evolving graphs.
+% Evolving graphs are models to study this kind of scenario where the 
+% interrelations between entities are time-dependent.
 % We assume that the reader is familiar with the basic graph terminology. 
 % All the necessary material can be found in}.
 We follow the notation of (static) graphs in  \cite{even12} and \cite{kegi11}.
-In general, evolving graphs $G(t) = (V(t), E(t))$ are graphs that change as a function of time $t$. However, in different papers the term ``evolving graph'' has been
+In general, a evolving graph $G(t) = (V(t), E(t))$ is  a graph where the node set
+and edge set are functions of time $t$.
+However, in different literatures the term ``evolving graph'' has been
 used to refer to slightly different models. 
  Flajolet et al. \cite{fkp89} use the term to mean the evolution of random graphs.
 Bahmani et al. \cite{bkmu12} use the term to mean a sequence of graphs where
@@ -187,7 +194,7 @@ Similar models are also investigated using the term ``evolving network'' and
 ``time-dependent graph''. 
 
 In this work, we consider a discretization of the timeline as $n$ distinct 
-timestamps. We define an evolving graph $G_n$ to be 
+timestamps and define an evolving graph $G_n$ to be 
 a sequence of (static) graphs 
 $G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]} \rangle$. 
 Depends on applications, the graph $G^{[i]}$ could mean either
@@ -228,22 +235,23 @@ there is only one set of layers for time.
 % We present a preliminary discussion of using the model to mine citation networks.
 
 % why BFS is important? 
-Breadth-first search is probably the most basic graph searching algorithm and 
-it is also the building block of other graph algorithms like minimum spanning tree 
-and shortest path \cite{ckrs09}.
-Given a graph and a source node $s$, 
-the breadth-first search (BFS) systematically discover every node that is reachable from $s$. 
-As the name suggested, BFS expands the frontier of discovered regions
-uniformly across the breadth, i.e., the algorithm discovers all nodes
-that are $k$ walks away from $s$ before discovering any nodes that are
-$k+1$ walks away. 
 
+% Given a graph and a source node $s$, 
+% the breadth-first search (BFS) systematically discover every node that is reachable from $s$. 
+% As the name suggested, BFS expands the frontier of discovered regions
+% uniformly across the breadth, i.e., the algorithm discovers all nodes
+% that are $k$ walks away from $s$ before discovering any nodes that are
+% $k+1$ walks away. 
 A temporal path is the basic element to 
  define almost  all important evolving graph algorithms.
 Matrix-matrix multiplication between consecutive adjacency matrices
 were commonly used as a means of determining temporal paths \cite{gphe11} \cite{grihig13}. However, we show
 in one specific case it fails to include all the temporal paths and thus should not be used 
 for searching evolving graphs in general.
+
+Breadth-first search is probably the most basic graph searching algorithm and 
+it is also the building block of other graph algorithms like minimum spanning tree 
+and shortest path \cite{ckrs09}.
 Despite the fact that graph metrics \cite{ntmm13} \cite{tmml09} \cite{tsmm09} and 
 various centrality measures (including Katz  \cite{gphe11} \cite{grihig13}, 
 betweenness \cite{alhi15}, and closeness  \cite{tmml10}) 
@@ -736,8 +744,16 @@ from $(s,t_1)$ to $(v,t)$ and so $(v,t) \in T(s,t_1)$.
 % at timestamp $n+1$. How to update the tree components while minimize the computation?
 % The forward-neighbors at timestamp $$
 
-\section{Node Activeness}
+\section{Node Activeness and its Impact}
 \label{sec:matr-matr-mult}
+
+\subsection{Aggregated Graphs}
+\label{sec:aggregated-graphs}
+
+In this section, we answer the question why we need evolving graph.
+
+At the beginning of the paper, we set up a game played by three people $A$, $B$,
+and $C$ and we showed if 
 
 
 \subsection{Temporal Path}
@@ -761,6 +777,8 @@ is a zero matrix since there is no temporal path from timestamp $t_1$ to $t_2$ t
 go through at least one edge at $t_1$. However, 
 $\langle(1, t_1), (1, t_2), (3,t_2)\rangle$ is a temporal path of Figure \ref{fig:eg_shortest_path}.
  
+Introducing ones on the diagonal of the matrices will still get the wrong result.
+
 % But it provides no information about the nodes in between. In addition, the temporal path must pass at least 
 %  one node at each timestamps. We believe this requirement is too restrictive. For example,
 % $A^{[t_1]}A^{[t_2]}A^{[t_3]}$ is a zero matrix. Let $\langle i,j,\ldots k \rangle$ represents the sets of all possible subsets of $\langle 1, 2, \ldots, n \rangle$, where $i<j<\cdots<k$, then 
@@ -782,7 +800,7 @@ as a sequence of sparse matrices stored in compressed sparse column (CSC) format
 Many basic graph functions are defined for \texttt{MatrixList}, including 
 retrieving nodes, timestamps, and matrices.
 
-\section{Application in Citation Networks}
+\section{Application to Citation Networks}
 \label{sec:applications}
 
 We shall map a database of research papers to an evolving graph $G_n$
