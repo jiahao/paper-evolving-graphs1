@@ -443,35 +443,33 @@ can be represented as
 \]
 
 
-
-There exits a duality between vector matrix multiplication and the BFS
-for graphs \cite{kegi11}. Let $G = (V, E)$ be a (directed or undirected) graph
-and $k$ a node in the graph $G$. We could represent $G$ as an adjacency
-matrix $A$ and $k$ a column vector $b$ such that
+This algebraic formulation exploits a graphical interpretation of matrix--vector
+products involving the adjacency matrix~\cite{kegi11}.
+Let $G = (V, E)$ be a (directed or undirected) graph
+and $k$ be a node in the graph $G$. If $A$ is the adjacency matrix of $G$ and
+$b$ is the column vector
 \[
 b_i =
 \begin{cases}
 1 & \mbox{if $i = k$,} \\
-0 & \mbox{otherwise.}
+0 & \mbox{otherwise,}
 \end{cases}
 \]
-Then $A^Tb$ is a column vector where the indices of the nonzero entries
-indicate the forward-neighbors of $k$. This relationship can be generalized to be
-a duality between a block vector matrix multiplication and the
-evolving-graph BFS.
+then $A^Tb$ is a column vector where the indices of the nonzero entries
+indicate the forward-neighbors of $k$.
 
-For the evolving case, we shall introduce a new binary operator $\odot$.
-We define
+The evolving graph BFS can be thought of as a generalization of blocked
+matrix--vector products.
+Introduce a new operator $\odot$, a variation on the ordinary matrix--vector
+product such that
 \[
 A \odot b =
 \begin{cases}
 b & \mbox{if $Ab \ne 0$,} \\
-0 & \mbox{otherwise,}
+0 & \mbox{otherwise.}
 \end{cases}
 \]
-where $A$ is an adjacency matrix and $b$ a column vector defined as before.
-Then it is easy to observe that
-the forward-neighbors of node $(k, 1)$ in $A_n = \langle A^{[1]}, A^{[2]}, \ldots, A^{n]}\rangle$ are the nonzero indices of the
+Then, the forward-neighbors of node $(k, 1)$ in $A_n = \langle A^{[1]}, A^{[2]}, \ldots, A^{n]}\rangle$ are the nonzero indices of the
 elements in the sequence
 \begin{equation}
 \label{eq:out_ne}
@@ -479,7 +477,7 @@ elements in the sequence
 \end{equation}
 The forward-neighbors at timestamp $t$ are the nonzero indices of the $t$-th element of the above sequence.
 Hence given $A_n$ and a vector $b$, we can use \eqref{eq:out_ne} to
-get a $1$-step  BFS tree. In Figure \ref{fig:eg_shortest_path}, the forward-neighbors
+get a $1$-step BFS tree. In Figure \ref{fig:eg_shortest_path}, the forward-neighbors
 of node $(1, t_1)$ can be computed by
 \[
 \Big\langle
