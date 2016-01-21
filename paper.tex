@@ -1,4 +1,4 @@
-\documentclass[11pt, conference, , compsocconf]{IEEEtran}
+\documentclass[11pt,conference,compsocconf]{IEEEtran}
 \usepackage{tikz}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -30,7 +30,7 @@
 \definecolor{yellow1}{RGB}{255,249,234}
 \definecolor{blue3}{RGB}{63,40,96}
 \definecolor{red1}{RGB}{255, 102, 102}
-\definecolor{green1}{RGB}{102, 255, 102} 
+\definecolor{green1}{RGB}{102, 255, 102}
 \newtheorem{lemma}{Lemma}
 \newtheorem{thm}{Theorem}
 \theoremstyle{definition}
@@ -121,7 +121,7 @@
 \IEEEauthorblockA{ Computer Science and Artificial Intelligence Laboratory,\\
 Massachusetts Institute of Technology,\\
 Massachusetts, 02139-4307,USA\\
-jiahao@mit.edu} 
+jiahao@mit.edu}
 \and
 \IEEEauthorblockN{Weijian Zhang}
 \IEEEauthorblockA{School of Mathematics,\\
@@ -129,22 +129,22 @@ University of Manchester,\\
 Manchester, M13 9PL, England\\
 weijian.zhang@manchester.ac.uk}
 }
- 
+
 \maketitle
 
 \begin{abstract}
   % A generalization of the breadth-first search (BFS) algorithm on evolving graphs is
-  % discussed. 
-  % The representation of this algorithm 
+  % discussed.
+  % The representation of this algorithm
   % as algebraic operations is investigated.
-  % The duality of the vector-matrix multiplication 
+  % The duality of the vector-matrix multiplication
   % and a BFS step is extended to the fact that a block vector-matrix multiplication
-  % is dual with the evolving-graph BFS. 
+  % is dual with the evolving-graph BFS.
   % It is found that the algebraic representation allows for flexible forward and backward searching and can be used for mining citation networks.
-A generalized breadth-first search (BFS) algorithm is presented for 
-searching evolving graphs. 
-The method is described in both graph and linear algebra notation and 
-the two algorithms are shown to be equivalent. 
+A generalized breadth-first search (BFS) algorithm is presented for
+searching evolving graphs.
+The method is described in both graph and linear algebra notation and
+the two algorithms are shown to be equivalent.
 A preliminary discussion on mining citation networks is also presented.
 \end{abstract}
 
@@ -166,45 +166,45 @@ A preliminary discussion on mining citation networks is also presented.
 
 Let's imagine a game played by three people
 $A$, $B$, and $C$. Suppose each of them has a piece of information,
-say $X$, $Y$, and $Z$ respectively. The goal of the game is 
-to get information from other people as much as possible. 
-Suppose $A$ talks to $B$ first and then $B$ talks to $C$, 
-then $C$ may has all three pieces of information $X$, $Y$, and $Z$ even 
-if $C$ has never talked to $A$. 
+say $X$, $Y$, and $Z$ respectively. The goal of the game is
+to get information from other people as much as possible.
+Suppose $A$ talks to $B$ first and then $B$ talks to $C$,
+then $C$ may has all three pieces of information $X$, $Y$, and $Z$ even
+if $C$ has never talked to $A$.
 However, if $B$ talks to $C$ first and then $A$ talks to $B$, then
-no matter how smart $C$ is, $C$ can never get information 
-$X$.  Time is an important factor for information flow. 
- 
+no matter how smart $C$ is, $C$ can never get information
+$X$.  Time is an important factor for information flow.
+
 We can analyze the spread of information between $A$, $B$, and $C$
-as a process on a graph that changes over time.  
+as a process on a graph that changes over time.
 Such graphs are known as evolving graphs.
-% Evolving graphs are models to study this kind of scenario where the 
+% Evolving graphs are models to study this kind of scenario where the
 % interrelations between entities are time-dependent.
-% We assume that the reader is familiar with the basic graph terminology. 
+% We assume that the reader is familiar with the basic graph terminology.
 % All the necessary material can be found in}.
-We follow the notation of (static) graphs in  \cite{even12} and \cite{kegi11}.
+We follow the notation of (static) graphs in \cite{even12,kegi11}.
 In general, a evolving graph $G(t) = (V(t), E(t))$ is  a graph where the node set
 and edge set are functions of time $t$.
 However, in different literatures the term ``evolving graph'' has been
-used to refer to slightly different models. 
+used to refer to slightly different models.
  Flajolet et al. \cite{fkp89} use the term to mean the evolution of random graphs.
 Bahmani et al. \cite{bkmu12} use the term to mean a sequence of graphs where
 the difference between two consecutive graphs is small.
-Similar models are also investigated using the term ``evolving network'' and 
-``time-dependent graph''. 
+Similar models are also investigated using the term ``evolving network'' and
+``time-dependent graph''.
 
-In this work, we consider a discretization of the timeline as $n$ distinct 
-timestamps and define an evolving graph $G_n$ to be 
-a sequence of (static) graphs 
-$G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]} \rangle$. 
+In this work, we consider a discretization of the timeline as $n$ distinct
+timestamps and define an evolving graph $G_n$ to be
+a sequence of (static) graphs
+$G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]} \rangle$.
 Depends on applications, the graph $G^{[i]}$ could mean either
 a snapshot of $G(t)$ at timestamp $i$ or  the union of all the graphs
 between timestamp $i-1$ and $i$ (excludes timestamp $i-1$).
 Both the node set and edge set of $G^{[i]}$ could be different from
-these of $G^{[j]}, j \ne i$. 
+these of $G^{[j]}, j \ne i$.
 \begin{center}
 \begin{tikzpicture}[snake=zigzag, line before snake = 5mm, line after snake = 5mm]
-    % draw horizontal line   
+    % draw horizontal line
     \draw (0,0) -- (2,0);
     \draw[snake] (2,0) -- (4,0);
     \draw (4,0) -- (5,0);
@@ -227,52 +227,52 @@ these of $G^{[j]}, j \ne i$.
 \end{center}
 Our model is the same as that of Tang et al. \cite{tmml10} though they
 use slightly different notation.
-Grindrod et al.'s model  \cite{gphe11} \cite{grihig13} is very similar to ours, 
+Grindrod et al.'s model  \cite{gphe11} \cite{grihig13} is very similar to ours,
 where an evolving graph is considered as a sequence of adjacency matrices.
-Our model can also be seen as a special case of 
-the multilayer networks discussed by Kivel{\"a} et al. \cite{kabg14}, where 
+Our model can also be seen as a special case of
+the multilayer networks discussed by Kivel{\"a} et al. \cite{kabg14}, where
 there is only one set of layers for time.
 % We present a preliminary discussion of using the model to mine citation networks.
 
-% why BFS is important? 
+% why BFS is important?
 
-% Given a graph and a source node $s$, 
-% the breadth-first search (BFS) systematically discover every node that is reachable from $s$. 
+% Given a graph and a source node $s$,
+% the breadth-first search (BFS) systematically discover every node that is reachable from $s$.
 % As the name suggested, BFS expands the frontier of discovered regions
 % uniformly across the breadth, i.e., the algorithm discovers all nodes
 % that are $k$ walks away from $s$ before discovering any nodes that are
-% $k+1$ walks away. 
-A temporal path is the basic element to 
+% $k+1$ walks away.
+A temporal path is the basic element to
  define almost  all important evolving graph algorithms.
 Matrix-matrix multiplication between consecutive adjacency matrices
 were commonly used as a means of determining temporal paths \cite{gphe11} \cite{grihig13}. However, we show
-in one specific case it fails to include all the temporal paths and thus should not be used 
+in one specific case it fails to include all the temporal paths and thus should not be used
 for searching evolving graphs in general.
 
-Breadth-first search is probably the most basic graph searching algorithm and 
-it is also the building block of other graph algorithms like minimum spanning tree 
+Breadth-first search is probably the most basic graph searching algorithm and
+it is also the building block of other graph algorithms like minimum spanning tree
 and shortest path \cite{ckrs09}.
-Despite the fact that graph metrics \cite{ntmm13} \cite{tmml09} \cite{tsmm09} and 
-various centrality measures (including Katz  \cite{gphe11} \cite{grihig13}, 
-betweenness \cite{alhi15}, and closeness  \cite{tmml10}) 
+Despite the fact that graph metrics \cite{ntmm13} \cite{tmml09} \cite{tsmm09} and
+various centrality measures (including Katz  \cite{gphe11} \cite{grihig13},
+betweenness \cite{alhi15}, and closeness  \cite{tmml10})
 have been generalized for evolving graphs,
 a BFS for evolving graphs, which we shall call it \emph{evolving-graph BFS},
 was never explicitly described or verified.
 
 
 In this paper,  we present descriptions of an evolving-graph BFS algorithm, but its main concern is with its sparse matrix
-representation and linear algebraic computations. 
-We prove that the two algorithms (graph notation and algebra notation) are equivalent.  
+representation and linear algebraic computations.
+We prove that the two algorithms (graph notation and algebra notation) are equivalent.
 
 % GraphBlas related ideas
 
 % This paper is organized as follows. The evolving-graph BFS algorithm is described
-% and analyzed using graph notation in Section \ref{sec:breadth-first-search}. Section \ref{sec:evolv-graph-algor} considers the algebraic representation of the algorithm: 
+% and analyzed using graph notation in Section \ref{sec:breadth-first-search}. Section \ref{sec:evolv-graph-algor} considers the algebraic representation of the algorithm:
 % A sparse matrix representation
-% of an evolving graph is presented in \ref{sec:representation}. 
-% The algorithm is presented in \ref{sec:breadth-first-search-1} and 
+% of an evolving graph is presented in \ref{sec:representation}.
+% The algorithm is presented in \ref{sec:breadth-first-search-1} and
 % the properties of the search tree is discussed in \ref{sec:short-temp-path}.
-% The connection between a temporal path and a matrix-matrix multiplication is considered and discussed in \ref{sec:matr-matr-mult}. Finally, 
+% The connection between a temporal path and a matrix-matrix multiplication is considered and discussed in \ref{sec:matr-matr-mult}. Finally,
 % an application of the evolving-graph BFS in mining citation networks is described in Section \ref{sec:applications}.
 
 \section{Breadth-First Search for Evolving Graphs}
@@ -286,7 +286,7 @@ We prove that the two algorithms (graph notation and algebra notation) are equiv
     \begin{tikzpicture}[scale=.38, line width =1.5pt]
   \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
   \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
-  \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1}; 
+  \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
 
   \node[circle,draw=red1, minimum size=0.2cm] (n6) at (3,7) {2};
   \node[circle,fill=green1, minimum size=0.2cm] (n4) at (-2,5) {3};
@@ -307,56 +307,56 @@ We prove that the two algorithms (graph notation and algebra notation) are equiv
     \end{tikzpicture}
 \end{center}
 \caption{An evolving graph with 3 timestamps $t_1$, $t_2$ and $t_3$.
-At each timestamp, the evolving graph is represented as a graph. 
+At each timestamp, the evolving graph is represented as a graph.
 The green filled nodes in the figure are active nodes.}
 \label{fig:eg_shortest_path}
 \end{figure}
 
-We show a small evolving graph $ \langle G^{[1]}, G^{[2]}, G^{[3]}\rangle$ with $3$ timestamps $t_1$, $t_2$ and $t_3$ 
-in Figure \ref{fig:eg_shortest_path}, where each $G^{[i]}$ is a graph at timestamp $t_i$. 
+We show a small evolving graph $ \langle G^{[1]}, G^{[2]}, G^{[3]}\rangle$ with $3$ timestamps $t_1$, $t_2$ and $t_3$
+in Figure \ref{fig:eg_shortest_path}, where each $G^{[i]}$ is a graph at timestamp $t_i$.
 For example,
-at timestamp $t_1$, the graph $G^{[1]}$ contains three nodes $1$, $2$ and $3$ and $(1,2)$ is an edge of $G^{[1]}$. 
-Though Figure \ref{fig:eg_shortest_path} presents a 
-directed evolving graph,  the algorithms that we shall discuss work on both 
+at timestamp $t_1$, the graph $G^{[1]}$ contains three nodes $1$, $2$ and $3$ and $(1,2)$ is an edge of $G^{[1]}$.
+Though Figure \ref{fig:eg_shortest_path} presents a
+directed evolving graph,  the algorithms that we shall discuss work on both
 directed and undirected evolving graphs.
 We shall use this example throughout the paper to illustrate various
 notions.
 
-Formally, an evolving graph $G_n $ is defined to be a sequence of graphs $\langle G^{[1]}, G^{[2]}, \ldots, G^{[n]}\rangle$,  where each $G^{[t]} = (V^{[t]}, E^{[t]})$ represents a graph at timestamp $t$. 
+Formally, an evolving graph $G_n $ is defined to be a sequence of graphs $\langle G^{[1]}, G^{[2]}, \ldots, G^{[n]}\rangle$,  where each $G^{[t]} = (V^{[t]}, E^{[t]})$ represents a graph at timestamp $t$.
 We shall use the notation $(v, t)$ to represent
-a node $v$ at timestamp $t$. 
+a node $v$ at timestamp $t$.
 We say two nodes are \emph{connected} if there is an edge between them
-and we say a node $(v,t)$ is \emph{active}, if $v$ is connected to at least a node other than itself at timestamp $t$. Otherwise we say it is \emph{inactive}.  
-In Figure \ref{fig:eg_shortest_path}, node $(1,t_1)$ and $(2,t_2)$  are active but node $(3,t_1)$ is inactive. 
+and we say a node $(v,t)$ is \emph{active}, if $v$ is connected to at least a node other than itself at timestamp $t$. Otherwise we say it is \emph{inactive}.
+In Figure \ref{fig:eg_shortest_path}, node $(1,t_1)$ and $(2,t_2)$  are active but node $(3,t_1)$ is inactive.
 
-In order to define the evolving-graph BFS, we need the concept of a 
+In order to define the evolving-graph BFS, we need the concept of a
 \emph{temporal path}.
 A temporal path on an evolving graph $G_n$ is a sequence of node-timestamp
-pair $\langle (v_1, t_1), (v_2, t_2), \ldots, (v_m, t_m) \rangle$ such that 
-$t_1 \leq t_2 \leq \cdots \leq t_m$ and $v_i = v_j$ if and only if 
+pair $\langle (v_1, t_1), (v_2, t_2), \ldots, (v_m, t_m) \rangle$ such that
+$t_1 \leq t_2 \leq \cdots \leq t_m$ and $v_i = v_j$ if and only if
 $t_i \ne t_j$. The length of a temporal path is the length of the sequence.
-For example, $\langle (1, t_1), (1, t_2), (3, t_2), (3, t_3) \rangle$ and 
-$\langle (1, t_1), (2, t_1), (2, t_3), (3, t_3) \rangle$ 
+For example, $\langle (1, t_1), (1, t_2), (3, t_2), (3, t_3) \rangle$ and
+$\langle (1, t_1), (2, t_1), (2, t_3), (3, t_3) \rangle$
 are two temporal paths from $(1, t_1)$ to $(3, t_3)$
-on the evolving graph in Figure \ref{fig:eg_shortest_path}. 
+on the evolving graph in Figure \ref{fig:eg_shortest_path}.
 
-We would like a BFS on evolving graphs to work similar to that on graphs: the search starts with some source node $(s,t)$, called \emph{root}. It constructs a tree through discovering all nodes that are reachable by 
-temporal paths of length $k$ before moving to all nodes that are reachable by 
+We would like a BFS on evolving graphs to work similar to that on graphs: the search starts with some source node $(s,t)$, called \emph{root}. It constructs a tree through discovering all nodes that are reachable by
+temporal paths of length $k$ before moving to all nodes that are reachable by
  temporal paths of length $k+1$.
-By construction, the timestamp of an active node is always not later than 
-that of its descendant. Suppose we 
-start with node $(1, t_1)$ in Figure \ref{fig:eg_shortest_path}. 
-After $1$ temporal path from $(1, t_1)$, we can reach 
-$(2, t_1)$ and $(1, t_2)$. After $2$ temporal paths, we can reach 
-$(2, t_1), (1, t_2), (2, t_2)$ and $(3, t_2)$. 
-% This example motivates us to define the reachable set of 
+By construction, the timestamp of an active node is always not later than
+that of its descendant. Suppose we
+start with node $(1, t_1)$ in Figure \ref{fig:eg_shortest_path}.
+After $1$ temporal path from $(1, t_1)$, we can reach
+$(2, t_1)$ and $(1, t_2)$. After $2$ temporal paths, we can reach
+$(2, t_1), (1, t_2), (2, t_2)$ and $(3, t_2)$.
+% This example motivates us to define the reachable set of
 % a node-timestamp pair.
 Formally, we define the \emph{forward-neighbors} of a node $(v, t)$ to
 be the set of all the reachable nodes after $1$ temporal path from
-$(v, t)$, i.e., the nodes pointed by $v$ at timestamp $t$ and 
-the active node $v$ itself at later timestamps. In Figure 
-\ref{fig:eg_shortest_path}, 
-the forward-neighbors of $(1, t_1)$  are $(2, t_1)$ and $(1, t_2)$ and 
+$(v, t)$, i.e., the nodes pointed by $v$ at timestamp $t$ and
+the active node $v$ itself at later timestamps. In Figure
+\ref{fig:eg_shortest_path},
+the forward-neighbors of $(1, t_1)$  are $(2, t_1)$ and $(1, t_2)$ and
 the forward-neighbors of $(2, t_1)$ is $(2, t_3)$.
 See Algorithm  \ref{alg:bfs} for the evolving-graph BFS algorithm.
 
@@ -387,17 +387,17 @@ See Algorithm  \ref{alg:bfs} for the evolving-graph BFS algorithm.
   }
   \textbf{return} $dict$
 }
- \caption{Evolving-graph BFS. 
+ \caption{Evolving-graph BFS.
 Let $G_n$ be an
-evolving graph represented by adjacency lists and $(s, t)$ is a node 
+evolving graph represented by adjacency lists and $(s, t)$ is a node
 of $G_n$.
 For each node-timestamp pair $(v_i,t_i)$,
 we use a dictionary $dict.(v_i,t_i)$ to store its distance (the length of temporal
 paths) from $(s, t)$. We also use
 two first-in, first-out queue $frontier$ and $next$, where $frontier$
 stores the frontier nodes of the current discovered regions and $next$ stores
-the frontier nodes of the next level. 
-The algorithm returns $dict$ which stores all reachable node-timestamp pairs from $(s,t)$ such that if $dict.(v_i, t_i) = k$, 
+the frontier nodes of the next level.
+The algorithm returns $dict$ which stores all reachable node-timestamp pairs from $(s,t)$ such that if $dict.(v_i, t_i) = k$,
 the length of the shortest temporal path
 from $(s,t)$ to $(v_i, t_i)$ is $k$.}
  \label{alg:bfs}
@@ -410,21 +410,21 @@ from $(s,t)$ to $(v_i, t_i)$ is $k$.}
 As before, let $G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]}\rangle$ be an evolving graph with $n$ timestamps. For each graph $G^{[t]}$, we use $A^{[t]}$ to denote
 the corresponding adjacency matrix.
 \[
-A^{[t]}(i,j) = 
+A^{[t]}(i,j) =
 \begin{cases}
  1 & \mbox{if $(i,j)$ is an edge of $G^{[t]}$,} \\
  0 & \mbox{otherwise.}
 \end{cases}
 \]
- Each $A^{[t]}$ can be represented by 
+ Each $A^{[t]}$ can be represented by
 a $|V|\times |V|$ sparse matrix,
 where $|V|$ is the total number of nodes in $G_n$.
-We use a sequence of adjacency matrices $A_n = \langle A^{[1]}, A^{[2]}, \ldots, A^{n]}\rangle$ to represent $G_n$. 
+We use a sequence of adjacency matrices $A_n = \langle A^{[1]}, A^{[2]}, \ldots, A^{n]}\rangle$ to represent $G_n$.
 For example, the evolving graph in Figure \ref{fig:eg_shortest_path}
-can be represented as 
+can be represented as
 \[
 \Big\langle
-  \begin{bmatrix} 
+  \begin{bmatrix}
     0 & 1 & 0 \\
     0 & 0 & 0 \\
     0 & 0 & 0
@@ -432,12 +432,12 @@ can be represented as
  \begin{bmatrix}
    0 & 0 & 1 \\
    0 & 0 & 0 \\
-   0 & 0 & 0 
+   0 & 0 & 0
  \end{bmatrix},~
  \begin{bmatrix}
   0 & 0 & 0 \\
   0 & 0 & 1 \\
-  0 & 0 & 0 
+  0 & 0 & 0
  \end{bmatrix}
 \Big\rangle
 \]
@@ -446,48 +446,48 @@ can be represented as
 
 There exits a duality between vector matrix multiplication and the BFS
 for graphs \cite{kegi11}. Let $G = (V, E)$ be a (directed or undirected) graph
-and $k$ a node in the graph $G$. We could represent $G$ as an adjacency 
-matrix $A$ and $k$ a column vector $b$ such that 
+and $k$ a node in the graph $G$. We could represent $G$ as an adjacency
+matrix $A$ and $k$ a column vector $b$ such that
 \[
-b_i = 
+b_i =
 \begin{cases}
 1 & \mbox{if $i = k$,} \\
 0 & \mbox{otherwise.}
 \end{cases}
 \]
-Then $A^Tb$ is a column vector where the indices of the nonzero entries 
+Then $A^Tb$ is a column vector where the indices of the nonzero entries
 indicate the forward-neighbors of $k$. This relationship can be generalized to be
-a duality between a block vector matrix multiplication and the 
+a duality between a block vector matrix multiplication and the
 evolving-graph BFS.
 
 For the evolving case, we shall introduce a new binary operator $\odot$.
 We define
 \[
-A \odot b = 
+A \odot b =
 \begin{cases}
 b & \mbox{if $Ab \ne 0$,} \\
 0 & \mbox{otherwise,}
 \end{cases}
 \]
 where $A$ is an adjacency matrix and $b$ a column vector defined as before.
-Then it is easy to observe that 
-the forward-neighbors of node $(k, 1)$ in $A_n = \langle A^{[1]}, A^{[2]}, \ldots, A^{n]}\rangle$ are the nonzero indices of the 
+Then it is easy to observe that
+the forward-neighbors of node $(k, 1)$ in $A_n = \langle A^{[1]}, A^{[2]}, \ldots, A^{n]}\rangle$ are the nonzero indices of the
 elements in the sequence
 \begin{equation}
 \label{eq:out_ne}
 \big\langle (A^{[1]})^Tb, \quad  (A^{[2]})^T\odot b, \quad \ldots \quad (A^{[n]})^T\odot b \big\rangle.
 \end{equation}
 The forward-neighbors at timestamp $t$ are the nonzero indices of the $t$-th element of the above sequence.
-Hence given $A_n$ and a vector $b$, we can use \eqref{eq:out_ne} to 
+Hence given $A_n$ and a vector $b$, we can use \eqref{eq:out_ne} to
 get a $1$-step  BFS tree. In Figure \ref{fig:eg_shortest_path}, the forward-neighbors
 of node $(1, t_1)$ can be computed by
 \[
 \Big\langle
-  \begin{bmatrix} 
+  \begin{bmatrix}
     0 & 0 & 0 \\
     1 & 0 & 0 \\
     0 & 0 & 0
-  \end{bmatrix} 
+  \end{bmatrix}
 \begin{bmatrix}
 1 \\
 0 \\
@@ -497,7 +497,7 @@ of node $(1, t_1)$ can be computed by
  \begin{bmatrix}
    0 & 0 & 0 \\
    0 & 0 & 0 \\
-   1 & 0 & 0 
+   1 & 0 & 0
  \end{bmatrix}
 \odot
 \begin{bmatrix}
@@ -509,7 +509,7 @@ of node $(1, t_1)$ can be computed by
  \begin{bmatrix}
   0 & 0 & 0 \\
   0 & 0 & 0 \\
-  0 & 1 & 0 
+  0 & 1 & 0
  \end{bmatrix}
 \odot
 \begin{bmatrix}
@@ -519,7 +519,7 @@ of node $(1, t_1)$ can be computed by
 \end{bmatrix}
 \Big\rangle
 \]
-which is equal to 
+which is equal to
 \[
 \Big\langle
 \begin{bmatrix}
@@ -539,45 +539,45 @@ which is equal to
 \end{bmatrix}
 \Big\rangle
 \]
-This means node $(2,t_1)$ and $(1,t_2)$ are the forward-neighbors of $(1,t_1)$. 
+This means node $(2,t_1)$ and $(1,t_2)$ are the forward-neighbors of $(1,t_1)$.
 
 Let $(A^{[i]})^Tb = c_i$.
 At the second step, we need to compute the following components
 \begin{align}
   \label{eq:5}
- \big\langle (A^{[1]})^Tc_1,   (A^{[2]})^T\odot c_1, \ldots,  (A^{[n]})^T\odot c_1  \big\rangle  \\  
+ \big\langle (A^{[1]})^Tc_1,   (A^{[2]})^T\odot c_1, \ldots,  (A^{[n]})^T\odot c_1  \big\rangle  \\
 \big\langle (A^{[2]})^Tc_{2}, \ldots, (A^{[n]})^T\odot c_{2} \big\rangle \\
  \ldots  \\
-  \big\langle (A^{[n]})^Tc_n \big\rangle 
+  \big\langle (A^{[n]})^Tc_n \big\rangle
 \label{eq:6}
 \end{align}
-If we sum these resulting vectors according to timestamps, we obtain 
+If we sum these resulting vectors according to timestamps, we obtain
 the forward-neighbors of the nodes computed at step $1$.
-For $n =2$, we have 
+For $n =2$, we have
 \[
 \Big\langle
 (A^{[1]})^Tc_1,~
 (A^{[2]})^T\odot c_1 + (A^{[2]})^T c_2
 \Big\rangle.
 \]
-If we form a block triangular matrix $\bm{A_n}^T$ 
+If we form a block triangular matrix $\bm{A_n}^T$
 \[
-\bm{A_n}^T = 
+\bm{A_n}^T =
 \begin{bmatrix}
 (A^{[1]})^T &   0            & \cdots  &  & 0 \\
 \sigma(A^{[2]})^T & (A^{[2]})^T & 0         &\cdots  & \vdots \\
 \sigma(A^{[3]})^T & \sigma(A^{[3]})^T & (A^{[3]})^T & \cdots \\
    \vdots              &                              &      \vdots            &  &  \vdots \\
-\sigma(A^{[n]})^T &                  &       \cdots                      &  & (A^{[n]})^T 
+\sigma(A^{[n]})^T &                  &       \cdots                      &  & (A^{[n]})^T
 \end{bmatrix},
 \]
-where  $\sigma(A^{[i]})^Tb = (A^{[i]})^T\odot b$, and a block vector $\bm{b}$ 
+where  $\sigma(A^{[i]})^Tb = (A^{[i]})^T\odot b$, and a block vector $\bm{b}$
 \[
 \bm{b}^T = [b^T, 0, \cdots, 0  ],
 \]
-then \eqref{eq:out_ne} is equivalent to $\bm{A_n}^T\bm{b}$ and 
-summing \eqref{eq:5}-\eqref{eq:6} is equivalent to $\bm{A_n}^T(\bm{A_n}^T\bm{b})$. 
-In general, we can define an evolving-graph BFS using 
+then \eqref{eq:out_ne} is equivalent to $\bm{A_n}^T\bm{b}$ and
+summing \eqref{eq:5}-\eqref{eq:6} is equivalent to $\bm{A_n}^T(\bm{A_n}^T\bm{b})$.
+In general, we can define an evolving-graph BFS using
 block vector-matrix multiplications. The algorithm is presented in Algorithm
 \ref{alg:bfsla}.
 
@@ -593,7 +593,7 @@ block vector-matrix multiplications. The algorithm is presented in Algorithm
  \SetKwProg{Fn}{function}{}{end}
  \Fn{ABFS($A_n, (s,t)$)}{
    Form $\bm{A}^T$ from $A_n$\\
-   $m = A^{[1]}.dimension$ \\ 
+   $m = A^{[1]}.dimension$ \\
    $b$ is a sparse vector of length $mn$ \\
    $b(s+mt) =1$ \\
    $i = 1$ \\
@@ -610,23 +610,23 @@ block vector-matrix multiplications. The algorithm is presented in Algorithm
        \For{$node$ in $nodes$}{
            $dict.node = i$
          }
-       
+
        $i = i + 1$
        }
   \textbf{return} $dict$ \\
 }
- \caption{Algebraic evolving-graph BFS. 
-Let $A_n$ be the corresponding adjacency matrices of $G_n$ and 
+ \caption{Algebraic evolving-graph BFS.
+Let $A_n$ be the corresponding adjacency matrices of $G_n$ and
 $(s,t)$ a node of $G_n$. As in Algorithm \ref{alg:bfs}, we use a dictionary $dict.(v_i, t_i)$
-to store $(v_i, t_i)$'s distance from $(s,t)$. Function \texttt{nonzeros(v)} 
-returns the nonzero indices of a given vector  $v$ and function \texttt{map(b)} 
-maps a block vector's indices to their corresponding nodes. The algorithm  returns 
+to store $(v_i, t_i)$'s distance from $(s,t)$. Function \texttt{nonzeros(v)}
+returns the nonzero indices of a given vector  $v$ and function \texttt{map(b)}
+maps a block vector's indices to their corresponding nodes. The algorithm  returns
 $dict$ which stores all the reachable active nodes and their distance from $(s,t)$.}
  \label{alg:bfsla}
 \end{algorithm}
 
-Representing evolving graphs as sparse matrices offers great flexibility 
-on the search direction. If we define the \emph{backward-neighbors} of a 
+Representing evolving graphs as sparse matrices offers great flexibility
+on the search direction. If we define the \emph{backward-neighbors} of a
 node $(v,t)$ to be a set of nodes that precede $(v,t)$ if we travel backwards
 in time. Then the backward-neighbors of $(v,t)$ can be computed by
 \begin{equation}
@@ -634,24 +634,24 @@ in time. Then the backward-neighbors of $(v,t)$ can be computed by
 (A^{[t]})b + (A^{[t+1]})\odot b + \cdots + (A^{[n]})\odot b.
 \end{equation}
 We shall get a backward traversal algorithm if we replace
-the vector-matrix multiplication $\bm{A_n}^T\bm{b}$ 
-by $\bm{A_n}\bm{b}$, where 
+the vector-matrix multiplication $\bm{A_n}^T\bm{b}$
+by $\bm{A_n}\bm{b}$, where
 \[
-\bm{A_n} = 
+\bm{A_n} =
 \begin{bmatrix}
 A^{[1]} &   0            & \cdots  &  & 0 \\
 \sigma(A^{[2]}) & A^{[2]} & 0         &\cdots  & \vdots \\
 \sigma(A^{[3]}) & \sigma(A^{[3]}) & A^{[3]} & \cdots \\
    \vdots              &                              &      \vdots            &  &  \vdots \\
-\sigma(A^{[n]}) &                  &       \cdots                      &  & A^{[n]} 
+\sigma(A^{[n]}) &                  &       \cdots                      &  & A^{[n]}
 \end{bmatrix}.
 \]
-Having the ability to traverse backwards is important for many real-life applications. 
+Having the ability to traverse backwards is important for many real-life applications.
 We shall show an example in Section \ref{sec:applications}.
 
 Algorithm \ref{alg:bfsla} outlines the basic idea of an algebraic evolving-graph BFS.
-But in practice we don't need to form $\bm{A}$ and $\bm{b}$ explicitly at step $4$ and $6$. By realizing the dependency between these sparse matrices, 
-we can compute  the result in parallel. 
+But in practice we don't need to form $\bm{A}$ and $\bm{b}$ explicitly at step $4$ and $6$. By realizing the dependency between these sparse matrices,
+we can compute  the result in parallel.
 
 \subsection{Analysis}
 \label{sec:analysis}
@@ -659,53 +659,53 @@ we can compute  the result in parallel.
 % adjacency matrices
 Suppose $G_n$ is represented by adjacency lists.
 Then the number of adjacency lists is the same as the number
-of active nodes in $G_n$. So for large $n$, this representation 
+of active nodes in $G_n$. So for large $n$, this representation
 can use a large amount of memory.
-For the graph $G^{[i]} = (V^{[i]}, E^{[i]})$ at timestamp $i$, 
-we denote the active node set of $V^{[i]}$ as $\tilde V^{[i]}$, 
+For the graph $G^{[i]} = (V^{[i]}, E^{[i]})$ at timestamp $i$,
+we denote the active node set of $V^{[i]}$ as $\tilde V^{[i]}$,
 where we have $\tilde V^{[i]} \subseteq V^{[i]}$.
-Step $10$ of  Algorithm \ref{alg:bfs} ensures each active node-timestamp pair in $G_n$ is enqueued in $next$ (and then $frontier$) at most once. 
-And so \texttt{forward-neighbors} loops through each 
-active node-timestamp pair at most once. 
+Step $10$ of  Algorithm \ref{alg:bfs} ensures each active node-timestamp pair in $G_n$ is enqueued in $next$ (and then $frontier$) at most once.
+And so \texttt{forward-neighbors} loops through each
+active node-timestamp pair at most once.
 The operations of enqueuing take $O(1)$ time.
-Thus the total operations of enqueuing are 
+Thus the total operations of enqueuing are
 $O(\sum_{i=1}^n|\tilde V^{[i]}|)$, where $|\cdot|$ represents the number of elements of a set.  Let $\sum_i |\tilde V^{[i]}| = |\tilde V|$ and $\sum_i |E^{[i]}| = |\hat E|$.
 Then the time of scanning
-\texttt{forward-neighbors} is 
+\texttt{forward-neighbors} is
 \[
-\sum_{i=1}^n\sum_{v \in \tilde V^{[i]}} \texttt{forward-neighbors}(v) = 
+\sum_{i=1}^n\sum_{v \in \tilde V^{[i]}} \texttt{forward-neighbors}(v) =
 O(|\hat E|),
 \]
 by the definition of forward-neighbors.
 Hence the total running time is $O(|\hat E|+ |\tilde V|)$.
 
 \begin{thm}[Correctness of evolving-graph BFS]
-Let an evolving graph $G_n$ and a starting node $(s,t_0)$ be given. 
-The evolving-graph BFS discovers every active node that is reachable from the source $(s,t_0)$ and $d.(v, t)$ is the length of the shortest temporal path 
-from $(s,t_0)$ to $(v,t)$. 
+Let an evolving graph $G_n$ and a starting node $(s,t_0)$ be given.
+The evolving-graph BFS discovers every active node that is reachable from the source $(s,t_0)$ and $d.(v, t)$ is the length of the shortest temporal path
+from $(s,t_0)$ to $(v,t)$.
 \end{thm}
 \proof
 We could map an evolving graph $G_n$ to a static graph $G$ in such a way that
 if there is an edge from $(v, t)$ to $(u,t)$ in $G_n$, there is an edge from $v_t$ to $u_t$ in $G$.
-For any two nodes $v_s$ and $v_t$ in $G$,  if $s < t$, we add an edge from $v_s$ to $v_t$. 
-By construction, the forward-neighbors of an active node $(v, t)$ in $G_n$ 
-are in one-to-one correspondence with the forward-neighbors of a node $v_t$ in $G$.  
+For any two nodes $v_s$ and $v_t$ in $G$,  if $s < t$, we add an edge from $v_s$ to $v_t$.
+By construction, the forward-neighbors of an active node $(v, t)$ in $G_n$
+are in one-to-one correspondence with the forward-neighbors of a node $v_t$ in $G$.
 Hence the correctness of the evolving graph BFS follows from that of a static graph.
 \endproof
 
 \begin{thm}
- Algorithm \ref{alg:bfs} and Algorithm \ref{alg:bfsla} are equivalent. 
+ Algorithm \ref{alg:bfs} and Algorithm \ref{alg:bfsla} are equivalent.
 \end{thm}
 \proof
-We shall check the two algorithms are equivalent in each module of 
+We shall check the two algorithms are equivalent in each module of
 the method.
 The initialization steps are trivially equivalent.
-By the construction of $\bm{A^T}$, 
-step $9$ of Algorithm \ref{alg:bfsla} computes the forward-neighbors 
-of all the frontier nodes, which is equivalent to step $8$-$9$ 
+By the construction of $\bm{A^T}$,
+step $9$ of Algorithm \ref{alg:bfsla} computes the forward-neighbors
+of all the frontier nodes, which is equivalent to step $8$-$9$
 of Algorithm \ref{alg:bfs}. Step $10$-$15$ of Algorithm \ref{alg:bfsla} ensures
 active nodes will not be visited twice, which is equivalent to step $10$
-of Algorithm \ref{alg:bfs}. Finally, a dictionary $dict$ is used in both algorithms 
+of Algorithm \ref{alg:bfs}. Finally, a dictionary $dict$ is used in both algorithms
 to keep record of the distance of each node from the source $(s,t)$.
 \endproof
 
@@ -713,16 +713,16 @@ to keep record of the distance of each node from the source $(s,t)$.
 \subsection{Search Tree}
 \label{sec:short-temp-path}
 
-We say two nodes $(v_1,t_1)$ and $(v2, t_2)$ are \emph{temporally connected} if 
-$(v_1, t_1)$ and $(v2,t_2)$ are connected by a temporal path. 
-Notice this notion is symmetric, reflexive but not transitive. For example, suppose 
-$t_1 < t_2 < t_3$ and $(v_1, t_1)$ and $(v_3, t_3)$ are temporally connected 
+We say two nodes $(v_1,t_1)$ and $(v2, t_2)$ are \emph{temporally connected} if
+$(v_1, t_1)$ and $(v2,t_2)$ are connected by a temporal path.
+Notice this notion is symmetric, reflexive but not transitive. For example, suppose
+$t_1 < t_2 < t_3$ and $(v_1, t_1)$ and $(v_3, t_3)$ are temporally connected
 by a temporal path from $(v_1,t_1)$ to $(v_3, t_3)$. Also
 $(v_3, t_3)$ and $(v_2, t_2)$ are temporally connected by a temporal path from
 $(v_2,t_2)$ to $(v_3, t_3)$. But this does not imply $(v_1, t_1)$ and $(v_2, t_2)$ are temporal connected.
-  
-Given a root node $(s, t)$, during the execution the BFS discussed above builds a search tree, denoted by $T(s,t)$, 
-where nodes are temporally connected. 
+
+Given a root node $(s, t)$, during the execution the BFS discussed above builds a search tree, denoted by $T(s,t)$,
+where nodes are temporally connected.
 \begin{lemma}
  For a node active at different timestamps, say $(s, t_1)$ and $(s,t_2)$ such that $t_1 < t_2$,  we have $T(s, t_2) \subset T(s, t_1)$.
 \end{lemma}
@@ -731,7 +731,7 @@ Suppose $(v, t)$ belongs to $T(s, t_2)$. Then there exits an temporal path
 (constructed by the evolving graph BFS) from $(s,t_2)$ to $(v,t)$. Since both
 $(s,t_1)$ and $(s,t_2)$ are active, $(s,t_2)$ is an out-neighbor of $(s,t_1)$ by definition, i.e., there exits an edge from $(s,t_1)$ to $(s,t_2)$.  Hence there exits an temporal path
 from $(s,t_1)$ to $(v,t)$ and so $(v,t) \in T(s,t_1)$.
-\endproof 
+\endproof
 
 % consider $(A+I)^Tb$, which records all the connected components.
 % consider the huge matrix block and how to relate it.
@@ -739,7 +739,7 @@ from $(s,t_1)$ to $(v,t)$ and so $(v,t) \in T(s,t_1)$.
 % \subsection{Online Searching}
 % \label{sec:online-searching}
 
-% In this section, we consider ways of  updating new graphs. Suppose $A_n $ is 
+% In this section, we consider ways of  updating new graphs. Suppose $A_n $ is
 % an evolving graph with $n$ timestamps. We received a new graph $A^{[n+1]}$
 % at timestamp $n+1$. How to update the tree components while minimize the computation?
 % The forward-neighbors at timestamp $$
@@ -753,14 +753,14 @@ from $(s,t_1)$ to $(v,t)$ and so $(v,t) \in T(s,t_1)$.
 In this section, we answer the question why we need evolving graph.
 
 At the beginning of the paper, we set up a game played by three people $A$, $B$,
-and $C$ and we showed if 
+and $C$ and we showed if
 
 
 \subsection{Temporal Path}
 \label{sec:temporal-path}
 
 In this subsection, we compare with the ``wrong'' way of traveling an evolving graph
-and show the importance of node activeness. 
+and show the importance of node activeness.
 
 
 \subsection{Matrix-Matrix Multiplication}
@@ -768,20 +768,20 @@ and show the importance of node activeness.
 
 For adjacency matrices $A^{[s]}$ and $A^{[t]}$, where $s < t$, a nonzero entry
 $(i,j)$ of $A^{[s]} A^{[t]}$ indicates a temporal path from $(i,s)$ to $(j,t)$ via
-some node $k$. 
-In general, a nonzero entry $(i,j)$ of the matrix $A^{[1]}A^{[2]}\cdots A^{[n]}$ 
-indicates a temporal path $p$ that starts at $(i,1)$ and ends at  $(j,n)$. 
+some node $k$.
+In general, a nonzero entry $(i,j)$ of the matrix $A^{[1]}A^{[2]}\cdots A^{[n]}$
+indicates a temporal path $p$ that starts at $(i,1)$ and ends at  $(j,n)$.
 Notice $p$ must go through at least one edge at each timestamp between $1$ and $n$.
 For the evolving graph in Figure \ref{fig:eg_shortest_path}, $A^{[1]}A^{[2]}$
 is a zero matrix since there is no temporal path from timestamp $t_1$ to $t_2$ that
-go through at least one edge at $t_1$. However, 
+go through at least one edge at $t_1$. However,
 $\langle(1, t_1), (1, t_2), (3,t_2)\rangle$ is a temporal path of Figure \ref{fig:eg_shortest_path}.
- 
+
 Introducing ones on the diagonal of the matrices will still get the wrong result.
 
-% But it provides no information about the nodes in between. In addition, the temporal path must pass at least 
+% But it provides no information about the nodes in between. In addition, the temporal path must pass at least
 %  one node at each timestamps. We believe this requirement is too restrictive. For example,
-% $A^{[t_1]}A^{[t_2]}A^{[t_3]}$ is a zero matrix. Let $\langle i,j,\ldots k \rangle$ represents the sets of all possible subsets of $\langle 1, 2, \ldots, n \rangle$, where $i<j<\cdots<k$, then 
+% $A^{[t_1]}A^{[t_2]}A^{[t_3]}$ is a zero matrix. Let $\langle i,j,\ldots k \rangle$ represents the sets of all possible subsets of $\langle 1, 2, \ldots, n \rangle$, where $i<j<\cdots<k$, then
 % the nonzero entries of the matrix
 % \[
 % \sum_{i,j,\ldots,k}A^{[1]}A^{[i]}A^{[j]}\cdots A^{[k]}A^{[n]},
@@ -791,13 +791,13 @@ Introducing ones on the diagonal of the matrices will still get the wrong result
 \section{Implementation in Julia}
 \label{sec:implementation-julia}
 
-In order to study evolving graphs and experiment with various graph types, we have developed EvolvingGraphs.jl  \cite{zhang15}, a software package in the Julia language \cite{bkse12} for the creation, manipulation, and study of dynamic networks.  
+In order to study evolving graphs and experiment with various graph types, we have developed EvolvingGraphs.jl  \cite{zhang15}, a software package in the Julia language \cite{bkse12} for the creation, manipulation, and study of dynamic networks.
 Julia is a high-level, high-performance dynamic programming language for technical
-computing. When we implement EvolvingGraphs.jl, we make particular use of 
-the parameterizable type system and multiple dispatch in Julia. 
+computing. When we implement EvolvingGraphs.jl, we make particular use of
+the parameterizable type system and multiple dispatch in Julia.
 We define a data type  \texttt{MatrixList}, which represents an evolving graph
-as a sequence of sparse matrices stored in compressed sparse column (CSC) format. 
-Many basic graph functions are defined for \texttt{MatrixList}, including 
+as a sequence of sparse matrices stored in compressed sparse column (CSC) format.
+Many basic graph functions are defined for \texttt{MatrixList}, including
 retrieving nodes, timestamps, and matrices.
 
 \section{Application to Citation Networks}
@@ -807,34 +807,34 @@ We shall map a database of research papers to an evolving graph $G_n$
 in such a way that if author $i$ cited author $j$ on a paper published
 at  time $t$, the evolving graph $G_n$ contains a directed edge from
 $i$ to $j$ at timestamp $t$. Then given an author $a$ at timestamp $t_0$,
-we can use our evolving-graph BFS to construct $T(a, t_0)$ which is 
-a set of all the authors that have been influenced by $a$'s work at  
-time $t_0$. We define a \emph{community} to be a group of 
-researchers that share the same information source. 
-For example, given a paper published by $a$ at year $2016$, 
-we can determine $a$'s community by first backward searching to 
+we can use our evolving-graph BFS to construct $T(a, t_0)$ which is
+a set of all the authors that have been influenced by $a$'s work at
+time $t_0$. We define a \emph{community} to be a group of
+researchers that share the same information source.
+For example, given a paper published by $a$ at year $2016$,
+we can determine $a$'s community by first backward searching to
 find the source then forward searching to find the descendents.
 
-To design such system, we shall use two parameters: 
- a parameter for 
+To design such system, we shall use two parameters:
+ a parameter for
 determining the layers of the backward search tree which can be chosen by the user;
-a second parameter for determining the number of roots as a means of 
+a second parameter for determining the number of roots as a means of
 filtering out unessential or overlapping trees. The subset of roots can be determined
-by ranking algorithms like PageRank or machine-learning based preference ranking. 
+by ranking algorithms like PageRank or machine-learning based preference ranking.
 
 
 \section{Conclusion}
 
-In this paper, we have introduced and analyzed the evolving-graph BFS in both 
-graph and algebraic notation. 
-This paper leaves important extensions open for further research. First, it is 
-of interest to extend the evolving-graph BFS algorithm for weighted evolving graphs, which can provide more valuable information when the degree of connectivity is available in the data. 
-Second, efficient algebraic representations and algorithms need to be addressed. 
+In this paper, we have introduced and analyzed the evolving-graph BFS in both
+graph and algebraic notation.
+This paper leaves important extensions open for further research. First, it is
+of interest to extend the evolving-graph BFS algorithm for weighted evolving graphs, which can provide more valuable information when the degree of connectivity is available in the data.
+Second, efficient algebraic representations and algorithms need to be addressed.
 One major advantage of representing evolving graphs as sparse matrices
 is the matrix representation is highly structured so it is easy to design
-high performance parallel implementations. 
-Third, depth-first search and other graph traversal algorithms can be 
-extended for searching evolving graphs using similar ideas. 
+high performance parallel implementations.
+Third, depth-first search and other graph traversal algorithms can be
+extended for searching evolving graphs using similar ideas.
 
 
 % % use section* for acknowledgement
@@ -870,9 +870,7 @@ extended for searching evolving graphs using similar ideas.
 
 \bibliographystyle{myplain2-doi}
 
-\bibliography{strings,njhigham,paper} 
+\bibliography{strings,njhigham,paper}
 
 % that's all folks
 \end{document}
-
-
