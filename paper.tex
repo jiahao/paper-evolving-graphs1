@@ -185,7 +185,7 @@ Such graphs are known as evolving graphs.
 We follow the notation of (static) graphs in \cite{even12,kegi11}.
 In general, a evolving graph $G(t) = (V(t), E(t))$ is  a graph where the node set
 and edge set are functions of time $t$.
-However, in different literatures the term ``evolving graph'' has been
+However, in different literature the term ``evolving graph'' has been
 used to refer to slightly different models.
  Flajolet et al. \cite{fkp89} use the term to mean the evolution of random graphs.
 Bahmani et al. \cite{bkmu12} use the term to mean a sequence of graphs where
@@ -193,13 +193,13 @@ the difference between two consecutive graphs is small.
 Similar models are also investigated using the term ``evolving network'' and
 ``time-dependent graph''.
 
-In this work, we consider a discretization of the timeline as $n$ distinct
-timestamps and define an evolving graph $G_n$ to be
+In this work, we consider a discretization of the time line as $n$ distinct
+time stamps and define an evolving graph $G_n$ to be
 a sequence of (static) graphs
 $G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]} \rangle$.
 Depends on applications, the graph $G^{[i]}$ could mean either
-a snapshot of $G(t)$ at timestamp $i$ or  the union of all the graphs
-between timestamp $i-1$ and $i$ (excludes timestamp $i-1$).
+a snapshot of $G(t)$ at time stamp $i$ or  the union of all the graphs
+between time stamp $i-1$ and $i$ (excludes time stamp $i-1$).
 Both the node set and edge set of $G^{[i]}$ could be different from
 these of $G^{[j]}, j \ne i$.
 \begin{center}
@@ -230,7 +230,7 @@ use slightly different notation.
 Grindrod et al.'s model  \cite{gphe11} \cite{grihig13} is very similar to ours,
 where an evolving graph is considered as a sequence of adjacency matrices.
 Our model can also be seen as a special case of
-the multilayer networks discussed by Kivel{\"a} et al. \cite{kabg14}, where
+the multi-layer networks discussed by Kivel{\"a} et al. \cite{kabg14}, where
 there is only one set of layers for time.
 % We present a preliminary discussion of using the model to mine citation networks.
 
@@ -306,32 +306,32 @@ We prove that the two algorithms (graph notation and algebra notation) are equiv
 (11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
     \end{tikzpicture}
 \end{center}
-\caption{An evolving graph with 3 timestamps $t_1$, $t_2$ and $t_3$.
-At each timestamp, the evolving graph is represented as a graph.
+\caption{An evolving graph with 3 time stamps $t_1$, $t_2$ and $t_3$.
+At each time stamp, the evolving graph is represented as a graph.
 The green filled nodes in the figure are active nodes.}
 \label{fig:eg_shortest_path}
 \end{figure}
 
-We show a small evolving graph $ \langle G^{[1]}, G^{[2]}, G^{[3]}\rangle$ with $3$ timestamps $t_1$, $t_2$ and $t_3$
-in Figure \ref{fig:eg_shortest_path}, where each $G^{[i]}$ is a graph at timestamp $t_i$.
+We show a small evolving graph $ \langle G^{[1]}, G^{[2]}, G^{[3]}\rangle$ with $3$ time stamps $t_1$, $t_2$ and $t_3$
+in Figure \ref{fig:eg_shortest_path}, where each $G^{[i]}$ is a graph at time stamp $t_i$.
 For example,
-at timestamp $t_1$, the graph $G^{[1]}$ contains three nodes $1$, $2$ and $3$ and $(1,2)$ is an edge of $G^{[1]}$.
+at time stamp $t_1$, the graph $G^{[1]}$ contains three nodes $1$, $2$ and $3$ and $(1,2)$ is an edge of $G^{[1]}$.
 Though Figure \ref{fig:eg_shortest_path} presents a
 directed evolving graph,  the algorithms that we shall discuss work on both
 directed and undirected evolving graphs.
 We shall use this example throughout the paper to illustrate various
 notions.
 
-Formally, an evolving graph $G_n $ is defined to be a sequence of graphs $\langle G^{[1]}, G^{[2]}, \ldots, G^{[n]}\rangle$,  where each $G^{[t]} = (V^{[t]}, E^{[t]})$ represents a graph at timestamp $t$.
+Formally, an evolving graph $G_n $ is defined to be a sequence of graphs $\langle G^{[1]}, G^{[2]}, \ldots, G^{[n]}\rangle$,  where each $G^{[t]} = (V^{[t]}, E^{[t]})$ represents a graph at time stamp $t$.
 We shall use the notation $(v, t)$ to represent
-a node $v$ at timestamp $t$.
+a node $v$ at time stamp $t$.
 We say two nodes are \emph{connected} if there is an edge between them
-and we say a node $(v,t)$ is \emph{active}, if $v$ is connected to at least a node other than itself at timestamp $t$. Otherwise we say it is \emph{inactive}.
+and we say a node $(v,t)$ is \emph{active}, if $v$ is connected to at least a node other than itself at time stamp $t$. Otherwise we say it is \emph{inactive}.
 In Figure \ref{fig:eg_shortest_path}, node $(1,t_1)$ and $(2,t_2)$  are active but node $(3,t_1)$ is inactive.
 
 In order to define the evolving-graph BFS, we need the concept of a
 \emph{temporal path}.
-A temporal path on an evolving graph $G_n$ is a sequence of node-timestamp
+A temporal path on an evolving graph $G_n$ is a sequence of node-time stamp
 pair $\langle (v_1, t_1), (v_2, t_2), \ldots, (v_m, t_m) \rangle$ such that
 $t_1 \leq t_2 \leq \cdots \leq t_m$ and $v_i = v_j$ if and only if
 $t_i \ne t_j$. The length of a temporal path is the length of the sequence.
@@ -343,7 +343,7 @@ on the evolving graph in Figure \ref{fig:eg_shortest_path}.
 We would like a BFS on evolving graphs to work similar to that on graphs: the search starts with some source node $(s,t)$, called \emph{root}. It constructs a tree through discovering all nodes that are reachable by
 temporal paths of length $k$ before moving to all nodes that are reachable by
  temporal paths of length $k+1$.
-By construction, the timestamp of an active node is always not later than
+By construction, the time stamp of an active node is always not later than
 that of its descendant. Suppose we
 start with node $(1, t_1)$ in Figure \ref{fig:eg_shortest_path}.
 After $1$ temporal path from $(1, t_1)$, we can reach
@@ -353,8 +353,8 @@ $(2, t_1), (1, t_2), (2, t_2)$ and $(3, t_2)$.
 % a node-timestamp pair.
 Formally, we define the \emph{forward-neighbors} of a node $(v, t)$ to
 be the set of all the reachable nodes after $1$ temporal path from
-$(v, t)$, i.e., the nodes pointed by $v$ at timestamp $t$ and
-the active node $v$ itself at later timestamps. In Figure
+$(v, t)$, i.e., the nodes pointed by $v$ at time stamp $t$ and
+the active node $v$ itself at later time stamps. In Figure
 \ref{fig:eg_shortest_path},
 the forward-neighbors of $(1, t_1)$  are $(2, t_1)$ and $(1, t_2)$ and
 the forward-neighbors of $(2, t_1)$ is $(2, t_3)$.
@@ -391,13 +391,13 @@ See Algorithm  \ref{alg:bfs} for the evolving-graph BFS algorithm.
 Let $G_n$ be an
 evolving graph represented by adjacency lists and $(s, t)$ is a node
 of $G_n$.
-For each node-timestamp pair $(v_i,t_i)$,
+For each node-time stamp pair $(v_i,t_i)$,
 we use a dictionary $dict.(v_i,t_i)$ to store its distance (the length of temporal
 paths) from $(s, t)$. We also use
 two first-in, first-out queue $frontier$ and $next$, where $frontier$
 stores the frontier nodes of the current discovered regions and $next$ stores
 the frontier nodes of the next level.
-The algorithm returns $dict$ which stores all reachable node-timestamp pairs from $(s,t)$ such that if $dict.(v_i, t_i) = k$,
+The algorithm returns $dict$ which stores all reachable node-time stamp pairs from $(s,t)$ such that if $dict.(v_i, t_i) = k$,
 the length of the shortest temporal path
 from $(s,t)$ to $(v_i, t_i)$ is $k$.}
  \label{alg:bfs}
@@ -407,7 +407,7 @@ from $(s,t)$ to $(v_i, t_i)$ is $k$.}
 
 \subsection{Algebraic Evolving-Graph BFS}
 \label{sec:representation}
-As before, let $G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]}\rangle$ be an evolving graph with $n$ timestamps. For each graph $G^{[t]}$, we use $A^{[t]}$ to denote
+As before, let $G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]}\rangle$ be an evolving graph with $n$ time stamps. For each graph $G^{[t]}$, we use $A^{[t]}$ to denote
 the corresponding adjacency matrix.
 \[
 A^{[t]}(i,j) =
@@ -455,8 +455,8 @@ b_i =
 0 & \mbox{otherwise,}
 \end{cases}
 \]
-then $A^Tb$ is a column vector where the indices of the nonzero entries
-indicate the forward-neighbors of $k$.
+then $A^Tb$ is a column vector whose nonzero entries have indices that are the
+forward-neighbors of $k$.
 
 The evolving graph BFS can be thought of as a generalization of blocked
 matrix--vector products.
@@ -475,7 +475,7 @@ elements in the sequence
 \label{eq:out_ne}
 \big\langle (A^{[1]})^Tb, \quad  (A^{[2]})^T\odot b, \quad \ldots \quad (A^{[n]})^T\odot b \big\rangle.
 \end{equation}
-The forward-neighbors at timestamp $t$ are the nonzero indices of the $t$-th element of the above sequence.
+The forward-neighbors at time stamp $t$ are the nonzero indices of the $t$-th element of the above sequence.
 Hence given $A_n$ and a vector $b$, we can use \eqref{eq:out_ne} to
 get a $1$-step BFS tree. In Figure \ref{fig:eg_shortest_path}, the forward-neighbors
 of node $(1, t_1)$ can be computed by
@@ -549,7 +549,7 @@ At the second step, we need to compute the following components
   \big\langle (A^{[n]})^Tc_n \big\rangle
 \label{eq:6}
 \end{align}
-If we sum these resulting vectors according to timestamps, we obtain
+If we sum these resulting vectors according to time stamps, we obtain
 the forward-neighbors of the nodes computed at step $1$.
 For $n =2$, we have
 \[
@@ -659,12 +659,12 @@ Suppose $G_n$ is represented by adjacency lists.
 Then the number of adjacency lists is the same as the number
 of active nodes in $G_n$. So for large $n$, this representation
 can use a large amount of memory.
-For the graph $G^{[i]} = (V^{[i]}, E^{[i]})$ at timestamp $i$,
+For the graph $G^{[i]} = (V^{[i]}, E^{[i]})$ at time stamp $i$,
 we denote the active node set of $V^{[i]}$ as $\tilde V^{[i]}$,
 where we have $\tilde V^{[i]} \subseteq V^{[i]}$.
-Step $10$ of  Algorithm \ref{alg:bfs} ensures each active node-timestamp pair in $G_n$ is enqueued in $next$ (and then $frontier$) at most once.
+Step $10$ of  Algorithm \ref{alg:bfs} ensures each active node-time stamp pair in $G_n$ is enqueued in $next$ (and then $frontier$) at most once.
 And so \texttt{forward-neighbors} loops through each
-active node-timestamp pair at most once.
+active node-time stamp pair at most once.
 The operations of enqueuing take $O(1)$ time.
 Thus the total operations of enqueuing are
 $O(\sum_{i=1}^n|\tilde V^{[i]}|)$, where $|\cdot|$ represents the number of elements of a set.  Let $\sum_i |\tilde V^{[i]}| = |\tilde V|$ and $\sum_i |E^{[i]}| = |\hat E|$.
@@ -722,7 +722,7 @@ $(v_2,t_2)$ to $(v_3, t_3)$. But this does not imply $(v_1, t_1)$ and $(v_2, t_2
 Given a root node $(s, t)$, during the execution the BFS discussed above builds a search tree, denoted by $T(s,t)$,
 where nodes are temporally connected.
 \begin{lemma}
- For a node active at different timestamps, say $(s, t_1)$ and $(s,t_2)$ such that $t_1 < t_2$,  we have $T(s, t_2) \subset T(s, t_1)$.
+ For a node active at different time stamps, say $(s, t_1)$ and $(s,t_2)$ such that $t_1 < t_2$,  we have $T(s, t_2) \subset T(s, t_1)$.
 \end{lemma}
 \proof
 Suppose $(v, t)$ belongs to $T(s, t_2)$. Then there exits an temporal path
@@ -769,9 +769,9 @@ $(i,j)$ of $A^{[s]} A^{[t]}$ indicates a temporal path from $(i,s)$ to $(j,t)$ v
 some node $k$.
 In general, a nonzero entry $(i,j)$ of the matrix $A^{[1]}A^{[2]}\cdots A^{[n]}$
 indicates a temporal path $p$ that starts at $(i,1)$ and ends at  $(j,n)$.
-Notice $p$ must go through at least one edge at each timestamp between $1$ and $n$.
+Notice $p$ must go through at least one edge at each time stamp between $1$ and $n$.
 For the evolving graph in Figure \ref{fig:eg_shortest_path}, $A^{[1]}A^{[2]}$
-is a zero matrix since there is no temporal path from timestamp $t_1$ to $t_2$ that
+is a zero matrix since there is no temporal path from time stamp $t_1$ to $t_2$ that
 go through at least one edge at $t_1$. However,
 $\langle(1, t_1), (1, t_2), (3,t_2)\rangle$ is a temporal path of Figure \ref{fig:eg_shortest_path}.
 
@@ -796,7 +796,7 @@ the parameterizable type system and multiple dispatch in Julia.
 We define a data type  \texttt{MatrixList}, which represents an evolving graph
 as a sequence of sparse matrices stored in compressed sparse column (CSC) format.
 Many basic graph functions are defined for \texttt{MatrixList}, including
-retrieving nodes, timestamps, and matrices.
+retrieving nodes, time stamps, and matrices.
 
 \section{Application to Citation Networks}
 \label{sec:applications}
@@ -804,14 +804,14 @@ retrieving nodes, timestamps, and matrices.
 We shall map a database of research papers to an evolving graph $G_n$
 in such a way that if author $i$ cited author $j$ on a paper published
 at  time $t$, the evolving graph $G_n$ contains a directed edge from
-$i$ to $j$ at timestamp $t$. Then given an author $a$ at timestamp $t_0$,
+$i$ to $j$ at time stamp $t$. Then given an author $a$ at time stamp $t_0$,
 we can use our evolving-graph BFS to construct $T(a, t_0)$ which is
 a set of all the authors that have been influenced by $a$'s work at
 time $t_0$. We define a \emph{community} to be a group of
 researchers that share the same information source.
 For example, given a paper published by $a$ at year $2016$,
 we can determine $a$'s community by first backward searching to
-find the source then forward searching to find the descendents.
+find the source then forward searching to find the descendants.
 
 To design such system, we shall use two parameters:
  a parameter for
