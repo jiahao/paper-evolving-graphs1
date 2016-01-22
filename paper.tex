@@ -730,8 +730,8 @@ by a temporal path from $(v_1,t_1)$ to $(v_3, t_3)$. Also
 $(v_3, t_3)$ and $(v_2, t_2)$ are temporally connected by a temporal path from
 $(v_2,t_2)$ to $(v_3, t_3)$. But this does not imply $(v_1, t_1)$ and $(v_2, t_2)$ are temporal connected.
 
-Given a root node $(s, t)$, during the execution the BFS discussed above builds a search tree, denoted by $T(s,t)$,
-where nodes are temporally connected.
+Given a root node $(s, t)$, during the execution the evolving-graph BFS builds a search tree, denoted by $T(s,t)$,
+where nodes in $T(s,t)$ are temporally connected.
 \begin{lemma}
 For a node active at different time stamps, say $(s, t_1)$ and $(s,t_2)$ such that $t_1 \leq t_2$,  we have $T(s, t_2) \subseteq T(s, t_1)$, where $T(s,t_1) = T(s,t_2)$ if and only if 
 $t_1 = t_2$.
@@ -850,7 +850,8 @@ Notice also that if we introduce ones on the diagonal of the matrices $\{A^{[i]}
 each node of the resulting evolving graph will become 
 active at all timestamps. 
 Hence matrix-matrix multiplication between consecutive
-adjacency matrices should be avoid  for computing temporal paths.
+adjacency matrices can not discover all possible temporal paths and should be avoided 
+when temporal paths are the essential parts of the algorithm.
 
 % But it provides no information about the nodes in between. In addition, the temporal path must pass at least
 %  one node at each timestamps. We believe this requirement is too restrictive. For example,
@@ -864,7 +865,7 @@ adjacency matrices should be avoid  for computing temporal paths.
 \section{Implementation in Julia}
 \label{sec:implementation-julia}
 
-In order to study evolving graphs and experiment with various graph types, we have developed EvolvingGraphs.jl  \cite{zhang15}, a software package in the Julia language \cite{bkse12} for the creation, manipulation, and study of dynamic networks.
+To study evolving graphs and experiment with various graph types, we have developed EvolvingGraphs.jl  \cite{zhang15}, a software package in the Julia language \cite{bkse12} for the creation, manipulation, and study of dynamic networks.
 Julia is a high-level, high-performance dynamic programming language for technical
 computing. When we implement EvolvingGraphs.jl, we make particular use of
 the parameterizable type system and multiple dispatch in Julia.
