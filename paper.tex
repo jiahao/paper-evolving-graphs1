@@ -248,8 +248,8 @@ The green filled nodes in the figure are active nodes.}
 \end{figure}
 
 The key new idea in generalizing BFS to evolving graphs is to be able to compute
-traversals that span multiple times. We call some, but not all,
-such traversals \textit{temporal paths}.
+paths that traverse multiple times. We call the relevant paths
+\textit{temporal paths}.
 
 Figure~\ref{fig:eg_shortest_path} shows a small example of a evolving
 directed graph, $G_3 = \langle G^{[1]}, G^{[2]}, G^{[3]}\rangle$, consisting of
@@ -328,9 +328,13 @@ The black dashed lines of the two figures indicate two temporal paths from $(1, 
 \end{figure}
 
 The restriction that temporal paths may only traverse active nodes reflects
-underlying structure in many real world applications, such as analyzing influence
-of nodes over social networks, and furthermore leads to interesting and nontrivial
-adaptations of graph algorithms such as BFS
+underlying structure in many real world applications, such as analyzing the
+influence of nodes over social networks. We will also show later in
+%XXX FIX X-REF TO SECTION
+that the resulting structure of allowable temporal paths leads to nontrivial
+subtitled in the generalization of algorithms and concepts from ordinary
+(static) graphs.
+
 
 
 \subsection{Evolving-Graph BFS}
