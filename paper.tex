@@ -358,7 +358,16 @@ the active node $v$ itself at later time stamps. In Figure
 \ref{fig:eg_shortest_path},
 the forward-neighbors of $(1, t_1)$  are $(2, t_1)$ and $(1, t_2)$ and
 the forward-neighbors of $(2, t_1)$ is $(2, t_3)$.
-See Algorithm  \ref{alg:bfs} for the evolving-graph BFS algorithm.
+
+Given an evolving graph $G_n$ and a starting active node $(s,t)$, Algorithm \ref{alg:bfs} 
+returns all the reachable active nodes and their distances from $(s,t)$. 
+For Figure \ref{fig:eg_shortest_path}, suppose we start with $(1, t_2)$, then
+$frontier$ is $\langle(1,t_2)\rangle$ after step $5$.  Since the only forward-neighbor of 
+$(1,t_2)$ is $(3,t_2)$, $dict.(3,t_2) =1$ at step $11$ and $next$ is enqueued to be 
+$\langle (3,t_2) \rangle$ at step $12$. After that $frontier$ is equal to $next$. Since 
+$frontier$ is not empty, we go through step $7$-$12$ again. This time 
+the forward-neighbor of $(3,t_2)$ is $(3,t_3)$, so $dict.(3,t_3)=2$ and 
+$next = \langle (3,t_3) \rangle$ and so on. The loop terminates when $frontier$ is empty.
 
 \begin{algorithm}[h]
  \SetKwFor{For}{for}{}{end}
