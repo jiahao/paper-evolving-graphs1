@@ -599,8 +599,8 @@ block vector-matrix multiplications. The algorithm is presented in Algorithm
  \SetKwFunction{map}{map}
  \SetKwProg{Fn}{function}{}{end}
  \Fn{ABFS($A_n, (s,t)$)}{
-   Form $\bm{A}^T$ from $A_n$\\
-   $m = A^{[1]}.dimension$ \\
+   Form $\bm{A}^T$ from $A_n$.\\
+   Let $m$ be the dimension of  $A^{[1]}$. \\
    $b$ is a sparse vector of length $mn$ \\
    $b(s+mt) =1$ \\
    $i = 1$ \\
@@ -657,7 +657,7 @@ Having the ability to traverse backwards is important for many real-life applica
 We shall show an example in Section \ref{sec:applications}.
 
 Algorithm \ref{alg:bfsla} outlines the basic idea of an algebraic evolving-graph BFS.
-But in practice we don't need to form $\bm{A}$ and $\bm{b}$ explicitly at step $4$ and $6$. By realizing the dependency between these sparse matrices,
+But in practice we don't need to form $\bm{A}$ explicitly at step $2$. By realizing the dependency between these sparse matrices,
 we can compute  the result in parallel.
 
 \subsection{Analysis}
@@ -908,13 +908,13 @@ Third, depth-first search and other graph traversal algorithms can be
 extended for searching evolving graphs using similar ideas.
 
 
-% % use section* for acknowledgement
-% \section*{Acknowledgment}
+
+\section*{Acknowledgment}
 
 
-% The authors would like to thank...
-% more thanks here
-
+The authors are grateful to Professor Nicholas J. Higham and Doctor Vedran \u Sego for suggestions.
+This work was completed while the second author visited MIT CSAIL. He thanks 
+Professor Alan Edelman for making his stay so pleasant. 
 
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
