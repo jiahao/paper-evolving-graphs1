@@ -865,14 +865,19 @@ when temporal paths are the essential parts of the algorithm.
 \section{Implementation in Julia}
 \label{sec:implementation-julia}
 
-To study evolving graphs and experiment with various graph types, we have developed EvolvingGraphs.jl  \cite{zhang15}, a software package in the Julia language \cite{bkse12} for the creation, manipulation, and study of dynamic networks.
-Julia is a high-level, high-performance dynamic programming language for technical
-computing. When we implement EvolvingGraphs.jl, we make particular use of
-the parameterizable type system and multiple dispatch in Julia.
-We define a data type  \texttt{MatrixList}, which represents an evolving graph
+To study evolving graphs and experiment with various graph types, we have developed EvolvingGraphs.jl  \cite{zhang15}, a software package for the creation, manipulation, and study of evolving graphs written in Julia \cite{bkse12}. The implementation of the evolving-graph BFS is 
+available online at 
+\begin{center}
+\url{https://github.com/weijianzhang/EvolvingGraphs.jl}.
+\end{center}
+%Julia is a high-level, high-performance dynamic programming language for technical
+%computing. 
+% We make particular use of
+% the parameterizable type system and multiple dispatch in Julia.
+ \texttt{MatrixList}, a data type in EvolvingGraphs.jl,  represents an evolving graph
 as a sequence of sparse matrices stored in compressed sparse column (CSC) format.
-Many basic graph functions are defined for \texttt{MatrixList}, including
-retrieving nodes, time stamps, and matrices.
+Many basic graph functions are implemented for \texttt{MatrixList}. 
+
 
 \section{Application to Citation Networks}
 \label{sec:applications}
