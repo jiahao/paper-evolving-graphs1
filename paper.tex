@@ -823,20 +823,22 @@ It means the entity at that specific timestamp either
 receives recommendations or gives recommendations to others (or possibly both).
 This implies the entity is ``alive''. Here ``alive'' does not necessary mean physically 
 alive. For the case of citation network that we shall discuss later, node activeness more or less means spiritually alive in the sense that the idea or knowledge of the entity is alive.
+We traverse an evolving graph only on the active nodes.
 
 For adjacency matrices $A^{[s]}$ and $A^{[t]}$, where $s < t$, a nonzero entry
 $(i,j)$ of $A^{[s]} A^{[t]}$ indicates a temporal path from $(i,s)$ to $(j,t)$ via
 some node $k$ (which is unknown).
 In general, a nonzero entry $(i,j)$ of the matrix $A^{[1]}A^{[2]}\cdots A^{[n]}$
 indicates a temporal path $p$ that starts at $(i,1)$ and ends at  $(j,n)$.
-Notice $p$ must go through at least one edge at each time stamp between $1$ and $n$.
-For the evolving graph in Figure \ref{fig:active}, $A^{[1]}A^{[2]}$
+Notice the fact that $p$ must go through at least one edge at each time stamp between $1$ and $n$.
+For the evolving graph in Figure \ref{fig:eg_shortest_path}, $A^{[1]}A^{[2]}$
 is a zero matrix since there is no temporal path from time stamp $t_1$ to $t_2$ that
 go through at least one edge at $t_1$. However,
-$\langle(1, t_1), (1, t_2), (3,t_2)\rangle$ is a temporal path of Figure \ref{fig:active}.
-Notice also if we introduce ones on the diagonal of the matrices $\{A^{[i]}\}$,
+$\langle(1, t_1), (1, t_2), (3,t_2)\rangle$ is a temporal path as shown in Figure \ref{fig:active}.
+Notice also that if we introduce ones on the diagonal of the matrices $\{A^{[i]}\}$,
 each node of the resulting evolving graph will become 
-active at all timestamp. Hence matrix-matrix multiplication between consecutive
+active at all timestamps. 
+Hence matrix-matrix multiplication between consecutive
 adjacency matrices should be avoid  for computing temporal paths.
 
 % But it provides no information about the nodes in between. In addition, the temporal path must pass at least
