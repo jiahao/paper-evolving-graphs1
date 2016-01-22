@@ -33,6 +33,7 @@
 \definecolor{green1}{RGB}{102, 255, 102}
 \newtheorem{lemma}{Lemma}
 \newtheorem{thm}{Theorem}
+\newtheorem{defn}{Definition}
 \theoremstyle{definition}
 \def\proof{\par{\bf Proof}. \ignorespaces}
 \def\qedsymbol{\vbox{\hrule\hbox{%
@@ -210,7 +211,7 @@ of quantities which can be expressed as sums over paths, e.g.\ Katz centrality.
 
 
 
-\section{Breadth-First Search for Evolving Graphs}
+\section{Breadth-First Search over Evolving Graphs}
 \label{sec:breadth-first-search}
 
 
@@ -332,34 +333,35 @@ underlying structure in many real world applications, such as analyzing the
 influence of nodes over social networks. We will also show later in
 %XXX FIX X-REF TO SECTION
 that the resulting structure of allowable temporal paths leads to nontrivial
-subtitled in the generalization of algorithms and concepts from ordinary
+subtleties in the generalization of algorithms and concepts from ordinary
 (static) graphs.
 
 
 
-\subsection{Evolving-Graph BFS}
+\subsection{Breadth-First Traversal Over Temporal Paths}
 \label{sec:evolving-graph-bfs}
 
-This example shows a directed
-evolving graph
-For example,
-at time stamp $t_1$, the graph $G^{[1]}$ contains three nodes $1$, $2$ and $3$ and $(1,2)$ is an edge of $G^{[1]}$.
-Though Figure \ref{fig:eg_shortest_path} presents a
-directed evolving graph,  the algorithms that we shall discuss work on both
-directed and undirected evolving graphs.
-We shall use this example throughout the paper to illustrate various
-notions.
+The example presented above in Section~\ref{sec:breadth-first-search}
+demonstrates how the notion of active nodes restrict the set of temporal paths
+that need to be considered when traversing an evolving graph.
 
-We follow the notation of (static) graphs in \cite{even12,kegi11}.
-In this work, we consider a discretization of the time line as $n$ distinct
-time stamps and define an evolving graph $G_n$ to be
-a sequence of (static) graphs
-$G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]} \rangle$.
-Depends on applications, the graph $G^{[i]}$ could mean either
-a snapshot of $G(t)$ at time stamp $i$ or  the union of all the graphs
-between time stamp $i-1$ and $i$ (excludes time stamp $i-1$).
-Both the node set and edge set of $G^{[i]}$ could be different from
-these of $G^{[j]}, j \ne i$.
+We now give a general description of the BFS algorithm over evolving graphs,
+both directed and undirected, which correctly takes into account the structure
+of temporal paths.
+Our notation generalizes the standard notations for static graphs presented in
+\cite{even12,kegi11}.
+
+\begin{defn}
+An \textit{evolving graph} $G_n$ is a sequence of
+(static) graphs
+$G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]} \rangle$ with associated
+time labels $t_1, t_2, \ldots, t_n$ respectively.
+Each $G^{[t]} = (V^{[t]}, E^{[t]})$ represents a (static) graph labeled by a
+time $t$.
+\end{defn}
+
+Intuitively, an evolving graph is some discretization of the continuous-time family $G(t)$:
+
 \begin{center}
 \begin{tikzpicture}[snake=zigzag, line before snake = 5mm, line after snake = 5mm]
     % draw horizontal line
@@ -383,8 +385,45 @@ these of $G^{[j]}, j \ne i$.
     \draw (7,0) node[below=3pt] {$ n $} node[above=3pt] {$ $};
   \end{tikzpicture}
 \end{center}
-Our model is the same as that of Tang et al. \cite{tmml10} though they
-use slightly different notation.
+
+
+We assume no particular relation between the node and edge sets for each static
+graph $G^{[t]} = (V^{[t]}, E^{[t]})$.
+
+
+
+\begin{defn}
+A \textit{temporal node} is a pair $(v, t)$, where $v\in V^{[t]}$ is a node at
+a time $t$.
+\end{defn}
+
+
+\begin{defn}
+An \textit{active node} is a temporal node $(v,t)$ if there exists at least one
+edge $e\in E^{[t]}$ that connects $v\in V^{[t]}$ to another node $w\in V^{[t]}$,
+$w\ne v$.
+
+An \textit{inactive node} is a temporal node that is not an active node.
+\end{defn}
+
+In Figure~\ref{fig:eg_shortest_path}, the temporal nodes $(1,t_1)$ and $(2,t_2)$
+are active nodes, whereas the temporal node $(3,t_1)$ is an inactive node.
+
+
+\begin{defn}
+A \textit{temporal path on an evolving graph $G_n$ from temporal node $(v_1, t_1)$
+to temporal node $(v_m, t_m)$} is a time-ordered sequence of temporal notes,
+$\langle (v_1, t_1), (v_2, t_2), \ldots, (v_m, t_m) \rangle$.
+Here, time ordering means that $t_1 \leq t_2 \leq \cdots \leq t_m$ and
+$v_i = v_j$ iff $t_i \ne t_j$.
+The length of a temporal path is the length of the sequence.
+\end{defn}
+
+
+This definition of a temporal path is essentially that of the dynamic walk
+in \cite{gphe11,grihig13}.
+
+
 Grindrod et al.'s model  \cite{gphe11} \cite{grihig13} is very similar to ours,
 where an evolving graph is considered as a sequence of adjacency matrices.
 % We present a preliminary discussion of using the model to mine citation networks.
@@ -433,19 +472,6 @@ We prove that the two algorithms (graph notation and algebra notation) are equiv
 
 
 
-Formally, an evolving graph $G_n $ is defined to be a sequence of graphs $\langle G^{[1]}, G^{[2]}, \ldots, G^{[n]}\rangle$,  where each $G^{[t]} = (V^{[t]}, E^{[t]})$ represents a graph at time stamp $t$.
-We shall use the notation $(v, t)$ to represent
-a node $v$ at time stamp $t$.
-We say two nodes are \emph{connected} if there is an edge between them
-and we say a node $(v,t)$ is \emph{active}, if $v$ is connected to at least a node other than itself at time stamp $t$. Otherwise we say it is \emph{inactive}.
-In Figure \ref{fig:eg_shortest_path}, node $(1,t_1)$ and $(2,t_2)$  are active but node $(3,t_1)$ is inactive.
-
-In order to define the evolving-graph BFS, we need the concept of a
-\emph{temporal path}.
-A temporal path on an evolving graph $G_n$ is a sequence of node-time stamp
-pair $\langle (v_1, t_1), (v_2, t_2), \ldots, (v_m, t_m) \rangle$ such that
-$t_1 \leq t_2 \leq \cdots \leq t_m$ and $v_i = v_j$ if and only if
-$t_i \ne t_j$. The length of a temporal path is the length of the sequence.
 
 We would like a BFS on evolving graphs to work similar to that on graphs: the search starts with some source node $(s,t)$, called \emph{root}. It constructs a tree through discovering all nodes that are reachable by
 temporal paths of length $k$ before moving to all nodes that are reachable by
