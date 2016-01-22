@@ -757,9 +757,6 @@ from $(s,t_1)$ to $(v,t)$ and so $(v,t) \in T(s,t_1)$.
 % and $C$ and we showed if $A$ and $B$
 
 
-\subsection{Temporal Path}
-\label{sec:temporal-path}
-
 \begin{figure}[h]
  \begin{center}
     \begin{tikzpicture}[scale=.36, line width =1.4pt]
@@ -818,28 +815,29 @@ The back dashed lines of the two figures indicate two temporal paths from $(1, t
 \label{fig:active}
 \end{figure}
 
-The concept of node activeness is important for temporal path on evolving graphs.
-The 
-
-In this subsection, we compare with the ``wrong'' way of traveling an evolving graph
-and show the importance of node activeness.
-
-
-\subsection{Matrix-Matrix Multiplication}
-\label{sec:matr-matr-mult-1}
+Node activeness is the key concept for defining temporal paths which 
+shapes how to traverse an evolving graph. 
+Recall an active node $(v,t)$ is a node $v$ at timestamp $t$
+that connects to at least another node other that itself.   
+It means the entity at that specific timestamp either
+receives recommendations or gives recommendations to others (or possibly both).
+This implies the entity is ``alive''. Here ``alive'' does not necessary mean physically 
+alive. For the case of citation network that we shall discuss later, node activeness more or less means spiritually alive in the sense that the idea or knowledge of the entity is alive.
 
 For adjacency matrices $A^{[s]}$ and $A^{[t]}$, where $s < t$, a nonzero entry
 $(i,j)$ of $A^{[s]} A^{[t]}$ indicates a temporal path from $(i,s)$ to $(j,t)$ via
-some node $k$.
+some node $k$ (which is unknown).
 In general, a nonzero entry $(i,j)$ of the matrix $A^{[1]}A^{[2]}\cdots A^{[n]}$
 indicates a temporal path $p$ that starts at $(i,1)$ and ends at  $(j,n)$.
 Notice $p$ must go through at least one edge at each time stamp between $1$ and $n$.
-For the evolving graph in Figure \ref{fig:eg_shortest_path}, $A^{[1]}A^{[2]}$
+For the evolving graph in Figure \ref{fig:active}, $A^{[1]}A^{[2]}$
 is a zero matrix since there is no temporal path from time stamp $t_1$ to $t_2$ that
 go through at least one edge at $t_1$. However,
-$\langle(1, t_1), (1, t_2), (3,t_2)\rangle$ is a temporal path of Figure \ref{fig:eg_shortest_path}.
-
-Introducing ones on the diagonal of the matrices will still get the wrong result.
+$\langle(1, t_1), (1, t_2), (3,t_2)\rangle$ is a temporal path of Figure \ref{fig:active}.
+Notice also if we introduce ones on the diagonal of the matrices $\{A^{[i]}\}$,
+each node of the resulting evolving graph will become 
+active at all timestamp. Hence matrix-matrix multiplication between consecutive
+adjacency matrices should be avoid  for computing temporal paths.
 
 % But it provides no information about the nodes in between. In addition, the temporal path must pass at least
 %  one node at each timestamps. We believe this requirement is too restrictive. For example,
