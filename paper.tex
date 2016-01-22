@@ -889,17 +889,18 @@ $i$ to $j$ at time stamp $t$. Then given an author $a$ at time stamp $t_0$,
 we can use our evolving-graph BFS to construct $T(a, t_0)$ which is
 a set of all the authors that have been influenced by $a$'s work at
 time $t_0$. We define a \emph{community} to be a group of
-researchers that share the same information source.
+researchers that have been influenced by the same authors.
 For example, given a paper published by $a$ at year $2016$,
 we can determine $a$'s community by first backward searching to
-find the source then forward searching to find the descendants.
+find the root authors then forward searching to find the descendants.
 
-To design such system, we shall use two parameters:
- a parameter for
-determining the layers of the backward search tree which can be chosen by the user;
-a second parameter for determining the number of roots as a means of
-filtering out unessential or overlapping trees. The subset of roots can be determined
-by ranking algorithms like PageRank or machine-learning based preference ranking.
+To design such information retrieval system, two parameters will be needed:
+ one for determining the layers of the backward search tree which can be 
+adjusted by the user;
+the other for determining root authors for forward searching 
+so that we can 
+filter out unessential or overlapped trees, which can be computed
+by ranking algorithms like PageRank \cite{pbmw99} or machine-learning based preference ranking.
 
 
 \section{Conclusion}
@@ -914,7 +915,6 @@ is the matrix representation is highly structured so it is easy to design
 high performance parallel implementations.
 Third, depth-first search and other graph traversal algorithms can be
 extended for searching evolving graphs using similar ideas.
-
 
 
 \section*{Acknowledgment}
