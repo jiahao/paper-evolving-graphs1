@@ -249,7 +249,7 @@ were commonly used as a means of determining temporal paths \cite{gphe11,grihig1
 in one specific case it fails to include all the temporal paths and thus should not be used
 for searching evolving graphs in general.
 
-Breadth-first search is probably the most basic graph searching algorithm and
+Breadth-first search (BFS) is probably the most basic graph searching algorithm and
 it is also the building block of other graph algorithms like minimum spanning tree
 and shortest path \cite{ckrs09}.
 Despite the fact that graph metrics \cite{ntmm13,tmml09,tsmm09} and
@@ -258,7 +258,7 @@ betweenness \cite{alhi15}, and closeness \cite{tmml10})
 have been generalized for evolving graphs,
 a BFS for evolving graphs, which we shall call it \emph{evolving-graph BFS},
 was never explicitly described or verified.
-
+Therefore, there is a need for clear presentations of the algorithm. 
 
 In this paper,  we present descriptions of an evolving-graph BFS algorithm, but its main concern is with its sparse matrix
 representation and linear algebraic computations.
@@ -679,7 +679,7 @@ Hence the total running time is $O(|\hat E|+ |\tilde V|)$.
 
 \begin{thm}[Correctness of evolving-graph BFS]
 Let an evolving graph $G_n$ and a starting node $(s,t_0)$ be given.
-The evolving-graph BFS discovers every active node that is reachable from the source $(s,t_0)$ and $d.(v, t)$ is the length of the shortest temporal path
+The evolving-graph BFS discovers every active node that is reachable from the source $(s,t_0)$ and $dict.(v, t)$ is the length of the shortest temporal path
 from $(s,t_0)$ to $(v,t)$.
 \end{thm}
 \proof
