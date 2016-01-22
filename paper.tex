@@ -164,35 +164,200 @@ A preliminary discussion on mining citation networks is also presented.
 
 \section{Introduction}
 
-Let's imagine a game played by three people
-$A$, $B$, and $C$. Suppose each of them has a piece of information,
-say $X$, $Y$, and $Z$ respectively. The goal of the game is
-to get information from other people as much as possible.
-Suppose $A$ talks to $B$ first and then $B$ talks to $C$,
-then $C$ may has all three pieces of information $X$, $Y$, and $Z$ even
-if $C$ has never talked to $A$.
-However, if $B$ talks to $C$ first and then $A$ talks to $B$, then
-no matter how smart $C$ is, $C$ can never get information
-$X$.  Time is an important factor for information flow.
+Let's imagine a game played by three people, numbered $1$, $2$, and $3$,
+each of whom has a message, labeled $a$, $b$, and $c$ respectively.
+At each turn, one particular player is allowed to talk to one other player,
+who must in turn convey all the messages in his or her possession.
+The goal of the game is to collect all the messages.
+Suppose $1$ talks to $2$ first, and $2$ in turn talks to $3$.
+Then, $3$ can collect all the messages even without talking to $1$ directly.
+However, if $2$ talks to $3$ before $1$ talks to $2$, then
+$3$ can never get $a$.
 
-We can analyze the spread of information between $A$, $B$, and $C$
-as a process on a graph that changes over time.
-Such graphs are known as evolving graphs.
-% Evolving graphs are models to study this kind of scenario where the
-% interrelations between entities are time-dependent.
-% We assume that the reader is familiar with the basic graph terminology.
-% All the necessary material can be found in}.
-We follow the notation of (static) graphs in \cite{even12,kegi11}.
-In general, an evolving graph $G(t) = (V(t), E(t))$ is  a graph where the node set
-and edge set are functions of time $t$.
-However, in different literature the term ``evolving graph'' has been
-used to refer to slightly different models.
- Flajolet et al. \cite{fkp89} use the term to mean the evolution of random graphs.
+We can use analyze the spread of information between the players using graph
+theory. In this process, the time ordering of events matters, which leads us to
+consider a graph that changes over time, i.e.\ a graph $G(t) = (V(t), E(t))$ whose
+vertex set $V$ and edge set $E$ evolve over on time, $t$.
+Such a graph is called an ``evolving graph''~\cite{fkp89,bkmu12},
+``evolving network'' or %XXX WHO?
+``time-dependent graph''. %XXX WHO?
+
+Treatments of evolving graphs vary in their generality and focus.
+Kivel{\"a} \textit{et al.}~\cite{kabg14} treats time dependence as a special
+case of families of graphs with multiple interrelationships.
+Others like Flajolet \textit{et al.}~\cite{fkp89} use time to index the family
+of related graph, but are not concerned with explicit time-dependent processes.
+
+Our model can also be seen as a special case of
+the multi-layer networks discussed by Kivel{\"a} \textit{et al.}~\cite{kabg14}, where
+there is only one set of layers for time.
+
+%XXX is the first sentence of this restatement true?
+Previous work on evolving graphs tends to focus on special cases, such as
+random graphs~\cite{fkp89} or sequences of graphs whose successive differences
+are small~\cite{bkmu12}.  use the term to mean the evolution of random graphs.
 Bahmani et al. \cite{bkmu12} use the term to mean a sequence of graphs where
-the difference between two consecutive graphs is small.
-Similar models are also investigated using the term ``evolving network'' and
-``time-dependent graph''.
+successive differences are small.
 
+
+Here, we are interested in extensions of graph algorithms that generalize for evolving graphs that work in full
+generality.
+
+%ARE THIS RELATED TO THE PREVIOUS WORK HOW
+Work in this area include Despite the fact that graph metrics \cite{ntmm13,tmml09,tsmm09} and
+various centrality measures like Katz centrality~\cite{gphe11,grihig13},
+betweenness \cite{alhi15}, and closeness \cite{tmml10})
+have been generalized for evolving graphs,
+a BFS for evolving graphs, which we shall call it \emph{evolving-graph BFS},
+was never explicitly described or verified.
+%XXX THIS LEADS US TO CONSIDER ALGEBRAIC FORMULATIONS ALSO SINCE...
+
+In this paper, we present a generalization of the breadth first search (BFS)
+algorithm to evolving graphs. BFS is arguably the most fundamental graph search
+algorithm, which leads to other graphical computations
+such as the minimum spanning tree and shortest path \cite{ckrs09}.
+We also demonstrate how BFS on evolving graphs can be expressed in the language
+of linear algebra, and how our formulation helps analyze citation networks.
+
+
+
+\section{Breadth-First Search for Evolving Graphs}
+\label{sec:breadth-first-search}
+
+
+\subsection{Temporal Paths over Active Nodes}
+
+\begin{figure}[h]
+ \begin{center}
+    \begin{tikzpicture}[scale=.38, line width =1.5pt]
+  \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
+  \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
+
+  \node[circle,draw=red1, minimum size=0.2cm] (n6) at (3,7) {2};
+  \node[circle,fill=green1, minimum size=0.2cm] (n4) at (-2,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n1) at (0,10) {1};
+
+   \node[circle,fill=green1, minimum size=0.2cm] (n11) at (11,7) {2};
+  \node[circle,fill=green1, minimum size=0.2cm] (n12) at (6,5)  {3};
+  \node[circle,draw=red1, minimum size=0.2cm] (n14) at (8,10) {1};
+
+  \foreach \from/\to in {n10/n7, n1/n4, n11/n12}
+   \draw[every edge,->] (\from) -- (\to);
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(4,3) -- (-2,3) node [midway,yshift=-0.6cm]{ $t_2$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(-4,3) -- (-10.5,3) node [midway,yshift=-0.6cm]{ $t_1$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
+    \end{tikzpicture}
+\end{center}
+\caption{An evolving graph with 3 time stamps $t_1$, $t_2$ and $t_3$.
+At each time stamp, the evolving graph is represented as a graph.
+The green filled nodes in the figure are active nodes.}
+\label{fig:eg_shortest_path}
+\end{figure}
+
+The key new idea in generalizing BFS to evolving graphs is to be able to compute
+traversals that span multiple times. We call some, but not all,
+such traversals \textit{temporal paths}.
+
+Figure~\ref{fig:eg_shortest_path} shows a small example of a evolving
+directed graph, $G_3 = \langle G^{[1]}, G^{[2]}, G^{[3]}\rangle$, consisting of
+a sequence of three graphs $G^{[i]}$, each bearing a time stamp $t_i$.
+There are directed edges $1\rightarrow2$ at time $t_1$,
+$1\rightarrow3$ at time $t_2$, and $2\rightarrow3$ at time $t_3$.
+Each edge exists only at a particular discrete time and the nodes connected
+by edges are considered \textit{active} at that time.
+
+Temporal paths connect only active nodes in ways that respect time ordering.
+Thus the sequences
+$\langle (1, t_1), (1, t_2), (3, t_2), (3, t_3) \rangle$ and
+$\langle (1, t_1), (2, t_1), (2, t_3), (3, t_3) \rangle$
+are both examples of \textit{temporal paths} from $(1, t_1)$ to $(3, t_3)$,
+which are drawn as dotted lines with arrowheads in Figure~\ref{fig:active}.
+However, $\langle (1, t_1), (1, t_2), (2, t_2), (3, t_2), (3, t_3) \rangle$
+is not a temporal path because node 2 is inactive at time $t_2$.
+Similarly,
+
+\begin{figure}[h]
+ \begin{center}
+    \begin{tikzpicture}[scale=.36, line width =1.4pt]
+  \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
+  \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
+
+  \node[circle,draw=red1, minimum size=0.2cm] (n6) at (3,7) {2};
+  \node[circle,fill=green1, minimum size=0.2cm] (n4) at (-2,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n1) at (0,10) {1};
+
+   \node[circle,fill=green1, minimum size=0.2cm] (n11) at (11,7) {2};
+  \node[circle,fill=green1, minimum size=0.2cm] (n12) at (6,5)  {3};
+  \node[circle,draw=red1, minimum size=0.2cm] (n14) at (8,10) {1};
+
+  \foreach \from/\to in {n10/n7, n11/n12}
+   \draw[every edge,->] (\from) -- (\to);
+     \draw[dotted,->](n1) -- (n4);
+  \draw[dotted,->](n10) -- (n1);
+  \draw[dotted,->](n4) -- (n12);
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(4,3) -- (-2,3) node [midway,yshift=-0.6cm]{ $t_2$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(-4,3) -- (-10.5,3) node [midway,yshift=-0.6cm]{ $t_1$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
+    \end{tikzpicture}
+   \begin{tikzpicture}[scale=.36, line width =1.4pt]
+  \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
+  \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
+
+  \node[circle,draw=red1, minimum size=0.2cm] (n6) at (3,7) {2};
+  \node[circle,fill=green1, minimum size=0.2cm] (n4) at (-2,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n1) at (0,10) {1};
+
+   \node[circle,fill=green1, minimum size=0.2cm] (n11) at (11,7) {2};
+  \node[circle,fill=green1, minimum size=0.2cm] (n12) at (6,5)  {3};
+  \node[circle,draw=red1, minimum size=0.2cm] (n14) at (8,10) {1};
+
+  \foreach \from/\to in {n1/n4}
+   \draw[every edge,->] (\from) -- (\to);
+     \draw[dotted,->](n7) to[out=70, in=40] (n11);
+  \draw[dotted,->](n10) -- (n7);
+   \draw[dotted,->](n11) -- (n12);
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(4,3) -- (-2,3) node [midway,yshift=-0.6cm]{ $t_2$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(-4,3) -- (-10.5,3) node [midway,yshift=-0.6cm]{ $t_1$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
+    \end{tikzpicture}
+\end{center}
+\caption{An evolving graph with 3 time stamps $t_1$, $t_2$ and $t_3$.
+The black dashed lines of the two figures indicate two temporal paths from $(1, t_1)$ to $(3,t_3)$.}
+\label{fig:active}
+\end{figure}
+
+The restriction that temporal paths may only traverse active nodes reflects
+underlying structure in many real world applications, such as analyzing influence
+of nodes over social networks, and furthermore leads to interesting and nontrivial
+adaptations of graph algorithms such as BFS
+
+
+\subsection{Evolving-Graph BFS}
+\label{sec:evolving-graph-bfs}
+
+This example shows a directed
+evolving graph
+For example,
+at time stamp $t_1$, the graph $G^{[1]}$ contains three nodes $1$, $2$ and $3$ and $(1,2)$ is an edge of $G^{[1]}$.
+Though Figure \ref{fig:eg_shortest_path} presents a
+directed evolving graph,  the algorithms that we shall discuss work on both
+directed and undirected evolving graphs.
+We shall use this example throughout the paper to illustrate various
+notions.
+
+We follow the notation of (static) graphs in \cite{even12,kegi11}.
 In this work, we consider a discretization of the time line as $n$ distinct
 time stamps and define an evolving graph $G_n$ to be
 a sequence of (static) graphs
@@ -229,9 +394,6 @@ Our model is the same as that of Tang et al. \cite{tmml10} though they
 use slightly different notation.
 Grindrod et al.'s model  \cite{gphe11} \cite{grihig13} is very similar to ours,
 where an evolving graph is considered as a sequence of adjacency matrices.
-Our model can also be seen as a special case of
-the multi-layer networks discussed by Kivel{\"a} et al. \cite{kabg14}, where
-there is only one set of layers for time.
 % We present a preliminary discussion of using the model to mine citation networks.
 
 % why BFS is important?
@@ -258,7 +420,7 @@ betweenness \cite{alhi15}, and closeness \cite{tmml10})
 have been generalized for evolving graphs,
 a BFS for evolving graphs, which we shall call it \emph{evolving-graph BFS},
 was never explicitly described or verified.
-Therefore, there is a need for clear presentations of the algorithm. 
+Therefore, there is a need for clear presentations of the algorithm.
 
 In this paper,  we present descriptions of an evolving-graph BFS algorithm, but its main concern is with its sparse matrix
 representation and linear algebraic computations.
@@ -275,52 +437,8 @@ We prove that the two algorithms (graph notation and algebra notation) are equiv
 % The connection between a temporal path and a matrix-matrix multiplication is considered and discussed in \ref{sec:matr-matr-mult}. Finally,
 % an application of the evolving-graph BFS in mining citation networks is described in Section \ref{sec:applications}.
 
-\section{Breadth-First Search for Evolving Graphs}
-\label{sec:breadth-first-search}
 
-\subsection{Evolving-Graph BFS}
-\label{sec:evolving-graph-bfs}
 
-\begin{figure}[h]
- \begin{center}
-    \begin{tikzpicture}[scale=.38, line width =1.5pt]
-  \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
-  \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
-  \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
-
-  \node[circle,draw=red1, minimum size=0.2cm] (n6) at (3,7) {2};
-  \node[circle,fill=green1, minimum size=0.2cm] (n4) at (-2,5) {3};
-  \node[circle,fill=green1, minimum size=0.2cm] (n1) at (0,10) {1};
-
-   \node[circle,fill=green1, minimum size=0.2cm] (n11) at (11,7) {2};
-  \node[circle,fill=green1, minimum size=0.2cm] (n12) at (6,5)  {3};
-  \node[circle,draw=red1, minimum size=0.2cm] (n14) at (8,10) {1};
-
-  \foreach \from/\to in {n10/n7, n1/n4, n11/n12}
-   \draw[every edge,->] (\from) -- (\to);
-\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
-(4,3) -- (-2,3) node [midway,yshift=-0.6cm]{ $t_2$};
-\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
-(-4,3) -- (-10.5,3) node [midway,yshift=-0.6cm]{ $t_1$};
-\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
-(11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
-    \end{tikzpicture}
-\end{center}
-\caption{An evolving graph with 3 time stamps $t_1$, $t_2$ and $t_3$.
-At each time stamp, the evolving graph is represented as a graph.
-The green filled nodes in the figure are active nodes.}
-\label{fig:eg_shortest_path}
-\end{figure}
-
-We show a small evolving graph $ \langle G^{[1]}, G^{[2]}, G^{[3]}\rangle$ with $3$ time stamps $t_1$, $t_2$ and $t_3$
-in Figure \ref{fig:eg_shortest_path}, where each $G^{[i]}$ is a graph at time stamp $t_i$.
-For example,
-at time stamp $t_1$, the graph $G^{[1]}$ contains three nodes $1$, $2$ and $3$ and $(1,2)$ is an edge of $G^{[1]}$.
-Though Figure \ref{fig:eg_shortest_path} presents a
-directed evolving graph,  the algorithms that we shall discuss work on both
-directed and undirected evolving graphs.
-We shall use this example throughout the paper to illustrate various
-notions.
 
 Formally, an evolving graph $G_n $ is defined to be a sequence of graphs $\langle G^{[1]}, G^{[2]}, \ldots, G^{[n]}\rangle$,  where each $G^{[t]} = (V^{[t]}, E^{[t]})$ represents a graph at time stamp $t$.
 We shall use the notation $(v, t)$ to represent
@@ -335,10 +453,6 @@ A temporal path on an evolving graph $G_n$ is a sequence of node-time stamp
 pair $\langle (v_1, t_1), (v_2, t_2), \ldots, (v_m, t_m) \rangle$ such that
 $t_1 \leq t_2 \leq \cdots \leq t_m$ and $v_i = v_j$ if and only if
 $t_i \ne t_j$. The length of a temporal path is the length of the sequence.
-For example, $\langle (1, t_1), (1, t_2), (3, t_2), (3, t_3) \rangle$ and
-$\langle (1, t_1), (2, t_1), (2, t_3), (3, t_3) \rangle$
-are two temporal paths from $(1, t_1)$ to $(3, t_3)$
-on the evolving graph in Figure \ref{fig:eg_shortest_path}.
 
 We would like a BFS on evolving graphs to work similar to that on graphs: the search starts with some source node $(s,t)$, called \emph{root}. It constructs a tree through discovering all nodes that are reachable by
 temporal paths of length $k$ before moving to all nodes that are reachable by
@@ -359,14 +473,14 @@ the active node $v$ itself at later time stamps. In Figure
 the forward-neighbors of $(1, t_1)$  are $(2, t_1)$ and $(1, t_2)$ and
 the forward-neighbors of $(2, t_1)$ is $(2, t_3)$.
 
-Given an evolving graph $G_n$ and a starting active node $(s,t)$, Algorithm \ref{alg:bfs} 
-returns all the reachable active nodes and their distances from $(s,t)$. 
+Given an evolving graph $G_n$ and a starting active node $(s,t)$, Algorithm \ref{alg:bfs}
+returns all the reachable active nodes and their distances from $(s,t)$.
 For Figure \ref{fig:eg_shortest_path}, suppose we start with $(1, t_2)$, then
-$frontier$ is $\langle(1,t_2)\rangle$ after step $5$.  Since the only forward-neighbor of 
-$(1,t_2)$ is $(3,t_2)$, $dict.(3,t_2) =1$ at step $11$ and $next$ is enqueued to be 
-$\langle (3,t_2) \rangle$ at step $12$. After that $frontier$ is equal to $next$. Since 
-$frontier$ is not empty, we go through step $7$-$12$ again. This time 
-the forward-neighbor of $(3,t_2)$ is $(3,t_3)$, so $dict.(3,t_3)=2$ and 
+$frontier$ is $\langle(1,t_2)\rangle$ after step $5$.  Since the only forward-neighbor of
+$(1,t_2)$ is $(3,t_2)$, $dict.(3,t_2) =1$ at step $11$ and $next$ is enqueued to be
+$\langle (3,t_2) \rangle$ at step $12$. After that $frontier$ is equal to $next$. Since
+$frontier$ is not empty, we go through step $7$-$12$ again. This time
+the forward-neighbor of $(3,t_2)$ is $(3,t_3)$, so $dict.(3,t_3)=2$ and
 $next = \langle (3,t_3) \rangle$ and so on. The loop terminates when $frontier$ is empty.
 
 \begin{algorithm}[h]
@@ -733,11 +847,11 @@ $(v_2,t_2)$ to $(v_3, t_3)$. But this does not imply $(v_1, t_1)$ and $(v_2, t_2
 Given a root node $(s, t)$, during the execution the evolving-graph BFS builds a search tree, denoted by $T(s,t)$,
 where nodes in $T(s,t)$ are temporally connected.
 \begin{lemma}
-For a node active at different time stamps, say $(s, t_1)$ and $(s,t_2)$ such that $t_1 \leq t_2$,  we have $T(s, t_2) \subseteq T(s, t_1)$, where $T(s,t_1) = T(s,t_2)$ if and only if 
+For a node active at different time stamps, say $(s, t_1)$ and $(s,t_2)$ such that $t_1 \leq t_2$,  we have $T(s, t_2) \subseteq T(s, t_1)$, where $T(s,t_1) = T(s,t_2)$ if and only if
 $t_1 = t_2$.
 \end{lemma}
 \proof
-Trivially, $t_1 =t_2$ if and only if $(s,t_1) = (s,t_2)$ if and only if 
+Trivially, $t_1 =t_2$ if and only if $(s,t_1) = (s,t_2)$ if and only if
 $T(s,t_1) = T(s,t_2)$. Now suppose $t_1 < t_2$.
 Let $(v, t)$ be an arbitrary active node that belongs to $T(s, t_2)$. Then there exists a temporal path
 (constructed by the evolving graph BFS) from $(s,t_2)$ to $(v,t)$. Since both
@@ -763,76 +877,19 @@ from $(s,t_1)$ to $(v,t)$ and so $(v,t) \in T(s,t_1)$.
 % \label{sec:aggregated-graphs}
 
 % % In this section, we answer the question why we need evolving graph.
-% % 
+% %
 % At the beginning of the paper, we set up a game played by three people $A$, $B$,
 % and $C$ and we showed if $A$ and $B$
 
 
-\begin{figure}[h]
- \begin{center}
-    \begin{tikzpicture}[scale=.36, line width =1.4pt]
-  \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
-  \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
-  \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
 
-  \node[circle,draw=red1, minimum size=0.2cm] (n6) at (3,7) {2};
-  \node[circle,fill=green1, minimum size=0.2cm] (n4) at (-2,5) {3};
-  \node[circle,fill=green1, minimum size=0.2cm] (n1) at (0,10) {1};
-
-   \node[circle,fill=green1, minimum size=0.2cm] (n11) at (11,7) {2};
-  \node[circle,fill=green1, minimum size=0.2cm] (n12) at (6,5)  {3};
-  \node[circle,draw=red1, minimum size=0.2cm] (n14) at (8,10) {1};
-
-  \foreach \from/\to in {n10/n7, n11/n12}
-   \draw[every edge,->] (\from) -- (\to);
-     \draw[dotted,->](n1) -- (n4);
-  \draw[dotted,->](n10) -- (n1);
-  \draw[dotted,->](n4) -- (n12);
-\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
-(4,3) -- (-2,3) node [midway,yshift=-0.6cm]{ $t_2$};
-\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
-(-4,3) -- (-10.5,3) node [midway,yshift=-0.6cm]{ $t_1$};
-\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
-(11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
-    \end{tikzpicture}
-   \begin{tikzpicture}[scale=.36, line width =1.4pt]
-  \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
-  \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
-  \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
-
-  \node[circle,draw=red1, minimum size=0.2cm] (n6) at (3,7) {2};
-  \node[circle,fill=green1, minimum size=0.2cm] (n4) at (-2,5) {3};
-  \node[circle,fill=green1, minimum size=0.2cm] (n1) at (0,10) {1};
-
-   \node[circle,fill=green1, minimum size=0.2cm] (n11) at (11,7) {2};
-  \node[circle,fill=green1, minimum size=0.2cm] (n12) at (6,5)  {3};
-  \node[circle,draw=red1, minimum size=0.2cm] (n14) at (8,10) {1};
-
-  \foreach \from/\to in {n1/n4}
-   \draw[every edge,->] (\from) -- (\to);
-     \draw[dotted,->](n7) to[out=70, in=40] (n11);
-  \draw[dotted,->](n10) -- (n7);
-   \draw[dotted,->](n11) -- (n12);
-\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
-(4,3) -- (-2,3) node [midway,yshift=-0.6cm]{ $t_2$};
-\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
-(-4,3) -- (-10.5,3) node [midway,yshift=-0.6cm]{ $t_1$};
-\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
-(11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
-    \end{tikzpicture}
-\end{center}
-\caption{An evolving graph with 3 time stamps $t_1$, $t_2$ and $t_3$.
-The back dashed lines of the two figures indicate two temporal paths from $(1, t_1)$ to $(3,t_3)$.}
-\label{fig:active}
-\end{figure}
-
-Node activeness is the key concept for defining temporal paths which 
-shapes how to traverse an evolving graph. 
+Node activeness is the key concept for defining temporal paths which
+shapes how to traverse an evolving graph.
 Recall an active node $(v,t)$ is a node $v$ at timestamp $t$
-that connects to at least another node other that itself.   
+that connects to at least another node other that itself.
 It means the entity at that specific timestamp either
 receives recommendations or gives recommendations to others (or possibly both).
-This implies the entity is ``alive''. Here ``alive'' does not necessary mean physically 
+This implies the entity is ``alive''. Here ``alive'' does not necessary mean physically
 alive. For the case of citation network that we shall discuss later, node activeness more or less means spiritually alive in the sense that the idea or knowledge of the entity is alive.
 We traverse an evolving graph only on the active nodes.
 
@@ -847,10 +904,10 @@ is a zero matrix since there is no temporal path from time stamp $t_1$ to $t_2$ 
 go through at least one edge at $t_1$. However,
 $\langle(1, t_1), (1, t_2), (3,t_2)\rangle$ is a temporal path as shown in Figure \ref{fig:active}.
 Notice also that if we introduce ones on the diagonal of the matrices $\{A^{[i]}\}$,
-each node of the resulting evolving graph will become 
-active at all timestamps. 
+each node of the resulting evolving graph will become
+active at all timestamps.
 Hence matrix-matrix multiplication between consecutive
-adjacency matrices can not discover all possible temporal paths and should be avoided 
+adjacency matrices can not discover all possible temporal paths and should be avoided
 when temporal paths are the essential parts of the algorithm.
 
 % But it provides no information about the nodes in between. In addition, the temporal path must pass at least
@@ -865,18 +922,18 @@ when temporal paths are the essential parts of the algorithm.
 \section{Implementation in Julia}
 \label{sec:implementation-julia}
 
-To study evolving graphs and experiment with various graph types, we have developed EvolvingGraphs.jl  \cite{zhang15}, a software package for the creation, manipulation, and study of evolving graphs written in Julia \cite{bkse12}. The implementation of the evolving-graph BFS is 
-available online at 
+To study evolving graphs and experiment with various graph types, we have developed EvolvingGraphs.jl  \cite{zhang15}, a software package for the creation, manipulation, and study of evolving graphs written in Julia \cite{bkse12}. The implementation of the evolving-graph BFS is
+available online at
 \begin{center}
 \url{https://github.com/weijianzhang/EvolvingGraphs.jl}.
 \end{center}
 %Julia is a high-level, high-performance dynamic programming language for technical
-%computing. 
+%computing.
 % We make particular use of
 % the parameterizable type system and multiple dispatch in Julia.
  \texttt{MatrixList}, a data type in EvolvingGraphs.jl,  represents an evolving graph
 as a sequence of sparse matrices stored in compressed sparse column (CSC) format.
-Many basic graph functions are implemented for \texttt{MatrixList}. 
+Many basic graph functions are implemented for \texttt{MatrixList}.
 
 
 \section{Application to Citation Networks}
@@ -895,10 +952,10 @@ we can determine $a$'s community by first backward searching to
 find the root authors then forward searching to find the descendants.
 
 To design such information retrieval system, two parameters will be needed:
- one for determining the layers of the backward search tree which can be 
+ one for determining the layers of the backward search tree which can be
 adjusted by the user;
-the other for determining root authors for forward searching 
-so that we can 
+the other for determining root authors for forward searching
+so that we can
 filter out unessential or overlapped trees, which can be computed
 by ranking algorithms like PageRank \cite{pbmw99} or machine-learning based preference ranking.
 
@@ -906,7 +963,7 @@ by ranking algorithms like PageRank \cite{pbmw99} or machine-learning based pref
 \section{Conclusion}
 
 In this paper, we have introduced and analyzed the evolving-graph BFS in both
-graph and algebraic notation. The relationship between active nodes and 
+graph and algebraic notation. The relationship between active nodes and
 evolving graph algorithms is discussed.
 This paper leaves important extensions open for further research. First, it is
 of interest to extend the evolving-graph BFS algorithm for weighted evolving graphs, which can provide more valuable information when the degree of connectivity is available in the data.
@@ -922,8 +979,8 @@ extended using similar ideas.
 
 
 The authors are grateful to Professor Nicholas J. Higham and Doctor Vedran \u Sego for suggestions.
-This work was completed while the second author visited MIT CSAIL. He thanks 
-Professor Alan Edelman for making his stay so pleasant. 
+This work was completed while the second author visited MIT CSAIL. He thanks
+Professor Alan Edelman for making his stay so pleasant.
 
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
