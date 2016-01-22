@@ -722,12 +722,12 @@ $(v_2,t_2)$ to $(v_3, t_3)$. But this does not imply $(v_1, t_1)$ and $(v_2, t_2
 Given a root node $(s, t)$, during the execution the BFS discussed above builds a search tree, denoted by $T(s,t)$,
 where nodes are temporally connected.
 \begin{lemma}
- For a node active at different time stamps, say $(s, t_1)$ and $(s,t_2)$ such that $t_1 < t_2$,  we have $T(s, t_2) \subset T(s, t_1)$.
+For a node active at different time stamps, say $(s, t_1)$ and $(s,t_2)$ such that $t_1 < t_2$,  we have $T(s, t_2) \subseteq T(s, t_1)$.
 \end{lemma}
 \proof
-Suppose $(v, t)$ belongs to $T(s, t_2)$. Then there exits an temporal path
+Suppose $(v, t)$ belongs to $T(s, t_2)$. Then there exists an temporal path
 (constructed by the evolving graph BFS) from $(s,t_2)$ to $(v,t)$. Since both
-$(s,t_1)$ and $(s,t_2)$ are active, $(s,t_2)$ is an out-neighbor of $(s,t_1)$ by definition, i.e., there exits an edge from $(s,t_1)$ to $(s,t_2)$.  Hence there exits an temporal path
+$(s,t_1)$ and $(s,t_2)$ are active, $(s,t_2)$ is an out-neighbor of $(s,t_1)$ by definition, i.e., there exists an edge from $(s,t_1)$ to $(s,t_2)$.  Hence there exists a temporal path
 from $(s,t_1)$ to $(v,t)$ and so $(v,t) \in T(s,t_1)$.
 \endproof
 
