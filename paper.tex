@@ -695,7 +695,9 @@ from $(s,t_0)$ to $(v,t)$.
 We could map an evolving graph $G_n$ to a static graph $G$ in such a way that
 if there is an edge from $(v, t)$ to $(u,t)$ in $G_n$, there is an edge from $v_t$ to $u_t$ in $G$.
 For any two nodes $v_s$ and $v_t$ in $G$,  if $s < t$, we add an edge from $v_s$ to $v_t$.
-By construction, the forward-neighbors of an active node $(v, t)$ in $G_n$
+By construction, an active node $(v,t)$ in $G_n$ is in one-to-one correspondence with
+a node $v_t$ in $G$.
+The forward-neighbors of an active node $(v, t)$ in $G_n$
 are in one-to-one correspondence with the forward-neighbors of a node $v_t$ in $G$.
 Hence the correctness of the evolving graph BFS follows from that of a static graph.
 \endproof
@@ -712,7 +714,7 @@ step $9$ of Algorithm \ref{alg:bfsla} computes the forward-neighbors
 of all the frontier nodes, which is equivalent to step $8$-$9$
 of Algorithm \ref{alg:bfs}. Step $10$-$15$ of Algorithm \ref{alg:bfsla} ensures
 active nodes will not be visited twice, which is equivalent to step $10$
-of Algorithm \ref{alg:bfs}. Finally, a dictionary $dict$ is used in both algorithms
+of Algorithm \ref{alg:bfs}. Finally, a dictionary $dict$ is used by both algorithms
 to keep record of the distance of each node from the source $(s,t)$.
 \endproof
 
