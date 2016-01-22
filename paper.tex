@@ -728,9 +728,9 @@ $t_1 = t_2$.
 \proof
 Trivially, $t_1 =t_2$ if and only if $(s,t_1) = (s,t_2)$ if and only if 
 $T(s,t_1) = T(s,t_2)$. Now suppose $t_1 < t_2$.
-Let $(v, t)$ be an arbitrary active node that belongs to $T(s, t_2)$. Then there exists an temporal path
+Let $(v, t)$ be an arbitrary active node that belongs to $T(s, t_2)$. Then there exists a temporal path
 (constructed by the evolving graph BFS) from $(s,t_2)$ to $(v,t)$. Since both
-$(s,t_1)$ and $(s,t_2)$ are active, $(s,t_2)$ is an out-neighbor of $(s,t_1)$ by definition, i.e., there exists an edge from $(s,t_1)$ to $(s,t_2)$.  Hence there exists a temporal path
+$(s,t_1)$ and $(s,t_2)$ are active, $(s,t_2)$ is a forward-neighbor of $(s,t_1)$ by definition, i.e., there exists an edge from $(s,t_1)$ to $(s,t_2)$.  Hence there exists a temporal path
 from $(s,t_1)$ to $(v,t)$ and so $(v,t) \in T(s,t_1)$.
 \endproof
 
