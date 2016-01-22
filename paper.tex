@@ -183,41 +183,30 @@ Such a graph is called an ``evolving graph''~\cite{fkp89,bkmu12},
 ``time-dependent graph''. %XXX WHO?
 
 Treatments of evolving graphs vary in their generality and focus.
-Kivel{\"a} \textit{et al.}~\cite{kabg14} treats time dependence as a special
+Kivel\"a \textit{et al.}~\cite{kabg14} treats time dependence as a special
 case of families of graphs with multiple interrelationships.
 Others like Flajolet \textit{et al.}~\cite{fkp89} use time to index the family
-of related graph, but are not concerned with explicit time-dependent processes.
+of related graphs, but are not concerned with explicit time-dependent processes.
+Yet others focus on incremental updates to large graphs~\cite{bkmu12}.
+Here, we describe evolving graphs as a time-ordered sequence of graphs, similar
+to the study of metrized graphs by Tang and coworkers~\cite{ntmm13,tmml09,tsmm09,tmml10}
+the dynamics of communities by Grindrod, Higham and coworkers~\cite{gphe11,grihig13}.
 
-Our model can also be seen as a special case of
-the multi-layer networks discussed by Kivel{\"a} \textit{et al.}~\cite{kabg14}, where
-there is only one set of layers for time.
+The game described at the beginning can be encoded in terms of analyzing the
+microscopic dynamics of an evolving graph. The spread of information to the
+winner can be described in terms of discrete paths through the evolving graph,
+and can be interpreted naturally as a graph traveral problem. Traversals of an
+ordinary (static) graph may be computed using well known methods such as the
+breadth-first search (BFS). However, a proper description of the dynamics
+requires paths that also move monotonically forward in time, thus necessating
+a generalization of the ordinary BFS algorithm. An informal description of such
+a generalization was provided by \cite{tmml09}.
 
-%XXX is the first sentence of this restatement true?
-Previous work on evolving graphs tends to focus on special cases, such as
-random graphs~\cite{fkp89} or sequences of graphs whose successive differences
-are small~\cite{bkmu12}.  use the term to mean the evolution of random graphs.
-Bahmani et al. \cite{bkmu12} use the term to mean a sequence of graphs where
-successive differences are small.
-
-
-Here, we are interested in extensions of graph algorithms that generalize for evolving graphs that work in full
-generality.
-
-%ARE THIS RELATED TO THE PREVIOUS WORK HOW
-Work in this area include Despite the fact that graph metrics \cite{ntmm13,tmml09,tsmm09} and
-various centrality measures like Katz centrality~\cite{gphe11,grihig13},
-betweenness \cite{alhi15}, and closeness \cite{tmml10})
-have been generalized for evolving graphs,
-a BFS for evolving graphs, which we shall call it \emph{evolving-graph BFS},
-was never explicitly described or verified.
-%XXX THIS LEADS US TO CONSIDER ALGEBRAIC FORMULATIONS ALSO SINCE...
-
-In this paper, we present a generalization of the breadth first search (BFS)
-algorithm to evolving graphs. BFS is arguably the most fundamental graph search
-algorithm, which leads to other graphical computations
-such as the minimum spanning tree and shortest path \cite{ckrs09}.
-We also demonstrate how BFS on evolving graphs can be expressed in the language
-of linear algebra, and how our formulation helps analyze citation networks.
+In this paper, we present a complete description of the BFS algorithm for evolving graphs.
+The algebraic formulation of this algorithm makes explicit several subtleties in the correct
+determination of relevant trajectories, which we term \textit{temporal paths},
+which in turn can have important consequences for the computation and interpretation
+of quantities which can be expressed as sums over paths, e.g.\ Katz centrality.
 
 
 
