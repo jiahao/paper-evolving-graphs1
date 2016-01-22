@@ -183,7 +183,7 @@ Such graphs are known as evolving graphs.
 % We assume that the reader is familiar with the basic graph terminology.
 % All the necessary material can be found in}.
 We follow the notation of (static) graphs in \cite{even12,kegi11}.
-In general, a evolving graph $G(t) = (V(t), E(t))$ is  a graph where the node set
+In general, an evolving graph $G(t) = (V(t), E(t))$ is  a graph where the node set
 and edge set are functions of time $t$.
 However, in different literature the term ``evolving graph'' has been
 used to refer to slightly different models.
@@ -745,17 +745,75 @@ from $(s,t_1)$ to $(v,t)$ and so $(v,t) \in T(s,t_1)$.
 \section{Node Activeness and its Impact}
 \label{sec:matr-matr-mult}
 
-\subsection{Aggregated Graphs}
-\label{sec:aggregated-graphs}
+% \subsection{Aggregated Graphs}
+% \label{sec:aggregated-graphs}
 
-In this section, we answer the question why we need evolving graph.
-
-At the beginning of the paper, we set up a game played by three people $A$, $B$,
-and $C$ and we showed if
+% % In this section, we answer the question why we need evolving graph.
+% % 
+% At the beginning of the paper, we set up a game played by three people $A$, $B$,
+% and $C$ and we showed if $A$ and $B$
 
 
 \subsection{Temporal Path}
 \label{sec:temporal-path}
+
+\begin{figure}[h]
+ \begin{center}
+    \begin{tikzpicture}[scale=.36, line width =1.4pt]
+  \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
+  \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
+
+  \node[circle,draw=red1, minimum size=0.2cm] (n6) at (3,7) {2};
+  \node[circle,fill=green1, minimum size=0.2cm] (n4) at (-2,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n1) at (0,10) {1};
+
+   \node[circle,fill=green1, minimum size=0.2cm] (n11) at (11,7) {2};
+  \node[circle,fill=green1, minimum size=0.2cm] (n12) at (6,5)  {3};
+  \node[circle,draw=red1, minimum size=0.2cm] (n14) at (8,10) {1};
+
+  \foreach \from/\to in {n10/n7, n11/n12}
+   \draw[every edge,->] (\from) -- (\to);
+     \draw[dotted,->](n1) -- (n4);
+  \draw[dotted,->](n10) -- (n1);
+  \draw[dotted,->](n4) -- (n12);
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(4,3) -- (-2,3) node [midway,yshift=-0.6cm]{ $t_2$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(-4,3) -- (-10.5,3) node [midway,yshift=-0.6cm]{ $t_1$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
+    \end{tikzpicture}
+   \begin{tikzpicture}[scale=.36, line width =1.4pt]
+  \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
+  \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
+
+  \node[circle,draw=red1, minimum size=0.2cm] (n6) at (3,7) {2};
+  \node[circle,fill=green1, minimum size=0.2cm] (n4) at (-2,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n1) at (0,10) {1};
+
+   \node[circle,fill=green1, minimum size=0.2cm] (n11) at (11,7) {2};
+  \node[circle,fill=green1, minimum size=0.2cm] (n12) at (6,5)  {3};
+  \node[circle,draw=red1, minimum size=0.2cm] (n14) at (8,10) {1};
+
+  \foreach \from/\to in {n1/n4}
+   \draw[every edge,->] (\from) -- (\to);
+     \draw[dotted,->](n7) to[out=70, in=40] (n11);
+  \draw[dotted,->](n10) -- (n7);
+   \draw[dotted,->](n11) -- (n12);
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(4,3) -- (-2,3) node [midway,yshift=-0.6cm]{ $t_2$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(-4,3) -- (-10.5,3) node [midway,yshift=-0.6cm]{ $t_1$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
+    \end{tikzpicture}
+\end{center}
+\caption{An evolving graph with 3 time stamps $t_1$, $t_2$ and $t_3$.
+The back dashed lines indicate a temporal path from $(1, t_1)$ to $(3,t_3)$.}
+\label{fig:active}
+\end{figure}
 
 In this subsection, we compare with the ``wrong'' way of traveling an evolving graph
 and show the importance of node activeness.
