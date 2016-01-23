@@ -817,29 +817,6 @@ $dict$ which stores all the reachable active nodes and their distance from $(s,t
  \label{alg:bfsla}
 \end{algorithm}
 
-Representing evolving graphs as sparse matrices offers great flexibility
-on the search direction. If we define the \emph{backward-neighbors} of a
-node $(v,t)$ to be a set of nodes that precede $(v,t)$ if we travel backwards
-in time. Then the backward-neighbors of $(v,t)$ can be computed by
-\begin{equation}
-\label{eq:backward}
-(A^{[t]})b + (A^{[t+1]})\odot b + \cdots + (A^{[n]})\odot b.
-\end{equation}
-We shall get a backward traversal algorithm if we replace
-the vector-matrix multiplication $\bm{A_n}^T\bm{b}$
-by $\bm{A_n}\bm{b}$, where
-\[
-\bm{A_n} =
-\begin{bmatrix}
-A^{[1]} &   0            & \cdots  &  & 0 \\
-\sigma(A^{[2]}) & A^{[2]} & 0         &\cdots  & \vdots \\
-\sigma(A^{[3]}) & \sigma(A^{[3]}) & A^{[3]} & \cdots \\
-   \vdots              &                              &      \vdots            &  &  \vdots \\
-\sigma(A^{[n]}) &                  &       \cdots                      &  & A^{[n]}
-\end{bmatrix}.
-\]
-Having the ability to traverse backwards is important for many real-life applications.
-We shall show an example in Section \ref{sec:applications}.
 
 Algorithm \ref{alg:bfsla} outlines the basic idea of an algebraic evolving-graph BFS.
 But in practice we don't need to form $\bm{A}$ explicitly at step $2$. By realizing the dependency between these sparse matrices,
@@ -1013,6 +990,36 @@ the other for determining root authors for forward searching
 so that we can
 filter out unessential or overlapped trees, which can be computed
 by ranking algorithms like PageRank \cite{pbmw99} or machine-learning based preference ranking.
+
+Tracing influence through citation networks naturally lead to considering paths
+through evolving graphs that traverse time backwards. While we have until now
+only considered forward evolution in time, the treatment for reverse evolution
+follows naturally simply by reversing the time labels, e.g.\ by the transformation
+$t\rightarrrow -t$.
+
+% Representing evolving graphs as sparse matrices offers great flexibility
+% on the search direction. If we define the \emph{backward-neighbors} of a
+% node $(v,t)$ to be a set of nodes that precede $(v,t)$ if we travel backwards
+% in time. Then the backward-neighbors of $(v,t)$ can be computed by
+% \begin{equation}
+% \label{eq:backward}
+% (A^{[t]})b + (A^{[t+1]})\odot b + \cdots + (A^{[n]})\odot b.
+% \end{equation}
+% We shall get a backward traversal algorithm if we replace
+% the vector-matrix multiplication $\bm{A_n}^T\bm{b}$
+% by $\bm{A_n}\bm{b}$, where
+% \[
+% \bm{A_n} =
+% \begin{bmatrix}
+% A^{[1]} &   0            & \cdots  &  & 0 \\
+% \sigma(A^{[2]}) & A^{[2]} & 0         &\cdots  & \vdots \\
+% \sigma(A^{[3]}) & \sigma(A^{[3]}) & A^{[3]} & \cdots \\
+%    \vdots              &                              &      \vdots            &  &  \vdots \\
+% \sigma(A^{[n]}) &                  &       \cdots                      &  & A^{[n]}
+% \end{bmatrix}.
+% \]
+% Having the ability to traverse backwards is important for many real-life applications.
+% We shall show an example in Section \ref{sec:applications}.
 
 % \subsection{Search Tree}
 % \label{sec:short-temp-path}
