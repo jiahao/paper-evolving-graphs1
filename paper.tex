@@ -110,7 +110,7 @@
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{An Algorithm for Searching Evolving Graphs in Linear Algebraic Language}
+\title{Breadth First Searches Over Evolving Graphs}
 
 % author names and affiliations
 % use a multiple column layout for up to two different
@@ -119,34 +119,31 @@
 
 \author{
 \IEEEauthorblockN{Jiahao Chen}
-\IEEEauthorblockA{ Computer Science and Artificial Intelligence Laboratory,\\
+\IEEEauthorblockA{Computer Science and Artificial Intelligence Laboratory,\\
 Massachusetts Institute of Technology,\\
-Massachusetts, 02139-4307,USA\\
+Cambridge, Massachusetts, 02139-4307, USA\\
 jiahao@mit.edu}
 \and
 \IEEEauthorblockN{Weijian Zhang}
 \IEEEauthorblockA{School of Mathematics,\\
 University of Manchester,\\
-Manchester, M13 9PL, England\\
+Manchester, M13 9PL, England, UK\\
 weijian.zhang@manchester.ac.uk}
 }
 
 \maketitle
 
 \begin{abstract}
-  % A generalization of the breadth-first search (BFS) algorithm on evolving graphs is
-  % discussed.
-  % The representation of this algorithm
-  % as algebraic operations is investigated.
-  % The duality of the vector-matrix multiplication
-  % and a BFS step is extended to the fact that a block vector-matrix multiplication
-  % is dual with the evolving-graph BFS.
-  % It is found that the algebraic representation allows for flexible forward and backward searching and can be used for mining citation networks.
-A generalized breadth-first search (BFS) algorithm is presented for
-searching evolving graphs.
-The method is described in both graph and linear algebra notation and
-the two algorithms are shown to be equivalent.
-A preliminary discussion on mining citation networks is also presented.
+We present a generalization of the breadth first search (BFS) algorithm on
+evolving graphs and prove its correctness. The BFS generates paths with nontrivial
+structure, which we term temporal paths. We also show with simple counterexamples
+that simple products of adjacency matrices do not have the correct combinatorial
+properties of enumerating temporal paths. On the contrary, the correct generalization
+of BFS requires careful tracking of active nodes which participate in the definition
+of edges at specific times. We discuss how the structure of temporal paths leads
+to nontrivial matrix structure in adjacency matrix representations of evolving
+graphs, as well as implications for real world applications
+such as the analysis of citation networks.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -176,9 +173,8 @@ However, if $2$ talks to $3$ before $1$ talks to $2$, then
 $3$ can never get $a$.
 
 We can use analyze the spread of information between the players using graph
-theory. In this process, the time ordering of events matters, which leads us to
-consider a graph that changes over time, i.e.\ a graph $G(t) = (V(t), E(t))$ whose
-vertex set $V$ and edge set $E$ evolve over on time, $t$.
+theory. In this process, the time ordering of events matters, and hence its
+graph representation $G(t) = (V(t), E(t))$ must be time dependent.
 Such a graph is called an ``evolving graph''~\cite{fkp89,bkmu12},
 ``evolving network'' or %XXX WHO?
 ``time-dependent graph''. %XXX WHO?
@@ -200,9 +196,12 @@ and can be interpreted naturally as a graph traveral problem. Traversals of an
 ordinary (static) graph may be computed using well known methods such as the
 breadth-first search (BFS). However, a proper description of the dynamics
 requires paths that also move monotonically forward in time, thus necessating
-a generalization of the ordinary BFS algorithm. An informal description of such
-a generalization was provided by \cite{tmml09}.
+a generalization of the ordinary BFS algorithm.
 
+An informal description of BFS generalized to evolving graphs can be found in
+\cite{tmml09}. However, it turns out that the proper generalization involves
+paths of nontrivial structure which sometimes contradict na\"ive generalizations
+of results derived from static graphs.
 In this paper, we present a complete description of the BFS algorithm for evolving graphs.
 The algebraic formulation of this algorithm makes explicit several subtleties in the correct
 determination of relevant trajectories, which we term \textit{temporal paths},
@@ -216,6 +215,7 @@ of quantities which can be expressed as sums over paths, e.g.\ Katz centrality.
 
 
 \subsection{Temporal Paths over Active Nodes}
+\label{sec:temporal-paths}
 
 \begin{figure}[h]
  \begin{center}
@@ -331,7 +331,7 @@ The black dashed lines of the two figures indicate two temporal paths from $(1, 
 The restriction that temporal paths may only traverse active nodes reflects
 underlying structure in many real world applications, such as analyzing the
 influence of nodes over social networks. We will also show later in
-%XXX FIX X-REF TO SECTION
+Section~\ref{sec:temp-paths-adjac}
 that the resulting structure of allowable temporal paths leads to nontrivial
 subtleties in the generalization of algorithms and concepts from ordinary
 (static) graphs.
@@ -341,7 +341,7 @@ subtleties in the generalization of algorithms and concepts from ordinary
 \subsection{Breadth-First Traversal Over Temporal Paths}
 \label{sec:evolving-graph-bfs}
 
-The example presented above in Section~\ref{sec:breadth-first-search}
+The example presented above in Section~\ref{sec:temporal-paths}
 demonstrates how the notion of active nodes restrict the set of temporal paths
 that need to be considered when traversing an evolving graph.
 
@@ -431,8 +431,7 @@ nodes. The definition implies that if either or both end points of a temporal
 path are inactive, then the entire temporal path must be the empty sequence
 $\langle \rangle$. Keeping track explicitly of the time labels of each temporal
 node allows greater generality to cases where the node sets change over time.
-Furthermore, we shall show later in
-%XXX X-REF
+Furthermore, we shall show later in \ref{sec:temp-paths-adjac}
 that the explicit bookkeeping of the time labels is essential for correctly
 generalizing the BFS to evolving graphs.
 
@@ -697,6 +696,100 @@ and so the result follows.
 \label{sec:representation}
 
 
+\subsection{Not All Temporal Paths Can Be Expressed by Products of Adjacency Matrices}
+\label{sec:temp-paths-adjac}
+
+For a static graph $G$ with adjacency matrix $A$, $(A^k)_{ij}$ counts the number
+of paths of length $k$ between node $i$ and node $j$. Na\"ively, one might want
+to generalize this result to evolving graphs by postulating that the $(i,j)$th
+entry of the discrete path sum
+\begin{align}
+S^{[t_n]} = A^{[t_1]}A^{[t_n]} + \sum_{t_1 \le t \le t_n} A^{[t_1]}A^{[t]}A^{[t_n]}
++ \dots \nonumber \\
++ \sum_{t_1 \le t \le t' \le \dots \le t_n}
+A^{[t_1]}A^{[t]}A^{[t']}\cdots A^{[t_n]}
+\label{eq:sum}
+\end{align}
+counts the number of temporal paths from $(i,t_1)$ to $(j,t_n)$.
+However, this postulate is incorrect.
+In the example of Figure~\ref{fig:eg_shortest_path},
+\[
+(S^{[t_3]})_{13} = \left(A^{[t_1]}A^{[t_2]}A^{[t_3]} + A^{[t_1]}A^{[t_3]}\right)_{13} = 1
+\]
+even though there are clearly two temporal paths from
+$(1, t_1)$ to $(3, t_3)$ as shown in Figure~\ref{fig:active}.
+% Indeed, Grindrod et al. \cite{gphe11} observe
+% that the $(i,j)$ entry of $A^{[1]}A^{[2]}\cdots A^{[n]}$ counts the number of
+% temporal paths of length $n$ from $(i, 1)$ to $(j, n)$, which
+% go through exactly one edge at each time stamp between
+% $t_1$ and $t_n$.
+% Intuitively, it seems that the $(i,j)$ entry of
+% the summation of all the products of the form
+% counts the number of all temporal paths between $i$ and $j$ at all
+% time stamps.
+% However, this is not true since not all temporal paths go through
+% exactly one edge at each time stamp.
+% In Figure , the summation of all the products of adjacency matrices
+% $A^{[1]}$, $A^{[2]}$, and $A^{[3]}$
+% \[
+% A^{[1]}A^{[2]}A^{[3]}  = 0
+% \]
+% The $(1,3)$ entry is equal to $1$.  But there are two temporal
+% paths from $(1, t_1)$ to $(3, t_3)$ as shown in Figure \ref{fig:active}.
+% missing components call it E
+% For adjacency matrices $A^{[s]}$ and $A^{[t]}$, where $s < t$, a nonzero entry
+% $(i,j)$ of $A^{[s]} A^{[t]}$ indicates a temporal path from
+% $(i,s)$ to $(j,t)$ via
+% some node $k$ (which is unknown).
+% In general, a nonzero entry $(i,j)$ of the matrix $A^{[1]}A^{[2]}\cdots A^{[n]}$
+% indicates a temporal path $p$ that starts at $(i,1)$ and ends at  $(j,n)$.
+% Notice the fact that $p$ must go through at least one edge at each time stamp between $1$ and $n$.
+
+The first term in the sum $S^{[t_3]}$ vanishes since $A^{[t_1]}A^{[t_2]} = 0$.
+Furthermore, the vanishing of $S^{[t_2]} = A^{[t_1]}A^{[t_2]}$ itself reflects the absence of any temporal path
+from $t_1$ to $t_2$ that goes through at least one edge at $t_1$. However,
+\begin{equation}
+\langle(1, t_1), (1, t_2), (3, t_2)\rangle~\label{eq:tpathex}
+\end{equation}
+is a clearly a valid temporal path as shown in Figure~\ref{fig:active} which
+cannot be expressed by a product of adjacency matrices.
+
+Sums $S^{[t]}$ of the form \eqref{eq:sum} produce an incorrect count of temporal
+paths because they do not capture temporal paths with subpaths of the form
+$\langle (v, s), (v, t) \rangle$, $s < t$. The temporal path \eqref{eq:tpathex}
+is counted only by the matrix product $M^{[t_1]} A^{[t_2]}$, where
+\[
+    M^{[t_1]} = \begin{pmatrix}1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0\end{pmatrix}.
+\]
+$M^{[t_1]}$ describes the forward time propagation of active nodes. It counts
+temporal paths with subpaths $\langle (i, t_1), (i, t_2) \rangle$
+for all active nodes $(i, t_1)$ at time $t_1$, but not paths containing the
+subsequence $\langle (3, t_1), (3, t_2) \rangle$, which cannot exist in temporal
+paths since $(3, t_1)$ is an inactive node.
+
+One might attempt to amend the sums $S^{[t]}$ in \eqref{eq:sum} by redefining
+the adjacency matrices to include ones along the diagonal. However, the resulting
+sum is still incorrect, as it counts paths with subsequences $\langle (3, t_1), (3, t_2) \rangle$
+and are hence not temporal paths.
+
+The simple example of Figure~\ref{fig:eg_shortest_path} provides several
+counterexamples which demonstrate why sums over products of adjacency matrices of
+the form \eqref{eq:sum} do not count temporal paths correctly. The interpretation
+from considering powers of $A$ for static graphs therefore does not extend to
+evolving graphs, and sums like \eqref{eq:sum} cannot form the basis of correct
+analyses of evolving graphs.
+
+% But it provides no information about the nodes in between. In addition, the temporal path must pass at least
+%  one node at each timestamps. We believe this requirement is too restrictive. For example,
+% $A^{[t_1]}A^{[t_2]}A^{[t_3]}$ is a zero matrix. Let $\langle i,j,\ldots k \rangle$ represents the sets of all possible subsets of $\langle 1, 2, \ldots, n \rangle$, where $i<j<\cdots<k$, then
+% the nonzero entries of the matrix
+% \[
+% \sum_{i,j,\ldots,k}A^{[1]}A^{[i]}A^{[j]}\cdots A^{[k]}A^{[n]},
+% \]
+% indicates temporal paths  from temporal paths from timestamp $1$ to $n$.
+
+
+
 \subsection{Evolving graphs as sequences of adjacency matrices}
 
 For each static graph $G^{[t]} = (V^{[t]}, E^{[t]})$ that constitutes the
@@ -929,116 +1022,6 @@ previous iterations are zeroed out of the new $\bm b$.
 
 
 
-\section{Node Activeness and its Impact}
-\label{sec:matr-matr-mult}
-
-% \subsection{Aggregated Graphs}
-% \label{sec:aggregated-graphs}
-
-% % In this section, we answer the question why we need evolving graph.
-% %
-% At the beginning of the paper, we set up a game played by three people $A$, $B$,
-% and $C$ and we showed if $A$ and $B$
-
-\subsection{Temporal Paths and Adjacency Matrices}
-\label{sec:temp-paths-adjac}
-
-%walks on graphs
-Let $A$ be the corresponding adjacency matrix of a graph $G$.
-It is a well known result that the $(i,j)$ entry of $A^k$ counts the number of
-walks of length exactly $k$ between node $i$ and node $j$.
-It is natural to consider a generalization of this relationship to
-the case of evolving graphs.
-One may conclude that  the $(i,j)$ entry of the sum of all the product
-\begin{equation}
-\label{eq:sum}
-A^{[1]}A^{[t_i]}A^{[t_j]} \cdots A^{t_k]}A^{[n]},  \quad t_i \leq t_j \leq \cdots \leq t_k,
-\end{equation}
-counts the number of temporal paths from $(i,1)$ to $(j,n)$.
-However, if we look at it carefully. We observe some temporal paths are
-missed.
-In Figure \ref{fig:eg_shortest_path}, the $(1,3)$ entry of the sum of the product
-\[
-A^{[1]}A^{[2]}A^{[3]} + A^{[1]}A^{[3]}
-\]
-is equal to $1$ even though
-there are two temporal paths from $(1, t_1)$ to $(3, t_3)$ as shown in Figure \ref{fig:active}.
-% Indeed, Grindrod et al. \cite{gphe11} observe
-% that the $(i,j)$ entry of $A^{[1]}A^{[2]}\cdots A^{[n]}$ counts the number of
-% temporal paths of length $n$ from $(i, 1)$ to $(j, n)$, which
-% go through exactly one edge at each time stamp between
-% $t_1$ and $t_n$.
-% Intuitively, it seems that the $(i,j)$ entry of
-% the summation of all the products of the form
-% counts the number of all temporal paths between $i$ and $j$ at all
-% time stamps.
-% However, this is not true since not all temporal paths go through
-% exactly one edge at each time stamp.
-% In Figure , the summation of all the products of adjacency matrices
-% $A^{[1]}$, $A^{[2]}$, and $A^{[3]}$
-% \[
-% A^{[1]}A^{[2]}A^{[3]}  = 0
-% \]
-% The $(1,3)$ entry is equal to $1$.  But there are two temporal
-% paths from $(1, t_1)$ to $(3, t_3)$ as shown in Figure \ref{fig:active}.
-% missing components call it E
-% For adjacency matrices $A^{[s]}$ and $A^{[t]}$, where $s < t$, a nonzero entry
-% $(i,j)$ of $A^{[s]} A^{[t]}$ indicates a temporal path from
- $(i,s)$ to $(j,t)$ via
-% some node $k$ (which is unknown).
-% In general, a nonzero entry $(i,j)$ of the matrix $A^{[1]}A^{[2]}\cdots A^{[n]}$
-% indicates a temporal path $p$ that starts at $(i,1)$ and ends at  $(j,n)$.
-% Notice the fact that $p$ must go through at least one edge at each time stamp between $1$ and $n$.
-Notice $A^{[1]}A^{[2]} = 0$ since
-there is no temporal path from time stamp $t_1$ to $t_2$ that
-go through at least one edge at $t_1$. However,
-\[
-\langle(1, t_1), (1, t_2), (3,t_2)\rangle
-\]
-is a temporal path as shown in Figure \ref{fig:active}, suggesting we miss to count a temporal path from $(1, t_1)$ to $(3, t_3)$.
-Notice also that if we introduce ones on the diagonal of the matrices $\{A^{[i]}\}$,
-each node of the resulting evolving graph will become
-active at all timestamps.
-Hence matrix-matrix multiplication between consecutive
-adjacency matrices can not discover all possible temporal paths and should be avoided
-when temporal paths are the essential parts of the algorithm.
-
-Node activeness is the key concept for defining temporal paths which
-shapes how to traverse an evolving graph.
-Recall an active node $(v,t)$ is a node $v$ at timestamp $t$
-that connects to at least another node other that itself.
-It means the entity at that specific timestamp either
-receives recommendations or gives recommendations to others (or possibly both).
-This implies the entity is ``alive''. Here ``alive'' does not necessary mean physically
-alive. For the case of citation network that we shall discuss later, node activeness more or less means spiritually alive in the sense that the idea or knowledge of the entity is alive.
-We traverse an evolving graph only on the active nodes.
-
-For adjacency matrices $A^{[s]}$ and $A^{[t]}$, where $s < t$, a nonzero entry
-$(i,j)$ of $A^{[s]} A^{[t]}$ indicates a temporal path from $(i,s)$ to $(j,t)$ via
-some node $k$ (which is unknown).
-In general, a nonzero entry $(i,j)$ of the matrix $A^{[1]}A^{[2]}\cdots A^{[n]}$
-indicates a temporal path $p$ that starts at $(i,1)$ and ends at  $(j,n)$.
-Notice the fact that $p$ must go through at least one edge at each time stamp between $1$ and $n$.
-For the evolving graph in Figure \ref{fig:eg_shortest_path}, $A^{[1]}A^{[2]}$
-is a zero matrix since there is no temporal path from time stamp $t_1$ to $t_2$ that
-go through at least one edge at $t_1$. However,
-$\langle(1, t_1), (1, t_2), (3,t_2)\rangle$ is a temporal path as shown in Figure \ref{fig:active}.
-Notice also that if we introduce ones on the diagonal of the matrices $\{A^{[i]}\}$,
-each node of the resulting evolving graph will become
-active at all timestamps.
-Hence matrix-matrix multiplication between consecutive
-adjacency matrices can not discover all possible temporal paths and should be avoided
-when temporal paths are the essential parts of the algorithm.
-
-% But it provides no information about the nodes in between. In addition, the temporal path must pass at least
-%  one node at each timestamps. We believe this requirement is too restrictive. For example,
-% $A^{[t_1]}A^{[t_2]}A^{[t_3]}$ is a zero matrix. Let $\langle i,j,\ldots k \rangle$ represents the sets of all possible subsets of $\langle 1, 2, \ldots, n \rangle$, where $i<j<\cdots<k$, then
-% the nonzero entries of the matrix
-% \[
-% \sum_{i,j,\ldots,k}A^{[1]}A^{[i]}A^{[j]}\cdots A^{[k]}A^{[n]},
-% \]
-% indicates temporal paths  from temporal paths from timestamp $1$ to $n$.
-
 \section{Implementation in Julia}
 \label{sec:implementation-julia}
 
@@ -1050,7 +1033,7 @@ freely available online at
 \begin{center}
 \url{https://github.com/weijianzhang/EvolvingGraphs.jl}
 \end{center}
-and available with the MIT "Expat" license.
+and available with the MIT ``Expat'' license.
 
 %Julia is a high-level, high-performance dynamic programming language for technical
 %computing.
