@@ -268,7 +268,7 @@ are both examples of \textit{temporal paths} from $(1, t_1)$ to $(3, t_3)$,
 which are drawn as dotted lines with arrowheads in Figure~\ref{fig:active}.
 However, $\langle (1, t_1), (1, t_2), (2, t_2), (3, t_2), (3, t_3) \rangle$
 is not a temporal path because node 2 is inactive at time $t_2$.
-Similarly,
+
 
 \begin{figure}[h]
  \begin{center}
@@ -445,12 +445,12 @@ neighbors and reachability in static graphs.
 The \textbf{$k$-forward neighbors} of a temporal node $(v, t)$ are the temporal nodes
 that are the $k+1$st temporal node in every temporal path of length $k+1$ starting
 from $(v, t)$. The \textbf{forward neighbors} of a temporal node $(v, t)$ are its
- \textbf{1-forward neighbors}.
+1-forward neighbors.
 \end{defn}
 
 In Figure~\ref{fig:eg_shortest_path},
-the forward-neighbors of $(1, t_1)$ are $(2, t_1)$ and $(1, t_2)$ and
-the forward-neighbors of $(2, t_1)$ is $(2, t_3)$.
+the forward neighbors of $(1, t_1)$ are $(2, t_1)$ and $(1, t_2)$ and
+the forward neighbors of $(2, t_1)$ is $(2, t_3)$.
 The 2-forward neighbors of $(1, t_1)$ are
 $(2, t_1), (1, t_2), (2, t_2)$ and $(3, t_2)$.
 By construction, time stamp of every forward neighbor of an active node $(v, t)$
@@ -463,7 +463,8 @@ the $k$ for which $(w, s)$ is a $k$-forward neighbor of $(v, t)$.
 \end{defn}
 
 Note that this notion of distance is not a metric, since the distance from $(v, t)$
-to $(w, s)$ will in general differ from the distance of $(v, t)$ from $(w, s)$.
+to $(w, s)$ will in general differ from the distance of $(v, t)$ from $(w, s)$
+owing to time ordering.
 
 
 \begin{defn}
@@ -473,63 +474,66 @@ integer $k$ for which $(w, s)$ is a $k$-forward neighbor of $(v, t)$.
 \end{defn}
 
 
-The BFS on evolving graphs is described in Algorithm \ref{alg:bfs}.
-Given an evolving graph $G_n$ and a root $(s,t)$,
+The BFS on evolving graphs is described in Algorithm~\ref{alg:bfs}.
+Given an evolving graph $G_n$ and a root $(v_1, t_1)$,
 Algorithm~\ref{alg:bfs} returns all temporal notes reachable from the root and
 their distances from the root.
+$reached$ is a dictionary from temporal nodes to integers whose key set represents
+all visited temporal nodes and whose value set are the corresponding distances
+from the root.
+
 The BFS constructs a tree inductively by discovering all $k$-forward neighbors
 of the root before proceeding to all $(k+1)$-forward neighbors of the root.
+Within the outermost loop, the algorithm iterates over $frontier$, a list of all
+temporal nodes of distance $k$ from the root. The $nextfrontier$ list is populated
+with all temporal nodes that are forward neighbors of any temporal node in the
+$frontier$ list which have not yet been reached by the algorithm.
 
-For Figure \ref{fig:eg_shortest_path}, suppose we start with $(1, t_2)$, then
-$frontier$ is $\langle(1,t_2)\rangle$ after step $5$.  Since the only forward-neighbor of
-$(1,t_2)$ is $(3,t_2)$, $dict.(3,t_2) =1$ at step $11$ and $next$ is enqueued to be
-$\langle (3,t_2) \rangle$ at step $12$. After that $frontier$ is equal to $next$. Since
-$frontier$ is not empty, we go through step $7$-$12$ again. This time
-the forward-neighbor of $(3,t_2)$ is $(3,t_3)$, so $dict.(3,t_3)=2$ and
-$next = \langle (3,t_3) \rangle$ and so on. The loop terminates when $frontier$ is empty.
-
-For each temporal node $(v_i,t_i)$, we use a dictionary $dict.(v_i,t_i)$
-to store its distance from $(s, t)$. We also use
-two FIFO queues $frontier$ and $next$, where $frontier$
-stores the frontier nodes of the current discovered regions and $next$ stores
-the frontier nodes of the next level.
+As a simple example, consider the BFS on the example graph in
+Figure~\ref{fig:eg_shortest_path} starting from the root $(1, t_2)$.
+The $frontier$ list is first initialized to $\{(1,t_2)\}$.
+Since the only forward neighbor of $(1,t_2)$ is $(3,t_2)$,
+iteration $k=1$ produces $reached[(3,t_2)]=1$ and $nextfrontier = \{(3,t_2)\}$.
+In the next iteration $k=2$, the only forward neighbor of $(3,t_2)$ is $(3,t_3)$,
+so $reached[(3,t_3)]=2$ and $nextfrontier = \{(3,t_3)\}$ and so on.
+The algorithm terminates after $k=3$ after verifying that $(3,t_3)$ has no
+forward neighbors.
 
 
 \begin{algorithm}[h]
  \SetKwFor{For}{for}{}{end}
  \SetKwFor{While}{while}{}{end}
  \SetKwFor{If}{if}{}{end}
- \SetKwFunction{nei}{forward-neighbors}
- \SetKwFunction{enqueue}{enqueue}
+ \SetKwFunction{nei}{forwardneighbors}
  \SetKwProg{Fn}{function}{}{end}
- \Fn{BFS($G_n, (s,t)$)}{
-  $dict.(s,t) = 0$ \\
-  $i = 1$ \\
-  $fronter = \emptyset$ \\
-  \enqueue{$frontier, (s,t)$} \\
- \While{$frontier \ne \emptyset$}{
-   $next = \emptyset$ \\
-   \For{$(u,t') \in frontier$}{
-     \For{$(v,t'') \in$\nei{$(u,t')$}}{
-          \If{$(v,t'') \notin d$}{
-              $dict.(v,t'') = i$\\
-              \enqueue{$next, (v,t'')$}
+ \Fn{BFS($G_n, (v_0,t_0)$)}{
+  $reached[(v_0,t_0)] = 0$ \\
+  $frontier = \{(v_0,t_0)\}$ \\
+  $k = 1$ \\
+  \While{$frontier \ne \emptyset$}{
+   $nextfrontier = \emptyset$ \\
+   \For{$(v,t) \in frontier$}{
+     \For{$(v',t') \in$\nei{$(v,t)$}}{
+          \If{$(v',t') \notin d$}{
+              $reached[(v',t')] = k$\\
+              $nextfrontier = nextfrontier \cup \{(v',t')\}$ \\
               }
          }
        }
-  $frontier = next$ \\
-  $i = i+1$ \\
+  $frontier = nextfrontier$ \\
+  $k = k+1$ \\
   }
-  \textbf{return} $dict$
+  \textbf{return} $reached$
 }
-\caption{Breadth-first search (BFS) on an evolving graph: given
-$G_n$, an evolving graph represented by adjacency lists, and a root $(s, t)$.
-The algorithm returns $dict$ which stores all reachable node-time stamp pairs from $(s,t)$ such that if $dict.(v_i, t_i) = k$,
-the length of the shortest temporal path
-from $(s,t)$ to $(v_i, t_i)$ is $k$.
+\caption{Breadth-first search (BFS) on an evolving graph $G_n$ starting from a
+root $(v_1, t_1)$. The return value, $reached$, is a dictionary mapping all
+reachable temporal notes from the root to their distances from the root. At the
+end of each iteration $k$, the $frontier$ set contains all temporal nodes of
+distance $k$ fro the root.
 }
 \label{alg:bfs}
 \end{algorithm}
+
 
 %Also need to consider the operations for matrix lists.
 
