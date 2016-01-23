@@ -954,48 +954,47 @@ when temporal paths are the essential parts of the algorithm.
 \section{Implementation in Julia}
 \label{sec:implementation-julia}
 
-To study evolving graphs and experiment with various graph types, we have developed EvolvingGraphs.jl  \cite{zhang15}, a software package for the creation, manipulation, and study of evolving graphs written in Julia \cite{bkse12}. The implementation of the evolving-graph BFS is
-available online at
+To study evolving graphs and experiment with various graph types, we have
+developed EvolvingGraphs.jl~\cite{zhang15}, a software package for the creation,
+manipulation, and study of evolving graphs written in Julia~\cite{bkse12}.
+The implementation of the evolving graph BFS is
+freely available online at
 \begin{center}
-\url{https://github.com/weijianzhang/EvolvingGraphs.jl}.
+\url{https://github.com/weijianzhang/EvolvingGraphs.jl}
 \end{center}
+and available with the MIT "Expat" license.
+
 %Julia is a high-level, high-performance dynamic programming language for technical
 %computing.
 % We make particular use of
 % the parameterizable type system and multiple dispatch in Julia.
- \texttt{MatrixList}, a data type in EvolvingGraphs.jl,  represents an evolving graph
+\texttt{MatrixList}, a data type in EvolvingGraphs.jl, represents an evolving graph
 as a sequence of sparse matrices stored in compressed sparse column (CSC) format.
-Many basic graph functions are implemented for \texttt{MatrixList}.
+Many basic graph functions are also implemented for \texttt{MatrixList}.
 
 
 \section{Application to Citation Networks}
 \label{sec:applications}
 
-We shall map a database of research papers to an evolving graph $G_n$
-in such a way that if author $i$ cited author $j$ on a paper published
-at  time $t$, the evolving graph $G_n$ contains a directed edge from
-$i$ to $j$ at time stamp $t$. Then given an author $a$ at time stamp $t_0$,
-we can use our evolving-graph BFS to construct $T(a, t_0)$ which is
-a set of all the authors that have been influenced by $a$'s work at
-time $t_0$. We define a \emph{community} to be a group of
+In this section, we show that evolving graph formalism presented above can be
+used to capture the structure of citation networks. Consider
+the evolving graph $G_n=\langle G^{[t]} \rangle_t$ such that $G^{[t]}$ has
+node set corresponding to authors active at time $t$ and directed edge set
+$E^{[t]} \ni (i, j)$ representing a citation of author $j$ by author $i$ in a
+publication at time $t$.
+
+Then given an author $a$ at time $t_1$, the evolving graph BFS described above
+can compute $T(a, t_1)$, the set of all the authors that have been influenced by
+$a$'s work at time $t_1$.
+Define also a \emph{community} to be a group of
 researchers that have been influenced by the same authors.
-For example, given a paper published by $a$ at year $2016$,
-we can determine $a$'s community by first backward searching to
-find the root authors then forward searching to find the descendants.
-
-To design such information retrieval system, two parameters will be needed:
- one for determining the layers of the backward search tree which can be
-adjusted by the user;
-the other for determining root authors for forward searching
-so that we can
-filter out unessential or overlapped trees, which can be computed
-by ranking algorithms like PageRank \cite{pbmw99} or machine-learning based preference ranking.
-
-Tracing influence through citation networks naturally lead to considering paths
-through evolving graphs that traverse time backwards. While we have until now
-only considered forward evolution in time, the treatment for reverse evolution
-follows naturally simply by reversing the time labels, e.g.\ by the transformation
-$t\rightarrrow -t$.
+For example, given a paper published by $a$ at time $t$,
+we can determine $a$'s community by searching backward in time to find
+$T^-1(a, t_1)$, the authors that influenced $a$ at time $t$, and also searching
+forward to find $T(a, t_1)$.
+The backward search in time follows straightforwardly from the forward time traveral
+presented above simply by reversing the time labels, e.g.\ by the transformation
+$t\rightarrow -t$.
 
 % Representing evolving graphs as sparse matrices offers great flexibility
 % on the search direction. If we define the \emph{backward-neighbors} of a
@@ -1061,25 +1060,28 @@ $t\rightarrrow -t$.
 
 \section{Conclusion}
 
-In this paper, we have introduced and analyzed the evolving-graph BFS in both
-graph and algebraic notation. The relationship between active nodes and
-evolving graph algorithms is discussed.
-This paper leaves important extensions open for further research. First, it is
-of interest to extend the evolving-graph BFS algorithm for weighted evolving graphs, which can provide more valuable information when the degree of connectivity is available in the data.
-Second, efficient algebraic representations and algorithms need to be addressed.
-One major advantage of representing evolving graphs as sparse matrices
-is the matrix representation is highly structured so it is easy to design
-high performance parallel implementation.
-Third, depth-first search and other graph traversal algorithms can be
-extended using similar ideas.
+This paper introduced the generalization of BFS to evolving graphs and presented
+an equivalent formulation using linear algebra. The concept temporal paths
+connecting active nodes turns out to be critical for the correct generalization
+of BFS to evolving graphs. An efficient implementation of BFS on evolving
+graphs is now available as a open source Julia package.
 
+% This paper leaves important extensions open for further research. First, extensions
+% of BFS to weighted evolving graphs can provide more valuable information when the degree of connectivity is available in the data.
+% Second, efficient algebraic representations and algorithms need to be addressed.
+% One major advantage of representing evolving graphs as sparse matrices
+% is the matrix representation is highly structured so it is easy to design
+% high performance parallel implementation.
+% Third, depth-first search and other graph traversal algorithms can be
+% extended using similar ideas.
 
-\section*{Acknowledgment}
+\section*{Acknowledgments}
 
+We thank N. J. Higham and V. \u Sego (Manchester) for helpful suggestions.
+W.\ Z.\ thanks the School of Mathematics at U. Manchester for travel funding and
+A. Edelman for arranging for a fruitful visit to MIT.
 
-The authors are grateful to Professor Nicholas J. Higham and Doctor Vedran \u Sego for suggestions.
-This work was completed while the second author visited MIT CSAIL. He thanks
-Professor Alan Edelman for making his stay so pleasant.
+%XXX ANY OTHER FUNDING
 
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
