@@ -801,19 +801,20 @@ explicitly, as only its matrix--vector product is required in the algorithm.
  \SetKwProg{Fn}{function}{}{end}
  \Fn{ABFS($A_n, (v_1,t_1)$)}{
    Form $\bm{A}^T$ from $A_n$.\\
-   $\bm b = e_{v_1}$ \\
+   $\bm{b}$ is a sparse vector of length $mn$. \\
+   $\bm{b}_s = 1$ \\
    $k = 1$ \\
    $reached[(v_1,t_1)] = 0$ \\
-   \While{\nz{$b$} $\ne \emptyset$}{
+   \While{\nz{$\bm{b}$} $\ne \emptyset$}{
        $\bm{b} = \bm{A}^T\bm{b}$ \\
-       \For{$i \in$ \nz{$b$}}{
+       \For{$k \in$ \nz{$\bm{b}$}}{
          \If{\map{$k$} $\in reached$}{
-           $b_k = 0$ \\
+           $\bm{b}_k = 0$ \\
          }
       }
-      $nodes =$\map{$b$}\\
-       \For{$node \in reached$}{
-           $reached[node] = k$ \\
+      $activeNodes =$\map{$\bm{b}$}\\
+       \For{$activeNode \in activeNodes$}{
+           $reached[activeNode] = k$ \\
          }
        $k = k + 1$
        }
@@ -823,8 +824,8 @@ explicitly, as only its matrix--vector product is required in the algorithm.
 Given $A_n$, the adjacency matrix representation of $G_n$ and $(v_1,t_1)$, a
 node of $G_n$, returns $reached$ as defined in Algorithm~\ref{alg:bfs}.
 The function \texttt{nonzeros(v)} returns the nonzero indices of the vector $v$,
-and the function \texttt{map(b)} maps a block vector's indices to their corresponding
-nodes.}
+and the function \texttt{map(b)} maps a block vector's index (or indices) to their corresponding
+active node (or active nodes).}
 \label{alg:bfsla}
 \end{algorithm}
 
