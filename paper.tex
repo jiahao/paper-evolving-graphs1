@@ -110,7 +110,7 @@
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{An Algorithm for Searching Evolving Graphs in Linear Algebraic Language}
+\title{Breadth First Searches Over Evolving Graphs}
 
 % author names and affiliations
 % use a multiple column layout for up to two different
@@ -119,34 +119,31 @@
 
 \author{
 \IEEEauthorblockN{Jiahao Chen}
-\IEEEauthorblockA{ Computer Science and Artificial Intelligence Laboratory,\\
+\IEEEauthorblockA{Computer Science and Artificial Intelligence Laboratory,\\
 Massachusetts Institute of Technology,\\
-Massachusetts, 02139-4307,USA\\
+Cambridge, Massachusetts, 02139-4307, USA\\
 jiahao@mit.edu}
 \and
 \IEEEauthorblockN{Weijian Zhang}
 \IEEEauthorblockA{School of Mathematics,\\
 University of Manchester,\\
-Manchester, M13 9PL, England\\
+Manchester, M13 9PL, England, UK\\
 weijian.zhang@manchester.ac.uk}
 }
 
 \maketitle
 
 \begin{abstract}
-  % A generalization of the breadth-first search (BFS) algorithm on evolving graphs is
-  % discussed.
-  % The representation of this algorithm
-  % as algebraic operations is investigated.
-  % The duality of the vector-matrix multiplication
-  % and a BFS step is extended to the fact that a block vector-matrix multiplication
-  % is dual with the evolving-graph BFS.
-  % It is found that the algebraic representation allows for flexible forward and backward searching and can be used for mining citation networks.
-A generalized breadth-first search (BFS) algorithm is presented for
-searching evolving graphs.
-The method is described in both graph and linear algebra notation and
-the two algorithms are shown to be equivalent.
-A preliminary discussion on mining citation networks is also presented.
+We present a generalization of the breadth first search (BFS) algorithm on
+evolving graphs and prove its correctness. The BFS generates paths with nontrivial
+structure, which we term temporal paths. We also show with simple counterexamples
+that simple products of adjacency matrices do not have the correct combinatorial
+properties of enumerating temporal paths. On the contrary, the correct generalization
+of BFS requires careful tracking of active nodes which participate in the definition
+of edges at specific times. We discuss how the structure of temporal paths leads
+to nontrivial matrix structure in adjacency matrix representations of evolving
+graphs, as well as implications for real world applications
+such as the analysis of citation networks.
 \end{abstract}
 
 \begin{IEEEkeywords}
