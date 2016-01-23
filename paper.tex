@@ -539,6 +539,7 @@ Let $G_n$ be an evolving graph and $(v_1, t_1)$ be an active node of $G_n$.
 Then Algorithm~\ref{alg:bfs} discovers every active node that is reachable from
 the root $(v_1, t_1)$, and $reached[(v, t)]$ is the distance from $(v_1, t_1)$
 to $(v, t)$.
+\label{thm:correct}
 \end{thm}
 
 \IEEEproof
@@ -580,33 +581,26 @@ correspondence for every intermediate quantity in Algorithm~\ref{alg:bfs}.
 \endproof
 
 
-\subsection{Analysis}
-\label{sec:analysis}
+As presented, the BFS over evolving graphs makes no assumptions about how the
+evolving graph $G_n$ is represented. Suppose it is represented by a collection of
+adjacency lists, one for each active node in $G_n$. Then we have that the
+asympotic complexity of BFS on $G_n$ is the same as that for BFS on $G$, using
+the 1-1 construction of $G$ from $G_n$.
 
-As presented, the BFS over evolving graphs makes no assumptions about how the% adjacency matrices
-Suppose $G_n$ is represented by adjacency lists.
-Then the number of adjacency lists is the same as the number
-of active nodes in $G_n$. So for large $n$, this representation
-can use a large amount of memory.
-For the graph $G^{[i]} = (V^{[i]}, E^{[i]})$ at time stamp $i$,
-we denote the active node set of $V^{[i]}$ as $\tilde V^{[i]}$,
-where we have $\tilde V^{[i]} \subseteq V^{[i]}$.
-Step $10$ of  Algorithm \ref{alg:bfs} ensures each active node-time stamp pair in $G_n$ is enqueued in $next$ (and then $frontier$) at most once.
-And so \texttt{forward-neighbors} loops through each
-active node-time stamp pair at most once.
-The operations of enqueuing take $O(1)$ time.
-Thus the total operations of enqueuing are
-$O(\sum_{i=1}^n|\tilde V^{[i]}|)$, where $|\cdot|$ represents the number of elements of a set.  Let $\sum_i |\tilde V^{[i]}| = |\tilde V|$ and $\sum_i |E^{[i]}| = |\hat E|$.
-Then the time of scanning
-\texttt{forward-neighbors} is
-\[
-\sum_{i=1}^n\sum_{v \in \tilde V^{[i]}} \texttt{forward-neighbors}(v) =
-O(|\hat E|),
-\]
-by the definition of forward-neighbors.
-Hence the total running time is $O(|\hat E|+ |\tilde V|)$.
+\begin{thm}[Complexity of the evolving graph BFS]
+Let $G_n$ be an evolving graph represented using adjacency lists,
+$(v_1, t_1)$ be an active node of $G_n$, and $G=(V,E)$ be the static graph
+constructed from $G_n$ using the 1-1 correspondences defined in the proof of
+Theorem~\ref{thm:correct}. Then the asymptotic complexity of
+Algorithm~\ref{alg:bfs} is $O(|E| + |V|)$.
+\end{thm}
 
-
+\IEEEproof
+Any edge in any edge set of $G_n$ can be accessed in constant time in random
+access memory. By construction, BFS on $G_n$ is in 1-1 correspondence with BFS
+on the static graph $G$. The number of operations of BFS on $G$ is $O(|E| + |V|)$,
+and so the result follows.
+\endproof
 
 
 \section{Formulating the Evolving Graph BFS with Linear Algebra}
