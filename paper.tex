@@ -611,6 +611,9 @@ and so the result follows.
 \section{Formulating the Evolving Graph BFS with Linear Algebra}
 \label{sec:representation}
 
+
+\subsection{Evolving graphs as sequences of adjacency matrices}
+
 For each static graph $G^{[t]} = (V^{[t]}, E^{[t]})$ that constitutes the
 evolving graph $G_n$, define its corresponding
 $\left\vert V^{[t]}\right\vert \times \left\vert V^{[t]}\right\vert$
@@ -648,7 +651,7 @@ Figure~\ref{fig:eg_shortest_path} can be represented as
 
 This algebraic representation allows us to exploit a graphical interpretation of
 matrix--vector products involving the adjacency matrix~\cite{kegi11}.
-If $A$ is the adjacency matrix of a (static) graph $G$ and $e_k$ is $k$th
+If $A$ is the adjacency matrix of a (static) graph $G$ and $e_k$ is the $k$th
 elementary unit vector, then the nonzero entries of $A^T e_k$ have indices that
 are neighbors of $k$.
 The algebraic formulation of BFS on evolving graphs follows similarly, but
@@ -660,7 +663,7 @@ b & \mbox{if $A^Tb \ne 0$,} \\
 0 & \mbox{otherwise.}
 \end{cases}
 \]
-The forward neighbors of a temporal node $(k, t_1)$ in $A_n$ are then be determined
+The forward neighbors of a temporal node $(k, t_1)$ in $A_n$ can then be determined
 from the indices and time stamps of the nonzero elements in the sequence
 \begin{equation}
 \label{eq:out_ne}
@@ -733,8 +736,18 @@ neighbors of node $(1, t_1)$ can be computed by
 From this computation, we can deduce that $(2,t_1)$ and $(1,t_2)$ are the forward
 neighbors of $(1,t_1)$.
 
-Let $(A^{[i]})^Tb = c_i$.
-At the second step, we need to compute the following components
+
+\subsection{Evolving graphs as a blocked adjacency matrix}
+
+The proof of Theorem~\ref{thm:correct} provided a construction for representing
+an evolving graph $G_n$ by a static graph $G$ with nodes corresponding to active
+nodes of $G_n$. The adjacency matrix $\mathbf A$ of $G$ then has block structure
+which is useful for understanding the nature of the $\odot$ operation.
+
+Consider two iterations of the BFS on $G_n$ with root $(k, t_1)$. The second
+iteration requires computing the sequences
+
+\begin{subequations}
 \begin{align}
   \label{eq:5}
  \big\langle (A^{[1]})^Tc_1,   (A^{[2]})^T\odot c_1, \ldots,  (A^{[n]})^T\odot c_1  \big\rangle  \\
@@ -743,16 +756,13 @@ At the second step, we need to compute the following components
   \big\langle (A^{[n]})^Tc_n \big\rangle
 \label{eq:6}
 \end{align}
-If we sum these resulting vectors according to time stamps, we obtain
-the forward-neighbors of the nodes computed at step $1$.
-For $n =2$, we have
-\[
-\Big\langle
-(A^{[1]})^Tc_1,~
-(A^{[2]})^T\odot c_1 + (A^{[2]})^T c_2
-\Big\rangle.
-\]
-If we form a block triangular matrix $\bm{A_n}^T$
+\end{subequations}
+%
+where $c_i = (A^{[i]})^Te_k$. Summing resultant vectors that share the same
+time stamp, we obtain vectors whose nonzero elements have indexes labeled by
+the forward neighbors of the nodes computed at step $1$.
+
+Define the block triangular adjacency matrix
 \[
 \bm{A_n}^T =
 \begin{bmatrix}
@@ -763,15 +773,21 @@ If we form a block triangular matrix $\bm{A_n}^T$
 \sigma(A^{[n]})^T &                  &       \cdots                      &  & (A^{[n]})^T
 \end{bmatrix},
 \]
-where  $\sigma(A^{[i]})^Tb = (A^{[i]})^T\odot b$, and a block vector $\bm{b}$
+where $\sigma(A^{[i]})^Tb = (A^{[i]})^T\odot b$, and the block vector
 \[
-\bm{b}^T = [b^T, 0, \cdots, 0  ],
+\bm{b}^T = [b^T, 0, \cdots, 0  ].
 \]
-then \eqref{eq:out_ne} is equivalent to $\bm{A_n}^T\bm{b}$ and
-summing \eqref{eq:5}-\eqref{eq:6} is equivalent to $\bm{A_n}^T(\bm{A_n}^T\bm{b})$.
-In general, we can define an evolving-graph BFS using
-block vector-matrix multiplications. The algorithm is presented in Algorithm
-\ref{alg:bfsla}.
+Then, \eqref{eq:out_ne} is equivalent to the matrix--vector product
+$\bm{A_n}^T\bm{b}$ and the summation over \eqref{eq:5}-\eqref{eq:6} is equivalent
+to $\bm{A_n}^T(\bm{A_n}^T\bm{b})$.
+
+
+\subsection{The algebraic formulation of BFS on evolving graphs}
+
+The blocked matrix--vector products introduced in the previous section allows us
+to write down an elegant algebraic formulation of BFS on evolving graphs, as
+presented in Algorithm~\ref{alg:bfsla}. Note that $\bm A^T$ need never be formed
+explicitly, as only its matrix--vector product is required in the algorithm.
 
 \begin{algorithm}[h]
  \SetKwFor{For}{for}{}{end}
@@ -783,60 +799,46 @@ block vector-matrix multiplications. The algorithm is presented in Algorithm
  \SetKwFunction{intersect}{intersect}
  \SetKwFunction{map}{map}
  \SetKwProg{Fn}{function}{}{end}
- \Fn{ABFS($A_n, (s,t)$)}{
+ \Fn{ABFS($A_n, (v_1,t_1)$)}{
    Form $\bm{A}^T$ from $A_n$.\\
-   Let $m$ be the dimension of  $A^{[1]}$. \\
-   $b$ is a sparse vector of length $mn$ \\
-   $b(s+mt) =1$ \\
-   $i = 1$ \\
-   $dict.(s,t) = 0$ \\
+   $\bm b = e_{v_1}$ \\
+   $k = 1$ \\
+   $reached[(v_1,t_1)] = 0$ \\
    \While{\nz{$b$} $\ne \emptyset$}{
        $\bm{b} = \bm{A}^T\bm{b}$ \\
-       \For{$i$ in \nz{$b$}}{
-         $node =$ \map{$i$} \\
-         \If{$node$ in $dict$}{
-           $b(i) = 0$ \\
+       \For{$i \in$ \nz{$b$}}{
+         \If{\map{$k$} $\in reached$}{
+           $b_k = 0$ \\
          }
       }
       $nodes =$\map{$b$}\\
-       \For{$node$ in $nodes$}{
-           $dict.node = i$
+       \For{$node \in reached$}{
+           $reached[node] = k$ \\
          }
-
-       $i = i + 1$
+       $k = k + 1$
        }
-  \textbf{return} $dict$ \\
+  \textbf{return} $reached$ \\
 }
- \caption{Algebraic evolving-graph BFS.
-Let $A_n$ be the corresponding adjacency matrices of $G_n$ and
-$(s,t)$ a node of $G_n$. As in Algorithm \ref{alg:bfs}, we use a dictionary $dict.(v_i, t_i)$
-to store $(v_i, t_i)$'s distance from $(s,t)$. Function \texttt{nonzeros(v)}
-returns the nonzero indices of a given vector  $v$ and function \texttt{map(b)}
-maps a block vector's indices to their corresponding nodes. The algorithm  returns
-$dict$ which stores all the reachable active nodes and their distance from $(s,t)$.}
- \label{alg:bfsla}
+\caption{An algebraic formulation of BFS on evolving graphs.
+Given $A_n$, the adjacency matrix representation of $G_n$ and $(v_1,t_1)$, a
+node of $G_n$, returns $reached$ as defined in Algorithm~\ref{alg:bfs}.
+The function \texttt{nonzeros(v)} returns the nonzero indices of the vector $v$,
+and the function \texttt{map(b)} maps a block vector's indices to their corresponding
+nodes.}
+\label{alg:bfsla}
 \end{algorithm}
 
-
-Algorithm \ref{alg:bfsla} outlines the basic idea of an algebraic evolving-graph BFS.
-But in practice we don't need to form $\bm{A}$ explicitly at step $2$. By realizing the dependency between these sparse matrices,
-we can compute  the result in parallel.
-
 \begin{thm}
- Algorithm \ref{alg:bfs} and Algorithm \ref{alg:bfsla} are equivalent.
+Algorithm \ref{alg:bfs} and Algorithm \ref{alg:bfsla} are equivalent.
 \end{thm}
 
 \IEEEproof
-We shall check the two algorithms are equivalent in each module of
-the method.
 The initialization steps are trivially equivalent.
-By the construction of $\bm{A^T}$,
-step $9$ of Algorithm \ref{alg:bfsla} computes the forward-neighbors
-of all the frontier nodes, which is equivalent to step $8$-$9$
-of Algorithm \ref{alg:bfs}. Step $10$-$15$ of Algorithm \ref{alg:bfsla} ensures
-active nodes will not be visited twice, which is equivalent to step $10$
-of Algorithm \ref{alg:bfs}. Finally, a dictionary $dict$ is used by both algorithms
-to keep record of the distance of each node from the source $(s,t)$.
+At the beginning of iteration $k$, the block vector $\bm b$ represents the
+frontier nodes encoding the $frontier$ set of Algorithm~\ref{alg:bfs}.
+The matrix--vector product $\bm A^T \bm b$ encodes the forward neighbors of all
+the frontier nodes. Subequently, active nodes that have already been visited in
+previous iterations are zeroed out of the new $\bm b$.
 \endproof
 
 
