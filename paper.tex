@@ -535,22 +535,49 @@ distance $k$ from the root.
 \end{algorithm}
 
 \begin{thm}[Correctness of the evolving graph BFS]
-Algorithm~\ref{alg:bfs} discovers every active node that is reachable from the
-root $(v_1, t_1)$, and $reached[(v, t)]$ is the distance from $(v_1, t_1)$ to
-$(v, t)$.
+Let $G_n$ be an evolving graph and $(v_1, t_1)$ be an active node of $G_n$.
+Then Algorithm~\ref{alg:bfs} discovers every active node that is reachable from
+the root $(v_1, t_1)$, and $reached[(v, t)]$ is the distance from $(v_1, t_1)$
+to $(v, t)$.
 \end{thm}
 
-\proof
-Define a static graph $G=(V,E)$ with node set $V = $V^{[1]}$ $\{t\}, t\in\{t_1, t_2, \dots, t_n\}$  such that We could map an evolving graph $G_n$ to a static graph $G$ in such a way that
-if there is an edge from $(v, t)$ to $(u,t)$ in $G_n$, there is an edge from $v_t$ to $u_t$ in $G$.
-For any two nodes $v_s$ and $v_t$ in $G$, if $s < t$, we add an edge from $v_s$ to $v_t$.
-By construction, an active node $(v,t)$ in $G_n$ is in one-to-one correspondence with
-a node $v_t$ in $G$.
-The forward-neighbors of an active node $(v, t)$ in $G_n$
-are in one-to-one correspondence with the forward-neighbors of a node $v_t$ in $G$.
-Hence the correctness of the evolving graph BFS follows from that of a static graph.
-\endproof
+\IEEEproof
+Define the set of temporal nodes
+$\tilde V_L^{[t]} = \{(v_1)_t = (v_1, t) | (v_1, v_2) \in E^{[t]}\}$, which
+consists of the active nodes at time $t$ which participate on the left side of an edge.
+Similarly, $\tilde V_R^{[t]} = \{(v_2)_t = (v_2, t) | (v_1, v_2) \in E^{[t]}\}$
+are the corresponding active nodes on the right side of an edge. Then
+$\tilde V^{[t]} = \tilde V_L^{[t]} \cup \tilde V_R^{[t]}$ is the set of active
+nodes at time $t$, and $V = \bigcup_t \tilde V^{[t]}$ is the set of all
+active nodes in $G_n$.
 
+Similarly, define an edge set $E' = \{(u_s,v_t)|u_s=(u,s)\in V,
+v_t=(v,t)\in V, v=u, s<t\}$, which consists of temporal nodes that connect
+active nodes sharing the same node at different times. Each edge in $E'$ is then
+in 1-1 correspondence with a temporal path of length 2,
+$\langle (v,s), (v,t) \rangle$.
+Define also $\tilde E^{[t]} = \{(e, t)|e\in E^{[t]}\}$, which are simply the edge
+sets in $G_n$ with time labels. Then $E = \bigcup_t \tilde E^{[t]} \cup E'$ is
+the set of all edges representing all allowed temporal paths of length 2.
+
+The node set $V$ and edge set $E$ now define a static graph $G=(V,E)$ that is in
+1-1 correspondence with the evolving graph $G_n$. The node set $V$ of $G$ is in
+1-1 correspondence with active nodes of $G_n$ while the edge set $E$ is in 1-1
+correspondence with all temporal paths of length 2 on $G_n$.
+
+We now establish a similar 1-1 correspondence of forward neighbors of an active
+node with a subset of $G$.
+By definition, the forward neighbors of some active node $(v, t) \in G_n$ are
+active nodes of either the form $(v, t')$ for some $t' > t$ or $(u, t)$ for some
+$u\ne v$. Clearly, the former are elements of $E' \subseteq E$ while the latter
+are elements of $E^{[t]} \subseteq \bigcup_s \tilde E^{[s]} \subseteq E$.
+Thus each forward neighbor of an active node $(v, t) \in G_n$ is in 1-1
+correspondence with a node in $V$ that is a neighbor of $v_t \in V$.
+
+The correctness of BFS on the evolving graph $G_n$ now follows from the
+correctness of BFS on the static graph $G$, since we have also established a 1-1
+correspondence for every intermediate quantity in Algorithm~\ref{alg:bfs}.
+\endproof
 
 
 \subsection{Analysis}
@@ -831,7 +858,8 @@ we can compute  the result in parallel.
 \begin{thm}
  Algorithm \ref{alg:bfs} and Algorithm \ref{alg:bfsla} are equivalent.
 \end{thm}
-\proof
+
+\IEEEproof
 We shall check the two algorithms are equivalent in each module of
 the method.
 The initialization steps are trivially equivalent.
