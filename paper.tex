@@ -176,9 +176,8 @@ However, if $2$ talks to $3$ before $1$ talks to $2$, then
 $3$ can never get $a$.
 
 We can use analyze the spread of information between the players using graph
-theory. In this process, the time ordering of events matters, which leads us to
-consider a graph that changes over time, i.e.\ a graph $G(t) = (V(t), E(t))$ whose
-vertex set $V$ and edge set $E$ evolve over on time, $t$.
+theory. In this process, the time ordering of events matters, and hence its
+graph representation $G(t) = (V(t), E(t))$ must be time dependent.
 Such a graph is called an ``evolving graph''~\cite{fkp89,bkmu12},
 ``evolving network'' or %XXX WHO?
 ``time-dependent graph''. %XXX WHO?
@@ -200,9 +199,12 @@ and can be interpreted naturally as a graph traveral problem. Traversals of an
 ordinary (static) graph may be computed using well known methods such as the
 breadth-first search (BFS). However, a proper description of the dynamics
 requires paths that also move monotonically forward in time, thus necessating
-a generalization of the ordinary BFS algorithm. An informal description of such
-a generalization was provided by \cite{tmml09}.
+a generalization of the ordinary BFS algorithm.
 
+An informal description of BFS generalized to evolving graphs can be found in
+\cite{tmml09}. However, it turns out that the proper generalization involves
+paths of nontrivial structure which sometimes contradict na\"ive generalizations
+of results derived from static graphs.
 In this paper, we present a complete description of the BFS algorithm for evolving graphs.
 The algebraic formulation of this algorithm makes explicit several subtleties in the correct
 determination of relevant trajectories, which we term \textit{temporal paths},
@@ -216,6 +218,7 @@ of quantities which can be expressed as sums over paths, e.g.\ Katz centrality.
 
 
 \subsection{Temporal Paths over Active Nodes}
+\label{sec:temporal-paths}
 
 \begin{figure}[h]
  \begin{center}
@@ -331,7 +334,7 @@ The black dashed lines of the two figures indicate two temporal paths from $(1, 
 The restriction that temporal paths may only traverse active nodes reflects
 underlying structure in many real world applications, such as analyzing the
 influence of nodes over social networks. We will also show later in
-%XXX FIX X-REF TO SECTION
+Section~\ref{sec:temp-paths-adjac}
 that the resulting structure of allowable temporal paths leads to nontrivial
 subtleties in the generalization of algorithms and concepts from ordinary
 (static) graphs.
@@ -341,7 +344,7 @@ subtleties in the generalization of algorithms and concepts from ordinary
 \subsection{Breadth-First Traversal Over Temporal Paths}
 \label{sec:evolving-graph-bfs}
 
-The example presented above in Section~\ref{sec:breadth-first-search}
+The example presented above in Section~\ref{sec:temporal-paths}
 demonstrates how the notion of active nodes restrict the set of temporal paths
 that need to be considered when traversing an evolving graph.
 
@@ -431,8 +434,7 @@ nodes. The definition implies that if either or both end points of a temporal
 path are inactive, then the entire temporal path must be the empty sequence
 $\langle \rangle$. Keeping track explicitly of the time labels of each temporal
 node allows greater generality to cases where the node sets change over time.
-Furthermore, we shall show later in
-%XXX X-REF
+Furthermore, we shall show later in \ref{sec:temp-paths-adjac}
 that the explicit bookkeeping of the time labels is essential for correctly
 generalizing the BFS to evolving graphs.
 
