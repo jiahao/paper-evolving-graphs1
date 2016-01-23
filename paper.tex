@@ -506,9 +506,9 @@ forward neighbors.
  \SetKwFor{If}{if}{}{end}
  \SetKwFunction{nei}{forwardneighbors}
  \SetKwProg{Fn}{function}{}{end}
- \Fn{BFS($G_n, (v_0,t_0)$)}{
-  $reached[(v_0,t_0)] = 0$ \\
-  $frontier = \{(v_0,t_0)\}$ \\
+ \Fn{BFS($G_n, (v_1,t_1)$)}{
+  $reached[(v_1,t_1)] = 0$ \\
+  $frontier = \{(v_1,t_1)\}$ \\
   $k = 1$ \\
   \While{$frontier \ne \emptyset$}{
    $nextfrontier = \emptyset$ \\
@@ -529,7 +529,7 @@ forward neighbors.
 root $(v_1, t_1)$. The return value, $reached$, is a dictionary mapping all
 reachable temporal notes from the root to their distances from the root. At the
 end of each iteration $k$, the $frontier$ set contains all temporal nodes of
-distance $k$ fro the root.
+distance $k$ from the root.
 }
 \label{alg:bfs}
 \end{algorithm}
@@ -894,19 +894,19 @@ from $(s,t_1)$ to $(v,t)$ and so $(v,t) \in T(s,t_1)$.
 \label{sec:temp-paths-adjac}
 
 %walks on graphs
-Let $A$ be the corresponding adjacency matrix of a graph $G$. 
-It is a well known result that the $(i,j)$ entry of $A^k$ counts the number of 
-walks of length exactly $k$ between node $i$ and node $j$. 
-It is natural to consider a generalization of this relationship to 
-the case of evolving graphs. 
-One may conclude that  the $(i,j)$ entry of the sum of all the product 
+Let $A$ be the corresponding adjacency matrix of a graph $G$.
+It is a well known result that the $(i,j)$ entry of $A^k$ counts the number of
+walks of length exactly $k$ between node $i$ and node $j$.
+It is natural to consider a generalization of this relationship to
+the case of evolving graphs.
+One may conclude that  the $(i,j)$ entry of the sum of all the product
 \begin{equation}
 \label{eq:sum}
 A^{[1]}A^{[t_i]}A^{[t_j]} \cdots A^{t_k]}A^{[n]},  \quad t_i \leq t_j \leq \cdots \leq t_k,
 \end{equation}
 counts the number of temporal paths from $(i,1)$ to $(j,n)$.
-However, if we look at it carefully. We observe some temporal paths are 
-missed. 
+However, if we look at it carefully. We observe some temporal paths are
+missed.
 In Figure \ref{fig:eg_shortest_path}, the $(1,3)$ entry of the sum of the product
 \[
 A^{[1]}A^{[2]}A^{[3]} + A^{[1]}A^{[3]}
@@ -914,23 +914,23 @@ A^{[1]}A^{[2]}A^{[3]} + A^{[1]}A^{[3]}
 is equal to $1$ even though
 there are two temporal paths from $(1, t_1)$ to $(3, t_3)$ as shown in Figure \ref{fig:active}.
 % Indeed, Grindrod et al. \cite{gphe11} observe
-% that the $(i,j)$ entry of $A^{[1]}A^{[2]}\cdots A^{[n]}$ counts the number of 
+% that the $(i,j)$ entry of $A^{[1]}A^{[2]}\cdots A^{[n]}$ counts the number of
 % temporal paths of length $n$ from $(i, 1)$ to $(j, n)$, which
-% go through exactly one edge at each time stamp between 
-% $t_1$ and $t_n$. 
-% Intuitively, it seems that the $(i,j)$ entry of 
+% go through exactly one edge at each time stamp between
+% $t_1$ and $t_n$.
+% Intuitively, it seems that the $(i,j)$ entry of
 % the summation of all the products of the form
-% counts the number of all temporal paths between $i$ and $j$ at all 
-% time stamps.  
+% counts the number of all temporal paths between $i$ and $j$ at all
+% time stamps.
 % However, this is not true since not all temporal paths go through
-% exactly one edge at each time stamp. 
+% exactly one edge at each time stamp.
 % In Figure , the summation of all the products of adjacency matrices
-% $A^{[1]}$, $A^{[2]}$, and $A^{[3]}$ 
+% $A^{[1]}$, $A^{[2]}$, and $A^{[3]}$
 % \[
 % A^{[1]}A^{[2]}A^{[3]}  = 0
 % \]
 % The $(1,3)$ entry is equal to $1$.  But there are two temporal
-% paths from $(1, t_1)$ to $(3, t_3)$ as shown in Figure \ref{fig:active}. 
+% paths from $(1, t_1)$ to $(3, t_3)$ as shown in Figure \ref{fig:active}.
 % missing components call it E
 % For adjacency matrices $A^{[s]}$ and $A^{[t]}$, where $s < t$, a nonzero entry
 % $(i,j)$ of $A^{[s]} A^{[t]}$ indicates a temporal path from
@@ -939,7 +939,7 @@ there are two temporal paths from $(1, t_1)$ to $(3, t_3)$ as shown in Figure \r
 % In general, a nonzero entry $(i,j)$ of the matrix $A^{[1]}A^{[2]}\cdots A^{[n]}$
 % indicates a temporal path $p$ that starts at $(i,1)$ and ends at  $(j,n)$.
 % Notice the fact that $p$ must go through at least one edge at each time stamp between $1$ and $n$.
-Notice $A^{[1]}A^{[2]} = 0$ since 
+Notice $A^{[1]}A^{[2]} = 0$ since
 there is no temporal path from time stamp $t_1$ to $t_2$ that
 go through at least one edge at $t_1$. However,
 \[
