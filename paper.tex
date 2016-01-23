@@ -352,7 +352,7 @@ Our notation generalizes the standard notations for static graphs presented in
 \cite{even12,kegi11}.
 
 \begin{defn}
-An \textit{evolving graph} $G_n$ is a sequence of
+An \textbf{evolving graph} $G_n$ is a sequence of
 (static) graphs
 $G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]} \rangle$ with associated
 time labels $t_1, t_2, \ldots, t_n$ respectively.
@@ -388,22 +388,28 @@ Intuitively, an evolving graph is some discretization of the continuous-time fam
 
 
 We assume no particular relation between the node and edge sets for each static
-graph $G^{[t]} = (V^{[t]}, E^{[t]})$.
+graph $G^{[t]} = (V^{[t]}, E^{[t]})$. In particular, we allow the node sets to
+change over time, so that each $V^{[t]}$ may be different. Changing
+node sets happen naturally in citation networks, where nodes may appear or
+disappear from the citation network over time.
+The addition, removal, or relabeling of nodes can be expressed in terms
+of a map $\Pi^{[t,t^\prime]} : V^{[t]} \rightarrow V^{[t^\prime]}$ that expresses
+the appropriate permutations and/or projections.
 
 
 
 \begin{defn}
-A \textit{temporal node} is a pair $(v, t)$, where $v\in V^{[t]}$ is a node at
+A \textbf{temporal node} is a pair $(v, t)$, where $v\in V^{[t]}$ is a node at
 a time $t$.
 \end{defn}
 
 
 \begin{defn}
-An \textit{active node} is a temporal node $(v,t)$ if there exists at least one
+An \textbf{active node} is a temporal node $(v,t)$ if there exists at least one
 edge $e\in E^{[t]}$ that connects $v\in V^{[t]}$ to another node $w\in V^{[t]}$,
 $w\ne v$.
 
-An \textit{inactive node} is a temporal node that is not an active node.
+An \textbf{inactive node} is a temporal node that is not an active node.
 \end{defn}
 
 In Figure~\ref{fig:eg_shortest_path}, the temporal nodes $(1,t_1)$ and $(2,t_2)$
@@ -411,89 +417,69 @@ are active nodes, whereas the temporal node $(3,t_1)$ is an inactive node.
 
 
 \begin{defn}
-A \textit{temporal path on an evolving graph $G_n$ from temporal node $(v_1, t_1)$
-to temporal node $(v_m, t_m)$} is a time-ordered sequence of temporal notes,
+A \textbf{temporal path} of length $m$ on an evolving graph $G_n$
+from temporal node $(v_1, t_1)$ to temporal node $(v_m, t_m)$} is
+a time-ordered sequence of active nodes,
 $\langle (v_1, t_1), (v_2, t_2), \ldots, (v_m, t_m) \rangle$.
 Here, time ordering means that $t_1 \leq t_2 \leq \cdots \leq t_m$ and
 $v_i = v_j$ iff $t_i \ne t_j$.
-The length of a temporal path is the length of the sequence.
+\end{defn}
+
+This definition of a temporal path differs from that of the dynamic walk
+in \cite{gphe11,grihig13} in its explicit requirement of containing only active
+nodes. The definition implies that if either or both end points of a temporal
+path are inactive, then the entire temporal path must be the empty sequence
+$\langle \rangle$. Keeping track explicitly of the time labels of each temporal
+node allows greater generality to cases where the node sets change over time.
+Furthermore, we shall show later in
+%XXX X-REF
+that the explicit bookkeeping of the time labels is essential for correctly
+generalizing the BFS to evolving graphs.
+
+
+The following definition of \textbf{forward neighbors} generalizes the notion of
+neighbors and reachability in static graphs.
+
+
+\begin{defn}
+The \textbf{$k$-forward neighbors} of a temporal node $(v, t)$ are the temporal nodes
+that are the $k+1$st temporal node in every temporal path of length $k+1$ starting
+from $(v, t)$. The \textbf{forward neighbors} of a temporal node $(v, t)$ are its
+ \textbf{1-forward neighbors}.
+\end{defn}
+
+In Figure~\ref{fig:eg_shortest_path},
+the forward-neighbors of $(1, t_1)$ are $(2, t_1)$ and $(1, t_2)$ and
+the forward-neighbors of $(2, t_1)$ is $(2, t_3)$.
+The 2-forward neighbors of $(1, t_1)$ are
+$(2, t_1), (1, t_2), (2, t_2)$ and $(3, t_2)$.
+By construction, time stamp of every forward neighbor of an active node $(v, t)$
+must be no earlier than $t$.
+
+
+\begin{defn}
+The distance from a temporal node $(v, t)$ to a temporal node $(w, s)$ is
+the $k$ for which $(w, s)$ is a $k$-forward neighbor of $(v, t)$.
+\end{defn}
+
+Note that this notion of distance is not a metric, since the distance from $(v, t)$
+to $(w, s)$ will in general differ from the distance of $(v, t)$ from $(w, s)$.
+
+
+\begin{defn}
+A temporal node $(w, s)$ is \textbf{reachable} from a temporal node $(v, t)$ if
+the distance to $(w, s)$ from a temporal node $(v, t)$ there exists some finite
+integer $k$ for which $(w, s)$ is a $k$-forward neighbor of $(v, t)$.
 \end{defn}
 
 
-This definition of a temporal path is essentially that of the dynamic walk
-in \cite{gphe11,grihig13}.
+The BFS on evolving graphs is described in Algorithm \ref{alg:bfs}.
+Given an evolving graph $G_n$ and a root $(s,t)$,
+Algorithm~\ref{alg:bfs} returns all temporal notes reachable from the root and
+their distances from the root.
+The BFS constructs a tree inductively by discovering all $k$-forward neighbors
+of the root before proceeding to all $(k+1)$-forward neighbors of the root.
 
-
-Grindrod et al.'s model  \cite{gphe11} \cite{grihig13} is very similar to ours,
-where an evolving graph is considered as a sequence of adjacency matrices.
-% We present a preliminary discussion of using the model to mine citation networks.
-
-% why BFS is important?
-
-% Given a graph and a source node $s$,
-% the breadth-first search (BFS) systematically discover every node that is reachable from $s$.
-% As the name suggested, BFS expands the frontier of discovered regions
-% uniformly across the breadth, i.e., the algorithm discovers all nodes
-% that are $k$ walks away from $s$ before discovering any nodes that are
-% $k+1$ walks away.
-A temporal path is the basic element to
- define almost  all important evolving graph algorithms.
-Matrix-matrix multiplication between consecutive adjacency matrices
-were commonly used as a means of determining temporal paths \cite{gphe11,grihig13}. However, we show
-in one specific case it fails to include all the temporal paths and thus should not be used
-for searching evolving graphs in general.
-
-Breadth-first search (BFS) is probably the most basic graph searching algorithm and
-it is also the building block of other graph algorithms like minimum spanning tree
-and shortest path \cite{ckrs09}.
-Despite the fact that graph metrics \cite{ntmm13,tmml09,tsmm09} and
-various centrality measures like Katz centrality~\cite{gphe11,grihig13},
-betweenness \cite{alhi15}, and closeness \cite{tmml10})
-have been generalized for evolving graphs,
-a BFS for evolving graphs, which we shall call it \emph{evolving-graph BFS},
-was never explicitly described or verified.
-Therefore, there is a need for clear presentations of the algorithm.
-
-In this paper,  we present descriptions of an evolving-graph BFS algorithm, but its main concern is with its sparse matrix
-representation and linear algebraic computations.
-We prove that the two algorithms (graph notation and algebra notation) are equivalent.
-
-% GraphBlas related ideas
-
-% This paper is organized as follows. The evolving-graph BFS algorithm is described
-% and analyzed using graph notation in Section \ref{sec:breadth-first-search}. Section \ref{sec:evolv-graph-algor} considers the algebraic representation of the algorithm:
-% A sparse matrix representation
-% of an evolving graph is presented in \ref{sec:representation}.
-% The algorithm is presented in \ref{sec:breadth-first-search-1} and
-% the properties of the search tree is discussed in \ref{sec:short-temp-path}.
-% The connection between a temporal path and a matrix-matrix multiplication is considered and discussed in \ref{sec:matr-matr-mult}. Finally,
-% an application of the evolving-graph BFS in mining citation networks is described in Section \ref{sec:applications}.
-
-
-
-
-
-We would like a BFS on evolving graphs to work similar to that on graphs: the search starts with some source node $(s,t)$, called \emph{root}. It constructs a tree through discovering all nodes that are reachable by
-temporal paths of length $k$ before moving to all nodes that are reachable by
- temporal paths of length $k+1$.
-By construction, the time stamp of an active node is always not later than
-that of its descendant. Suppose we
-start with node $(1, t_1)$ in Figure \ref{fig:eg_shortest_path}.
-After $1$ temporal path from $(1, t_1)$, we can reach
-$(2, t_1)$ and $(1, t_2)$. After $2$ temporal paths, we can reach
-$(2, t_1), (1, t_2), (2, t_2)$ and $(3, t_2)$.
-% This example motivates us to define the reachable set of
-% a node-timestamp pair.
-Formally, we define the \emph{forward-neighbors} of a node $(v, t)$ to
-be the set of all the reachable nodes after $1$ temporal path from
-$(v, t)$, i.e., the nodes pointed by $v$ at time stamp $t$ and
-the active node $v$ itself at later time stamps. In Figure
-\ref{fig:eg_shortest_path},
-the forward-neighbors of $(1, t_1)$  are $(2, t_1)$ and $(1, t_2)$ and
-the forward-neighbors of $(2, t_1)$ is $(2, t_3)$.
-
-Given an evolving graph $G_n$ and a starting active node $(s,t)$, Algorithm \ref{alg:bfs}
-returns all the reachable active nodes and their distances from $(s,t)$.
 For Figure \ref{fig:eg_shortest_path}, suppose we start with $(1, t_2)$, then
 $frontier$ is $\langle(1,t_2)\rangle$ after step $5$.  Since the only forward-neighbor of
 $(1,t_2)$ is $(3,t_2)$, $dict.(3,t_2) =1$ at step $11$ and $next$ is enqueued to be
@@ -529,9 +515,10 @@ $next = \langle (3,t_3) \rangle$ and so on. The loop terminates when $frontier$ 
   }
   \textbf{return} $dict$
 }
- \caption{Evolving-graph BFS.
-Let $G_n$ be an
-evolving graph represented by adjacency lists and $(s, t)$ is a node
+ \caption{Breadth-first search (BFS) on an evolving graph: given
+$G_n$, an evolving graph represented by adjacency lists, and a root $(s, t)$,
+
+ is a node
 of $G_n$.
 For each node-time stamp pair $(v_i,t_i)$,
 we use a dictionary $dict.(v_i,t_i)$ to store its distance (the length of temporal
