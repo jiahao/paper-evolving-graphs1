@@ -499,6 +499,11 @@ so $reached[(3,t_3)]=2$ and $nextfrontier = \{(3,t_3)\}$ and so on.
 The algorithm terminates after $k=3$ after verifying that $(3,t_3)$ has no
 forward neighbors.
 
+The preceding example illustrates the fact that $G^{[1]}$ plays no part in the
+BFS traversal of $G_n$ starting from $(1, t_2)$. In general, all $G^{[t]}$ with
+time stamps $t < t'$ for a starting node $(v, t')$ are irrelevant to the BFS
+traversal. Hence without loss of generality we may assume that BFS is always
+computed with a root at time $t_1$, the earliest time stamp in $G_n$.
 
 \begin{algorithm}[h]
  \SetKwFor{For}{for}{}{end}
@@ -605,21 +610,22 @@ and so the result follows.
 
 \section{Formulating the Evolving Graph BFS with Linear Algebra}
 \label{sec:representation}
-As before, let $G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]}\rangle$ be an evolving graph with $n$ time stamps. For each graph $G^{[t]}$, we use $A^{[t]}$ to denote
-the corresponding adjacency matrix.
+
+For each static graph $G^{[t]} = (V^{[t]}, E^{[t]})$ that constitutes the
+evolving graph $G_n$, define its corresponding
+$\left\vert V^{[t]}\right\vert \times \left\vert V^{[t]}\right\vert$
+adjacency matrix with elements
 \[
-A^{[t]}(i,j) =
+A^{[t]}_{ij} =
 \begin{cases}
- 1 & \mbox{if $(i,j)$ is an edge of $G^{[t]}$,} \\
+ 1 & \mbox{if $(i,j)\in E^{[t]}$,} \\
  0 & \mbox{otherwise.}
 \end{cases}
 \]
- Each $A^{[t]}$ can be represented by
-a $|V|\times |V|$ sparse matrix,
-where $|V|$ is the total number of nodes in $G_n$.
-We use a sequence of adjacency matrices $A_n = \langle A^{[1]}, A^{[2]}, \ldots, A^{n]}\rangle$ to represent $G_n$.
-For example, the evolving graph in Figure \ref{fig:eg_shortest_path}
-can be represented as
+
+We can then represent $G_n$ using the sequence of adjacency matrices
+$A_n = \langle A^{[1]}, A^{[2]}, \ldots, A^{n]}\rangle$. The example in
+Figure~\ref{fig:eg_shortest_path} can be represented as
 \[
 \left\langle
   \begin{bmatrix}
@@ -637,47 +643,38 @@ can be represented as
   0 & 0 & 1 \\
   0 & 0 & 0
  \end{bmatrix}
-\right\rangle
+\right\rangle.
 \]
 
-
-This algebraic formulation exploits a graphical interpretation of matrix--vector
-products involving the adjacency matrix~\cite{kegi11}.
-Let $G = (V, E)$ be a (directed or undirected) graph
-and $k$ be a node in the graph $G$. If $A$ is the adjacency matrix of $G$ and
-$b$ is the column vector
+This algebraic representation allows us to exploit a graphical interpretation of
+matrix--vector products involving the adjacency matrix~\cite{kegi11}.
+If $A$ is the adjacency matrix of a (static) graph $G$ and $e_k$ is $k$th
+elementary unit vector, then the nonzero entries of $A^T e_k$ have indices that
+are neighbors of $k$.
+The algebraic formulation of BFS on evolving graphs follows similarly, but
+requires a new kind of matrix--vector product, $\odot$, defined by
 \[
-b_i =
-\begin{cases}
-1 & \mbox{if $i = k$,} \\
-0 & \mbox{otherwise,}
-\end{cases}
-\]
-then $A^Tb$ is a column vector whose nonzero entries have indices that are the
-forward-neighbors of $k$.
-
-The evolving graph BFS can be thought of as a generalization of blocked
-matrix--vector products.
-Introduce a new operator $\odot$, a variation on the ordinary matrix--vector
-product such that
-\[
-A^T \odot b =
+A^T \!\odot b =
 \begin{cases}
 b & \mbox{if $A^Tb \ne 0$,} \\
 0 & \mbox{otherwise.}
 \end{cases}
 \]
-Then, the forward-neighbors of node $(k, 1)$ in $A_n = \langle A^{[1]}, A^{[2]}, \ldots, A^{n]}\rangle$ are the nonzero indices of the
-elements in the sequence
+The forward neighbors of a temporal node $(k, t_1)$ in $A_n$ are then be determined
+from the indices and time stamps of the nonzero elements in the sequence
 \begin{equation}
 \label{eq:out_ne}
-\big\langle (A^{[1]})^Tb, \quad  (A^{[2]})^T\odot b, \quad \ldots \quad (A^{[n]})^T\odot b \big\rangle.
+\big\langle (A^{[1]})^Te_k, \; (A^{[2]})^T\!\odot e_k, \; \ldots \; (A^{[n]})^T\!\odot e_k\big\rangle.
 \end{equation}
-The forward-neighbors at time stamp $t$ are the nonzero indices of the $t$-th element of the above sequence.
-Hence given $A_n$ and a vector $b$, we can use \eqref{eq:out_ne} to
-get a $1$-step BFS tree. In Figure \ref{fig:eg_shortest_path}, the forward-neighbors
-of node $(1, t_1)$ can be computed by
+The nonzero entries of the first vector represent forward neighbors that are on
+the same time stamp $t_1$, whereas all other nonzero entries represent forward
+neighbors that are advanced in time but remain on the same node $k$.
+The quantity \eqref{eq:out_ne} therefore encodes a BFS tree of depth 2,
+as its nonzero entries are labeled by all temporal nodes of distance 1 from
+$(k, t_1)$.
 
+Referring back to the example of Figure~\ref{fig:eg_shortest_path}, the forward
+neighbors of node $(1, t_1)$ can be computed by
 \begin{align*}
 \left\langle
   \begin{bmatrix}
@@ -689,8 +686,7 @@ of node $(1, t_1)$ can be computed by
 1 \\
 0 \\
 0
-\end{bmatrix}
-,
+\end{bmatrix}\!,
  \begin{bmatrix}
    0 & 0 & 0 \\
    0 & 0 & 0 \\
@@ -701,8 +697,7 @@ of node $(1, t_1)$ can be computed by
 1 \\
 0 \\
 0
-\end{bmatrix}
-,
+\end{bmatrix}\!,
  \begin{bmatrix}
   0 & 0 & 0 \\
   0 & 0 & 0 \\
@@ -713,7 +708,7 @@ of node $(1, t_1)$ can be computed by
 1 \\
 0 \\
 0
-\end{bmatrix}
+\end{bmatrix}\!
 \right\rangle
 \\
 =
@@ -735,7 +730,8 @@ of node $(1, t_1)$ can be computed by
 \end{bmatrix}
 \right\rangle
 \end{align*}
-This means node $(2,t_1)$ and $(1,t_2)$ are the forward-neighbors of $(1,t_1)$.
+From this computation, we can deduce that $(2,t_1)$ and $(1,t_2)$ are the forward
+neighbors of $(1,t_1)$.
 
 Let $(A^{[i]})^Tb = c_i$.
 At the second step, we need to compute the following components
