@@ -27,7 +27,7 @@
 \definecolor{textcolor}{rgb}{0,0,5}
 \definecolor{blue1}{RGB}{187,217,238}
 \definecolor{blue2}{RGB}{235,244,250}
-\definecolor{yellow1}{RGB}{255,249,234}
+\definecolor{yellow1}{RGB}{255,255,102}
 \definecolor{blue3}{RGB}{63,40,96}
 \definecolor{red1}{RGB}{255, 102, 102}
 \definecolor{green1}{RGB}{102, 255, 102}
@@ -488,6 +488,91 @@ Within the outermost loop, the algorithm iterates over $frontier$, a list of all
 temporal nodes of distance $k$ from the root. The $nextfrontier$ list is populated
 with all temporal nodes that are forward neighbors of any temporal node in the
 $frontier$ list which have not yet been reached by the algorithm.
+
+
+\begin{figure}[h]
+ \begin{center}
+    \begin{tikzpicture}[scale=.36, line width =1.4pt]
+  \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
+  \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
+
+  \node[circle,draw=red1, minimum size=0.2cm] (n6) at (3,7) {2};
+  \node[circle,fill=green1, draw=black, minimum size=0.2cm] (n4) at (-2,5) {3};
+  \node[circle,fill=green1, draw=black, minimum size=0.2cm] (n1) at (0,10) {1};
+
+   \node[circle,fill=green1, minimum size=0.2cm] (n11) at (11,7) {2};
+  \node[circle,fill=green1, minimum size=0.2cm] (n12) at (6,5)  {3};
+  \node[circle,draw=red1, minimum size=0.2cm] (n14) at (8,10) {1};
+
+  \foreach \from/\to in {n10/n7, n11/n12}
+   \draw[every edge,->] (\from) -- (\to);
+     \draw[dotted,->](n1) -- (n4);
+  %\draw[dotted,->](n10) -- (n1);
+  %\draw[dotted,->](n4) -- (n12);
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(4,3) -- (-2,3) node [midway,yshift=-0.6cm]{ $t_2$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(-4,3) -- (-10.5,3) node [midway,yshift=-0.6cm]{ $t_1$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
+    \end{tikzpicture}
+   \begin{tikzpicture}[scale=.36, line width =1.4pt]
+  \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
+  \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
+
+  \node[circle,draw=red1, minimum size=0.2cm] (n6) at (3,7) {2};
+  \node[circle,fill=green1, draw=black, minimum size=0.2cm] (n4) at (-2,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n1) at (0,10) {1};
+
+   \node[circle,fill=green1, minimum size=0.2cm] (n11) at (11,7) {2};
+  \node[circle,fill=green1, draw=black, minimum size=0.2cm] (n12) at (6,5)  {3};
+  \node[circle,draw=red1, minimum size=0.2cm] (n14) at (8,10) {1};
+
+  \foreach \from/\to in {n1/n4, n10/n7, n11/n12}
+   \draw[every edge,->] (\from) -- (\to);
+    % \draw[dotted,->](n7) to[out=70, in=40] (n11);
+  \draw[dotted,->](n4) -- (n12);
+  % \draw[dotted,->](n11) -- (n12);
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(4,3) -- (-2,3) node [midway,yshift=-0.6cm]{ $t_2$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(-4,3) -- (-10.5,3) node [midway,yshift=-0.6cm]{ $t_1$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
+    \end{tikzpicture}
+   \begin{tikzpicture}[scale=.36, line width =1.4pt]
+  \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
+  \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
+
+  \node[circle,draw=red1, minimum size=0.2cm] (n6) at (3,7) {2};
+  \node[circle,fill=green1, minimum size=0.2cm] (n4) at (-2,5) {3};
+  \node[circle,fill=green1, minimum size=0.2cm] (n1) at (0,10) {1};
+
+   \node[circle,fill=green1, minimum size=0.2cm] (n11) at (11,7) {2};
+  \node[circle,fill=green1, draw = black, minimum size=0.2cm] (n12) at (6,5)  {3};
+  \node[circle,draw=red1, minimum size=0.2cm] (n14) at (8,10) {1};
+
+  \foreach \from/\to in {n1/n4, n10/n7, n11/n12}
+   \draw[every edge,->] (\from) -- (\to);
+    % \draw[dotted,->](n7) to[out=70, in=40] (n11);
+  %\draw[dotted,->](n10) -- (n7);
+   %\draw[dotted,->](n11) -- (n12);
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(4,3) -- (-2,3) node [midway,yshift=-0.6cm]{ $t_2$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(-4,3) -- (-10.5,3) node [midway,yshift=-0.6cm]{ $t_1$};
+\draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
+(11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
+    \end{tikzpicture}
+\end{center}
+\caption{An evolving graph with 3 time stamps $t_1$, $t_2$ and $t_3$.
+The circled green filled nodes indicate a BFS process starting at active node
+$(1, t_2)$.}
+\label{fig:example}
+\end{figure}
 
 As a simple example, consider the BFS on the example graph in
 Figure~\ref{fig:eg_shortest_path} starting from the root $(1, t_2)$.
