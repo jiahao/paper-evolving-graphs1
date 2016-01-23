@@ -418,7 +418,7 @@ are active nodes, whereas the temporal node $(3,t_1)$ is an inactive node.
 
 \begin{defn}
 A \textbf{temporal path} of length $m$ on an evolving graph $G_n$
-from temporal node $(v_1, t_1)$ to temporal node $(v_m, t_m)$} is
+from temporal node $(v_1, t_1)$ to temporal node $(v_m, t_m)$ is
 a time-ordered sequence of active nodes,
 $\langle (v_1, t_1), (v_2, t_2), \ldots, (v_m, t_m) \rangle$.
 Here, time ordering means that $t_1 \leq t_2 \leq \cdots \leq t_m$ and
@@ -488,6 +488,13 @@ $frontier$ is not empty, we go through step $7$-$12$ again. This time
 the forward-neighbor of $(3,t_2)$ is $(3,t_3)$, so $dict.(3,t_3)=2$ and
 $next = \langle (3,t_3) \rangle$ and so on. The loop terminates when $frontier$ is empty.
 
+For each temporal node $(v_i,t_i)$, we use a dictionary $dict.(v_i,t_i)$
+to store its distance from $(s, t)$. We also use
+two FIFO queues $frontier$ and $next$, where $frontier$
+stores the frontier nodes of the current discovered regions and $next$ stores
+the frontier nodes of the next level.
+
+
 \begin{algorithm}[h]
  \SetKwFor{For}{for}{}{end}
  \SetKwFor{While}{while}{}{end}
@@ -515,21 +522,13 @@ $next = \langle (3,t_3) \rangle$ and so on. The loop terminates when $frontier$ 
   }
   \textbf{return} $dict$
 }
- \caption{Breadth-first search (BFS) on an evolving graph: given
-$G_n$, an evolving graph represented by adjacency lists, and a root $(s, t)$,
-
- is a node
-of $G_n$.
-For each node-time stamp pair $(v_i,t_i)$,
-we use a dictionary $dict.(v_i,t_i)$ to store its distance (the length of temporal
-paths) from $(s, t)$. We also use
-two first-in, first-out queue $frontier$ and $next$, where $frontier$
-stores the frontier nodes of the current discovered regions and $next$ stores
-the frontier nodes of the next level.
+\caption{Breadth-first search (BFS) on an evolving graph: given
+$G_n$, an evolving graph represented by adjacency lists, and a root $(s, t)$.
 The algorithm returns $dict$ which stores all reachable node-time stamp pairs from $(s,t)$ such that if $dict.(v_i, t_i) = k$,
 the length of the shortest temporal path
-from $(s,t)$ to $(v_i, t_i)$ is $k$.}
- \label{alg:bfs}
+from $(s,t)$ to $(v_i, t_i)$ is $k$.
+}
+\label{alg:bfs}
 \end{algorithm}
 
 %Also need to consider the operations for matrix lists.
