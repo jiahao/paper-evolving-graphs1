@@ -534,10 +534,55 @@ distance $k$ from the root.
 \label{alg:bfs}
 \end{algorithm}
 
+\begin{thm}[Correctness of the evolving graph BFS]
+Algorithm~\ref{alg:bfs} discovers every active node that is reachable from the
+root $(v_1, t_1)$, and $reached[(v, t)]$ is the distance from $(v_1, t_1)$ to
+$(v, t)$.
+\end{thm}
 
-%Also need to consider the operations for matrix lists.
+\proof
+Define a static graph $G=(V,E)$ with node set $V = $V^{[1]}$ $\{t\}, t\in\{t_1, t_2, \dots, t_n\}$  such that We could map an evolving graph $G_n$ to a static graph $G$ in such a way that
+if there is an edge from $(v, t)$ to $(u,t)$ in $G_n$, there is an edge from $v_t$ to $u_t$ in $G$.
+For any two nodes $v_s$ and $v_t$ in $G$, if $s < t$, we add an edge from $v_s$ to $v_t$.
+By construction, an active node $(v,t)$ in $G_n$ is in one-to-one correspondence with
+a node $v_t$ in $G$.
+The forward-neighbors of an active node $(v, t)$ in $G_n$
+are in one-to-one correspondence with the forward-neighbors of a node $v_t$ in $G$.
+Hence the correctness of the evolving graph BFS follows from that of a static graph.
+\endproof
 
-\subsection{Algebraic Evolving-Graph BFS}
+
+
+\subsection{Analysis}
+\label{sec:analysis}
+
+As presented, the BFS over evolving graphs makes no assumptions about how the% adjacency matrices
+Suppose $G_n$ is represented by adjacency lists.
+Then the number of adjacency lists is the same as the number
+of active nodes in $G_n$. So for large $n$, this representation
+can use a large amount of memory.
+For the graph $G^{[i]} = (V^{[i]}, E^{[i]})$ at time stamp $i$,
+we denote the active node set of $V^{[i]}$ as $\tilde V^{[i]}$,
+where we have $\tilde V^{[i]} \subseteq V^{[i]}$.
+Step $10$ of  Algorithm \ref{alg:bfs} ensures each active node-time stamp pair in $G_n$ is enqueued in $next$ (and then $frontier$) at most once.
+And so \texttt{forward-neighbors} loops through each
+active node-time stamp pair at most once.
+The operations of enqueuing take $O(1)$ time.
+Thus the total operations of enqueuing are
+$O(\sum_{i=1}^n|\tilde V^{[i]}|)$, where $|\cdot|$ represents the number of elements of a set.  Let $\sum_i |\tilde V^{[i]}| = |\tilde V|$ and $\sum_i |E^{[i]}| = |\hat E|$.
+Then the time of scanning
+\texttt{forward-neighbors} is
+\[
+\sum_{i=1}^n\sum_{v \in \tilde V^{[i]}} \texttt{forward-neighbors}(v) =
+O(|\hat E|),
+\]
+by the definition of forward-neighbors.
+Hence the total running time is $O(|\hat E|+ |\tilde V|)$.
+
+
+
+
+\section{Formulating the Evolving Graph BFS with Linear Algebra}
 \label{sec:representation}
 As before, let $G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]}\rangle$ be an evolving graph with $n$ time stamps. For each graph $G^{[t]}$, we use $A^{[t]}$ to denote
 the corresponding adjacency matrix.
@@ -783,48 +828,6 @@ Algorithm \ref{alg:bfsla} outlines the basic idea of an algebraic evolving-graph
 But in practice we don't need to form $\bm{A}$ explicitly at step $2$. By realizing the dependency between these sparse matrices,
 we can compute  the result in parallel.
 
-\subsection{Analysis}
-\label{sec:analysis}
-
-% adjacency matrices
-Suppose $G_n$ is represented by adjacency lists.
-Then the number of adjacency lists is the same as the number
-of active nodes in $G_n$. So for large $n$, this representation
-can use a large amount of memory.
-For the graph $G^{[i]} = (V^{[i]}, E^{[i]})$ at time stamp $i$,
-we denote the active node set of $V^{[i]}$ as $\tilde V^{[i]}$,
-where we have $\tilde V^{[i]} \subseteq V^{[i]}$.
-Step $10$ of  Algorithm \ref{alg:bfs} ensures each active node-time stamp pair in $G_n$ is enqueued in $next$ (and then $frontier$) at most once.
-And so \texttt{forward-neighbors} loops through each
-active node-time stamp pair at most once.
-The operations of enqueuing take $O(1)$ time.
-Thus the total operations of enqueuing are
-$O(\sum_{i=1}^n|\tilde V^{[i]}|)$, where $|\cdot|$ represents the number of elements of a set.  Let $\sum_i |\tilde V^{[i]}| = |\tilde V|$ and $\sum_i |E^{[i]}| = |\hat E|$.
-Then the time of scanning
-\texttt{forward-neighbors} is
-\[
-\sum_{i=1}^n\sum_{v \in \tilde V^{[i]}} \texttt{forward-neighbors}(v) =
-O(|\hat E|),
-\]
-by the definition of forward-neighbors.
-Hence the total running time is $O(|\hat E|+ |\tilde V|)$.
-
-\begin{thm}[Correctness of evolving-graph BFS]
-Let an evolving graph $G_n$ and a starting node $(s,t_0)$ be given.
-The evolving-graph BFS discovers every active node that is reachable from the source $(s,t_0)$ and $dict.(v, t)$ is the length of the shortest temporal path
-from $(s,t_0)$ to $(v,t)$.
-\end{thm}
-\proof
-We could map an evolving graph $G_n$ to a static graph $G$ in such a way that
-if there is an edge from $(v, t)$ to $(u,t)$ in $G_n$, there is an edge from $v_t$ to $u_t$ in $G$.
-For any two nodes $v_s$ and $v_t$ in $G$,  if $s < t$, we add an edge from $v_s$ to $v_t$.
-By construction, an active node $(v,t)$ in $G_n$ is in one-to-one correspondence with
-a node $v_t$ in $G$.
-The forward-neighbors of an active node $(v, t)$ in $G_n$
-are in one-to-one correspondence with the forward-neighbors of a node $v_t$ in $G$.
-Hence the correctness of the evolving graph BFS follows from that of a static graph.
-\endproof
-
 \begin{thm}
  Algorithm \ref{alg:bfs} and Algorithm \ref{alg:bfsla} are equivalent.
 \end{thm}
@@ -842,42 +845,6 @@ to keep record of the distance of each node from the source $(s,t)$.
 \endproof
 
 
-\subsection{Search Tree}
-\label{sec:short-temp-path}
-
-We say two nodes $(v_1,t_1)$ and $(v2, t_2)$ are \emph{temporally connected} if
-$(v_1, t_1)$ and $(v2,t_2)$ are connected by a temporal path.
-Notice this notion is symmetric, reflexive but not transitive. For example, suppose
-$t_1 < t_2 < t_3$ and $(v_1, t_1)$ and $(v_3, t_3)$ are temporally connected
-by a temporal path from $(v_1,t_1)$ to $(v_3, t_3)$. Also
-$(v_3, t_3)$ and $(v_2, t_2)$ are temporally connected by a temporal path from
-$(v_2,t_2)$ to $(v_3, t_3)$. But this does not imply $(v_1, t_1)$ and $(v_2, t_2)$ are temporal connected.
-
-Given a root node $(s, t)$, during the execution the evolving-graph BFS builds a search tree, denoted by $T(s,t)$,
-where nodes in $T(s,t)$ are temporally connected.
-\begin{lemma}
-For a node active at different time stamps, say $(s, t_1)$ and $(s,t_2)$ such that $t_1 \leq t_2$,  we have $T(s, t_2) \subseteq T(s, t_1)$, where $T(s,t_1) = T(s,t_2)$ if and only if
-$t_1 = t_2$.
-\end{lemma}
-\proof
-Trivially, $t_1 =t_2$ if and only if $(s,t_1) = (s,t_2)$ if and only if
-$T(s,t_1) = T(s,t_2)$. Now suppose $t_1 < t_2$.
-Let $(v, t)$ be an arbitrary active node that belongs to $T(s, t_2)$. Then there exists a temporal path
-(constructed by the evolving graph BFS) from $(s,t_2)$ to $(v,t)$. Since both
-$(s,t_1)$ and $(s,t_2)$ are active, $(s,t_2)$ is a forward-neighbor of $(s,t_1)$ by definition, i.e., there exists an edge from $(s,t_1)$ to $(s,t_2)$.  Hence there exists a temporal path
-from $(s,t_1)$ to $(v,t)$ and so $(v,t) \in T(s,t_1)$.
-\endproof
-
-% consider $(A+I)^Tb$, which records all the connected components.
-% consider the huge matrix block and how to relate it.
-
-% \subsection{Online Searching}
-% \label{sec:online-searching}
-
-% In this section, we consider ways of  updating new graphs. Suppose $A_n $ is
-% an evolving graph with $n$ timestamps. We received a new graph $A^{[n+1]}$
-% at timestamp $n+1$. How to update the tree components while minimize the computation?
-% The forward-neighbors at timestamp $$
 
 \section{Node Activeness and its Impact}
 \label{sec:matr-matr-mult}
@@ -1028,6 +995,43 @@ the other for determining root authors for forward searching
 so that we can
 filter out unessential or overlapped trees, which can be computed
 by ranking algorithms like PageRank \cite{pbmw99} or machine-learning based preference ranking.
+
+% \subsection{Search Tree}
+% \label{sec:short-temp-path}
+%
+% We say two nodes $(v_1,t_1)$ and $(v2, t_2)$ are \emph{temporally connected} if
+% $(v_1, t_1)$ and $(v2,t_2)$ are connected by a temporal path.
+% Notice this notion is symmetric, reflexive but not transitive. For example, suppose
+% $t_1 < t_2 < t_3$ and $(v_1, t_1)$ and $(v_3, t_3)$ are temporally connected
+% by a temporal path from $(v_1,t_1)$ to $(v_3, t_3)$. Also
+% $(v_3, t_3)$ and $(v_2, t_2)$ are temporally connected by a temporal path from
+% $(v_2,t_2)$ to $(v_3, t_3)$. But this does not imply $(v_1, t_1)$ and $(v_2, t_2)$ are temporal connected.
+%
+% Given a root node $(s, t)$, during the execution the evolving-graph BFS builds a search tree, denoted by $T(s,t)$,
+% where nodes in $T(s,t)$ are temporally connected.
+% \begin{lemma}
+% For a node active at different time stamps, say $(s, t_1)$ and $(s,t_2)$ such that $t_1 \leq t_2$,  we have $T(s, t_2) \subseteq T(s, t_1)$, where $T(s,t_1) = T(s,t_2)$ if and only if
+% $t_1 = t_2$.
+% \end{lemma}
+% \proof
+% Trivially, $t_1 =t_2$ if and only if $(s,t_1) = (s,t_2)$ if and only if
+% $T(s,t_1) = T(s,t_2)$. Now suppose $t_1 < t_2$.
+% Let $(v, t)$ be an arbitrary active node that belongs to $T(s, t_2)$. Then there exists a temporal path
+% (constructed by the evolving graph BFS) from $(s,t_2)$ to $(v,t)$. Since both
+% $(s,t_1)$ and $(s,t_2)$ are active, $(s,t_2)$ is a forward-neighbor of $(s,t_1)$ by definition, i.e., there exists an edge from $(s,t_1)$ to $(s,t_2)$.  Hence there exists a temporal path
+% from $(s,t_1)$ to $(v,t)$ and so $(v,t) \in T(s,t_1)$.
+% \endproof
+
+% consider $(A+I)^Tb$, which records all the connected components.
+% consider the huge matrix block and how to relate it.
+
+% \subsection{Online Searching}
+% \label{sec:online-searching}
+
+% In this section, we consider ways of  updating new graphs. Suppose $A_n $ is
+% an evolving graph with $n$ timestamps. We received a new graph $A^{[n+1]}$
+% at timestamp $n+1$. How to update the tree components while minimize the computation?
+% The forward-neighbors at timestamp $$
 
 
 \section{Conclusion}
