@@ -1061,8 +1061,9 @@ Define also a \emph{community} to be a group of
 researchers that have been influenced by the same authors.
 For example, given a paper published by $a$ at time $t$,
 we can determine $a$'s community by searching backward in time to find
-$T^-1(a, t_1)$, the authors that influenced $a$ at time $t$, and also searching
-forward to find $T(a, t_1)$.
+$T^{-1}(a, t)$, the authors that influenced $a$ at time $t$, and then searching
+forward to find $T(l_1, t_1) \cup T(l_1, t_2) \cup \cdots \cup T(l_k, t_k)$, where 
+$(l_1,t_1), (l_2, t_2), \ldots, (l_k, t_k)$ are the leaves of $T^{-1}(a,t)$.
 The backward search in time follows straightforwardly from the forward time traveral
 presented above simply by reversing the time labels, e.g.\ by the transformation
 $t\rightarrow -t$.
