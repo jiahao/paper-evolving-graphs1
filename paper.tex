@@ -42,7 +42,7 @@
 % Some very useful LaTeX packages include:
 % (uncomment the ones you want to load)
 
-
+\usepackage{hyperref}
 % *** MISC UTILITY PACKAGES ***
 %
 %\usepackage{ifpdf}
@@ -574,11 +574,12 @@ $(1, t_2)$.}
 
 As a simple example, consider the BFS on the example graph in
 Figure~\ref{fig:eg_shortest_path} starting from the root $(1, t_2)$.
+The procedure is shown in Figure \ref{fig:example}.
 The $frontier$ list is first initialized to $\{(1,t_2)\}$.
 Since the only forward neighbor of $(1,t_2)$ is $(3,t_2)$,
 iteration $k=1$ produces $reached[(3,t_2)]=1$ and $nextfrontier = \{(3,t_2)\}$.
 In the next iteration $k=2$, the only forward neighbor of $(3,t_2)$ is $(3,t_3)$,
-so $reached[(3,t_3)]=2$ and $nextfrontier = \{(3,t_3)\}$ and so on.
+so $reached[(3,t_3)]=2$ and $nextfrontier = \{(3,t_3)\}$.
 The algorithm terminates after $k=3$ after verifying that $(3,t_3)$ has no
 forward neighbors.
 
