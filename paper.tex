@@ -404,7 +404,7 @@ a time $t$.
 
 
 \begin{defn}
-An \textbf{active node} is a temporal node $(v,t)$ if there exists at least one
+A temporal node $(v,t)$ is an \textbf{active node} is there exists at least one
 edge $e\in E^{[t]}$ that connects $v\in V^{[t]}$ to another node $w\in V^{[t]}$,
 $w\ne v$.
 
@@ -430,7 +430,7 @@ nodes. The definition implies that if either or both end points of a temporal
 path are inactive, then the entire temporal path must be the empty sequence
 $\langle \rangle$. Keeping track explicitly of the time labels of each temporal
 node allows greater generality to cases where the node sets change over time.
-Furthermore, we shall show later in \ref{sec:temp-paths-adjac}
+Furthermore, we shall show later in Sec.~\ref{sec:temp-paths-adjac}
 that the explicit bookkeeping of the time labels is essential for correctly
 generalizing the BFS to evolving graphs.
 
@@ -448,7 +448,7 @@ from $(v, t)$. The \textbf{forward neighbors} of a temporal node $(v, t)$ are it
 
 In Figure~\ref{fig:eg_shortest_path},
 the forward neighbors of $(1, t_1)$ are $(2, t_1)$ and $(1, t_2)$ and
-the forward neighbors of $(2, t_1)$ is $(2, t_3)$.
+the only forward neighbor of $(2, t_1)$ is $(2, t_3)$.
 The 2-forward neighbors of $(1, t_1)$ are
 $(2, t_1), (1, t_2), (2, t_2)$ and $(3, t_2)$.
 By construction, time stamp of every forward neighbor of an active node $(v, t)$
@@ -633,9 +633,9 @@ to $(v, t)$.
 
 \IEEEproof
 Define the set of temporal nodes
-$\tilde V_L^{[t]} = \{(v_1)_t = (v_1, t) | (v_1, v_2) \in E^{[t]}\}$, which
+$\tilde V_L^{[t]} = \{(v_1, t) | (v_1, v_2) \in E^{[t]}\}$, which
 consists of the active nodes at time $t$ which participate on the left side of an edge.
-Similarly, $\tilde V_R^{[t]} = \{(v_2)_t = (v_2, t) | (v_1, v_2) \in E^{[t]}\}$
+Similarly, $\tilde V_R^{[t]} = \{ (v_2, t) | (v_1, v_2) \in E^{[t]}\}$
 are the corresponding active nodes on the right side of an edge. Then
 $\tilde V^{[t]} = \tilde V_L^{[t]} \cup \tilde V_R^{[t]}$ is the set of active
 nodes at time $t$, and $V = \bigcup_t \tilde V^{[t]}$ is the set of all
@@ -756,21 +756,20 @@ cannot be expressed by a product of adjacency matrices.
 
 Sums $S^{[t]}$ of the form \eqref{eq:sum} produce an incorrect count of temporal
 paths because they do not capture temporal paths with subpaths of the form
-$\langle (v, s), (v, t) \rangle$, $s < t$. The temporal path \eqref{eq:tpathex}
-is counted only by the matrix product $M^{[t_1]} A^{[t_2]}$, where
-\[
-    M^{[t_1]} = \begin{pmatrix}1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0\end{pmatrix}.
-\]
-$M^{[t_1]}$ describes the forward time propagation of active nodes. It counts
-temporal paths with subpaths $\langle (i, t_1), (i, t_2) \rangle$
-for all active nodes $(i, t_1)$ at time $t_1$, but not paths containing the
-subsequence $\langle (3, t_1), (3, t_2) \rangle$, which cannot exist in temporal
-paths since $(3, t_1)$ is an inactive node.
-
+$\langle (v, s), (v, t) \rangle$, $s < t$.
 One might attempt to amend the sums $S^{[t]}$ in \eqref{eq:sum} by redefining
-the adjacency matrices to include ones along the diagonal. However, the resulting
+the adjacency matrices to include ones along the diagonal, hence allowing
+paths containing the sequence $\langle (i, t_1), (i, t_2) \rangle$. However, the resulting
 sum is still incorrect, as it counts paths with subsequences $\langle (3, t_1), (3, t_2) \rangle$
-and are hence not temporal paths.
+and are hence not temporal paths. Instead, the temporal path \eqref{eq:tpathex}
+is counted only by the matrix product $M^{[t_1, t_2]} A^{[t_2]}$, where
+\[
+    M^{[t_1, t_2]} = \begin{pmatrix}1 & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0\end{pmatrix}.
+\]
+$M^{[t_1, t_2]}$ describes the forward time propagation of temporals nodes that
+are active at both times $t_1$ and $t_2$, i.e.\ it counts
+temporal paths that contain subsequences $\langle (i, t_1), (i, t_2) \rangle$,
+and both $(i, t_1)$ and $(i, t_2)$ are active nodes.
 
 The simple example of Figure~\ref{fig:eg_shortest_path} provides several
 counterexamples which demonstrate why sums over products of adjacency matrices of
@@ -1062,7 +1061,7 @@ researchers that have been influenced by the same authors.
 For example, given a paper published by $a$ at time $t$,
 we can determine $a$'s community by searching backward in time to find
 $T^{-1}(a, t)$, the authors that influenced $a$ at time $t$, and then searching
-forward to find $T(l_1, t_1) \cup T(l_1, t_2) \cup \cdots \cup T(l_k, t_k)$, where 
+forward to find $T(l_1, t_1) \cup T(l_1, t_2) \cup \cdots \cup T(l_k, t_k)$, where
 $(l_1,t_1), (l_2, t_2), \ldots, (l_k, t_k)$ are the leaves of $T^{-1}(a,t)$.
 The backward search in time follows straightforwardly from the forward time traveral
 presented above simply by reversing the time labels, e.g.\ by the transformation
@@ -1152,8 +1151,6 @@ graphs is now available as a open source Julia package.
 We thank N. J. Higham and V. \u Sego (Manchester) for helpful suggestions.
 W.\ Z.\ thanks the School of Mathematics at U. Manchester for research \& travel funding and
 A. Edelman for arranging for a fruitful visit to MIT.
-
-%XXX ANY OTHER FUNDING
 
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
