@@ -795,13 +795,14 @@ For each static graph $G^{[t]} = (V^{[t]}, E^{[t]})$ that constitutes the
 evolving graph $G_n$, define its corresponding
 $\left\vert V^{[t]}\right\vert \times \left\vert V^{[t]}\right\vert$
 adjacency matrix with elements
-\[
+\begin{equation}
 A^{[t]}_{ij} =
 \begin{cases}
  1 & \mbox{if $(i,j)\in E^{[t]}$,} \\
  0 & \mbox{otherwise.}
 \end{cases}
-\]
+\label{eqn:adjacency}
+\end{equation}
 
 We can then represent $G_n$ using the sequence of adjacency matrices
 $A_n = \langle A^{[1]}, A^{[2]}, \ldots, A^{n]}\rangle$. The example in
@@ -972,8 +973,8 @@ retaining only these rows and columns corresponding to $V$ produces the
 adjacency matrix $\bm A_n$ of $G = (V, E)$.
 
 The off-diagonal blocks $M^{[t_i, t_j]}$ provide an explicit matrix representation
-for the $\odot$ product in that $(M^{[t_i, t_j]})^T b = A^T \odot b$. The upper
-triangular structure of $\bm M_n$ (and hence $\bm A_n$) reflects the causal
+for the $\odot$ product in that $(M^{[t_i, t_j]})^T b = (A^{[t_i]})^T \odot b$.
+The upper triangular structure of $\bm M_n$ (and hence $\bm A_n$) reflects the causal
 nature of temporal paths in that they cannot go backward in time.
 
 The BFS algorithm presented above can therefore be interpreted as
@@ -984,6 +985,7 @@ block vector
 \bm b^T = [b^T, 0, \cdots, 0 ].
 \]
 
+%XXX Would be nice to have a figure for $G$.
 For the example of Figure~\ref{fig:eg_shortest_path}, we have
 \begin{align*}
 V & = \{(1,\!t_1), (2,\!t_1), (1,\!t_2), (3,\!t_2), (2,\!t_3), (3,\!t_3)\},\\
@@ -1014,18 +1016,45 @@ Starting from the vector $\bm b = e_1$, the sequence of iterates is then
 \right\rangle.
 \]
 
-We see that $\bm (A^T)^2$ correctly encodes the collection of products in
-\eqref{eq:5}-\eqref{eq:6}. Furthermore, $\bm (A^T)^3 \bm b$ correctly counts the
+We see that $\bm (A_n^T)^2$ correctly encodes the collection of products in
+\eqref{eq:5}-\eqref{eq:6}. Furthermore, $\bm (A_3^T)^3 \bm b$ correctly counts the
 two allowed temporal paths from $(1, t_1)$ to $(3, t_3)$, and that the
 off-diagonal structure encoded in $E'$ and the $M^{[t,t']}$ blocks are critical
 to obtaining the correct count.
+
+Finally, we prove a simple lemma that the block adjacency matrix $\bm A_n$ is
+nilpotent whenever all the subgraphs $G^{[t]}$ of $G_n$ are acyclic.
+
+\begin{lemma}[Acyclicity implies nilpotence]
+Let $G_n = \langle G^{[t_i]} \rangle_{i=1}^n$ be an evolving directed graph and
+let all the directed graphs $G^{[t]}$ be acyclic. Then $\bm A_n$ is nilpotent.
+\label{thm:nilpotent}
+\end{lemma}
+
+\IEEEproof
+Since each directed graph $G^{[t]}$ is acyclic, its corresponding adjacency
+matrix $A^{[t]}$ is strictly upper triangular. As a result, $\bm A_n$ must be
+upper triangular.
+
+Furthermore, none of the graphs $G^{[t]}$ can have any self-edges,
+i.e.\ edges of the form $(u, u)$, and so all diagonal entries of
+$A^{[t]}$ must be zero.  Therefore all the diagonal entries of $\bm A_n$ by
+construction must be zero also.
+
+We have now proven that $\bm A_n$ is an upper triangular matrix whose diagonal
+entries are all zero. Therefore, $\bm A_n$ is nilpotent.
+\endproof
+
+Lemma~\ref{thm:nilpotent} also holds for acyclic undirected graphs so long as
+the corresponding adjacency matrix representation is encoded in an asymmetric
+fashion akin to \eqref{eqn:adjacency}.
 
 
 \subsection{The algebraic formulation of BFS on evolving graphs}
 
 The blocked matrix--vector products introduced in the previous section allows us
 to write down an elegant algebraic formulation of BFS on evolving graphs, as
-presented in Algorithm~\ref{alg:bfsla}. Note that $\bm A^T$ need never be formed
+presented in Algorithm~\ref{alg:bfsla}. Note that $\bm A_n^T$ need never be formed
 explicitly, as only its matrix--vector product is required in the algorithm.
 
 \begin{algorithm}[h]
@@ -1039,13 +1068,13 @@ explicitly, as only its matrix--vector product is required in the algorithm.
  \SetKwFunction{map}{map}
  \SetKwProg{Fn}{function}{}{end}
  \Fn{ABFS($A_n, (v_1,t_1)$)}{
-   Form $\bm{A}^T$ from $A_n$.\\
+   Form $\bm A^T_n$ from $A_n$.\\
    $\bm{b}$ is a sparse vector of length $mn$. \\
    $\bm{b}_s = 1$ \\
    $k = 1$ \\
    $reached[(v_1,t_1)] = 0$ \\
    \While{\nz{$\bm{b}$} $\ne \emptyset$}{
-       $\bm{b} = \bm{A}^T\bm{b}$ \\
+       $\bm{b} = \bm{A}^T_n\bm{b}$ \\
        \For{$k \in$ \nz{$\bm{b}$}}{
          \If{\map{$k$} $\in reached$}{
            $\bm{b}_k = 0$ \\
@@ -1064,9 +1093,20 @@ Given $A_n$, the adjacency matrix representation of $G_n$ and $(v_1,t_1)$, a
 node of $G_n$, returns $reached$ as defined in Algorithm~\ref{alg:bfs}.
 The function \texttt{nonzeros(v)} returns the nonzero indices of the vector $v$,
 and the function \texttt{map(b)} maps a block vector's index (or indices) to their corresponding
-active node (or active nodes).}
+active nodes.}
 \label{alg:bfsla}
 \end{algorithm}
+
+\begin{thm}
+Algorithm~\ref{alg:bfsla} terminates.
+\end{thm}
+
+\IEEEproof
+Recall from Lemma~\ref{thm:nilpotent} that $\bm A_n$ is nilpotent, i.e.\
+there exists some positive integer $k$ for which $\bm A_n^k = 0$.
+Hence, after iteration $k$, $\bm b$ is assigned the value $\bm A_n^k \bm b = 0$.
+Therefore, Algorithm~\ref{alg:bfsla} must terminate after iteration $k$.
+\endproof
 
 \begin{thm}
 Algorithm \ref{alg:bfs} and Algorithm \ref{alg:bfsla} are equivalent.
@@ -1080,7 +1120,6 @@ The matrix--vector product $\bm A^T \bm b$ encodes the forward neighbors of all
 the frontier nodes. Subequently, active nodes that have already been visited in
 previous iterations are zeroed out of the new $\bm b$.
 \endproof
-
 
 
 \section{Implementation in Julia}
