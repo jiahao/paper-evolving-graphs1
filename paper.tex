@@ -191,10 +191,10 @@ the dynamics of communities by Grindrod, Higham and coworkers~\cite{gphe11,grihi
 The game described at the beginning can be encoded in terms of analyzing the
 microscopic dynamics of an evolving graph. The spread of information to the
 winner can be described in terms of discrete paths through the evolving graph,
-and can be interpreted naturally as a graph traveral problem. Traversals of an
+and can be interpreted naturally as a graph traversal problem. Traversals of an
 ordinary (static) graph may be computed using well known methods such as the
 breadth-first search (BFS). However, a proper description of the dynamics
-requires paths that also move monotonically forward in time, thus necessating
+requires paths that also move monotonically forward in time, thus necessitating
 a generalization of the ordinary BFS algorithm.
 
 An informal description of BFS generalized to evolving graphs can be found in
@@ -672,7 +672,7 @@ correspondence for every intermediate quantity in Algorithm~\ref{alg:bfs}.
 As presented, the BFS over evolving graphs makes no assumptions about how the
 evolving graph $G_n$ is represented. Suppose it is represented by a collection of
 adjacency lists, one for each active node in $G_n$. Then we have that the
-asympotic complexity of BFS on $G_n$ is the same as that for BFS on $G$, using
+asymptotic complexity of BFS on $G_n$ is the same as that for BFS on $G$, using
 the 1-1 construction of $G$ from $G_n$.
 
 \begin{thm}[Complexity of the evolving graph BFS]
@@ -801,7 +801,7 @@ is counted only by the matrix product $M^{[t_1, t_2]} A^{[t_2]}$, where
 \[
     M^{[t_1, t_2]} = \begin{pmatrix}1 & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0\end{pmatrix}.
 \]
-$M^{[t_1, t_2]}$ describes the forward time propagation of temporals nodes that
+$M^{[t_1, t_2]}$ describes the forward time propagation of temporal nodes that
 are active at both times $t_1$ and $t_2$, i.e.\ it counts
 temporal paths that contain subsequences $\langle (i, t_1), (i, t_2) \rangle$,
 and both $(i, t_1)$ and $(i, t_2)$ are active nodes.
@@ -1118,7 +1118,7 @@ The initialization steps are trivially equivalent.
 At the beginning of iteration $k$, the block vector $\bm b$ represents the
 frontier nodes encoding the $frontier$ set of Algorithm~\ref{alg:bfs}.
 The matrix--vector product $\bm A^T \bm b$ encodes the forward neighbors of all
-the frontier nodes. Subequently, active nodes that have already been visited in
+the frontier nodes. Subsequently, active nodes that have already been visited in
 previous iterations are zeroed out of the new $\bm b$.
 \endproof
 
@@ -1165,7 +1165,7 @@ we can determine $a$'s community by searching backward in time to find
 $T^{-1}(a, t)$, the authors that influenced $a$ at time $t$, and then searching
 forward to find $T(l_1, t_1) \cup T(l_1, t_2) \cup \cdots \cup T(l_k, t_k)$, where
 $(l_1,t_1), (l_2, t_2), \ldots, (l_k, t_k)$ are the leaves of $T^{-1}(a,t)$.
-The backward search in time follows straightforwardly from the forward time traveral
+The backward search in time follows straightforwardly from the forward time traversal
 presented above simply by reversing the time labels, e.g.\ by the transformation
 $t\rightarrow -t$.
 
