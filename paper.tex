@@ -698,6 +698,42 @@ and so the result follows.
 \subsection{Not All Temporal Paths Can Be Expressed by Products of Adjacency Matrices}
 \label{sec:temp-paths-adjac}
 
+For each static graph $G^{[t]} = (V^{[t]}, E^{[t]})$ that constitutes the
+evolving graph $G_n$, define its corresponding
+$\left\vert V^{[t]}\right\vert \times \left\vert V^{[t]}\right\vert$
+adjacency matrix with elements
+\begin{equation}
+A^{[t]}_{ij} =
+\begin{cases}
+ 1 & \mbox{if $(i,j)\in E^{[t]}$,} \\
+ 0 & \mbox{otherwise.}
+\end{cases}
+\label{eqn:adjacency}
+\end{equation}
+
+We can then represent $G_n$ using the sequence of adjacency matrices
+$A_n = \langle A^{[1]}, A^{[2]}, \ldots, A^{n]}\rangle$. The example in
+Figure~\ref{fig:eg_shortest_path} can be represented as
+\[
+\left\langle
+  \begin{bmatrix}
+    0 & 1 & 0 \\
+    0 & 0 & 0 \\
+    0 & 0 & 0
+  \end{bmatrix},~
+ \begin{bmatrix}
+   0 & 0 & 1 \\
+   0 & 0 & 0 \\
+   0 & 0 & 0
+ \end{bmatrix},~
+ \begin{bmatrix}
+  0 & 0 & 0 \\
+  0 & 0 & 1 \\
+  0 & 0 & 0
+ \end{bmatrix}
+\right\rangle.
+\]
+
 For a static graph $G$ with adjacency matrix $A$, $(A^k)_{ij}$ counts the number
 of paths of length $k$ between node $i$ and node $j$. Na\"ively, one might want
 to generalize this result to evolving graphs by postulating that the $(i,j)$th
@@ -788,45 +824,11 @@ analyses of evolving graphs.
 
 
 
-\subsection{Evolving graphs as sequences of adjacency matrices}
+\subsection{Defining algebraic forward neighbors}
 
-For each static graph $G^{[t]} = (V^{[t]}, E^{[t]})$ that constitutes the
-evolving graph $G_n$, define its corresponding
-$\left\vert V^{[t]}\right\vert \times \left\vert V^{[t]}\right\vert$
-adjacency matrix with elements
-\begin{equation}
-A^{[t]}_{ij} =
-\begin{cases}
- 1 & \mbox{if $(i,j)\in E^{[t]}$,} \\
- 0 & \mbox{otherwise.}
-\end{cases}
-\label{eqn:adjacency}
-\end{equation}
 
-We can then represent $G_n$ using the sequence of adjacency matrices
-$A_n = \langle A^{[1]}, A^{[2]}, \ldots, A^{n]}\rangle$. The example in
-Figure~\ref{fig:eg_shortest_path} can be represented as
-\[
-\left\langle
-  \begin{bmatrix}
-    0 & 1 & 0 \\
-    0 & 0 & 0 \\
-    0 & 0 & 0
-  \end{bmatrix},~
- \begin{bmatrix}
-   0 & 0 & 1 \\
-   0 & 0 & 0 \\
-   0 & 0 & 0
- \end{bmatrix},~
- \begin{bmatrix}
-  0 & 0 & 0 \\
-  0 & 0 & 1 \\
-  0 & 0 & 0
- \end{bmatrix}
-\right\rangle.
-\]
-
-This algebraic representation allows us to exploit a graphical interpretation of
+The algebraic representation of evolving graphs presented in Section \ref{sec:temp-paths-adjac} 
+allows us to exploit a graphical interpretation of
 matrix--vector products involving the adjacency matrix~\cite{kegi11}.
 If $A$ is the adjacency matrix of a (static) graph $G$ and $e_k$ is the $k$th
 elementary unit vector, then the nonzero entries of $A^T e_k$ have indices that
@@ -978,7 +980,7 @@ nature of temporal paths in that they cannot go backward in time.
 
 The BFS algorithm presented above can therefore be interpreted as
 computing the sequence of matrix--vector products $\bm b$, $\bm A^T \bm b$,
-$\bm (A^T)^2 \bm b$, formed by applying successive monomials of $\bm A^T$ to the
+$(\bm A^T)^2 \bm b$, formed by applying successive monomials of $\bm A^T$ to the
 block vector
 \[
 \bm b^T = [b^T, 0, \cdots, 0 ].
