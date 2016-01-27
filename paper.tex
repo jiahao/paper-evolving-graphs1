@@ -185,7 +185,7 @@ Others like Flajolet \textit{et al.}~\cite{fkp89} use time to index the family
 of related graphs, but are not concerned with explicit time-dependent processes.
 Yet others focus on incremental updates to large graphs~\cite{bkmu12}.
 Here, we describe evolving graphs as a time-ordered sequence of graphs, similar
-to the study of metrized graphs by Tang and coworkers~\cite{ntmm13,tmml09,tsmm09,tmml10}
+to the study of metrized graphs by Tang and coworkers~\cite{ntmm13,tmml09,tsmm09,tmml10} and of 
 the dynamics of communities by Grindrod, Higham and coworkers~\cite{gphe11,grihig13}.
 
 The game described at the beginning can be encoded in terms of analyzing the
@@ -205,8 +205,7 @@ In this paper, we present a complete description of the BFS algorithm for evolvi
 The algebraic formulation of this algorithm makes explicit several subtleties in the correct
 determination of relevant trajectories, which we term \textit{temporal paths},
 which in turn can have important consequences for the computation and interpretation
-of quantities which can be expressed as sums over paths, e.g.\ Katz centrality.
-
+of quantities that can be expressed as sums over paths, e.g.\ Katz centrality.
 
 
 \section{Breadth-First Search over Evolving Graphs}
@@ -441,7 +440,7 @@ neighbors and reachability in static graphs.
 
 \begin{defn}
 The \textbf{$k$-forward neighbors} of a temporal node $(v, t)$ are the temporal nodes
-that are the $k+1$st temporal node in every temporal path of length $k+1$ starting
+that are the $(k+1)$st temporal node in every temporal path of length $k+1$ starting
 from $(v, t)$. The \textbf{forward neighbors} of a temporal node $(v, t)$ are its
 1-forward neighbors.
 \end{defn}
@@ -705,7 +704,7 @@ to generalize this result to evolving graphs by postulating that the $(i,j)$th
 entry of the discrete path sum
 \begin{align}
 S^{[t_n]} = A^{[t_1]}A^{[t_n]} + \sum_{t_1 \le t \le t_n} A^{[t_1]}A^{[t]}A^{[t_n]}
-+ \dots \nonumber \\
++ \cdots \nonumber \\
 + \sum_{t_1 \le t \le t' \le \dots \le t_n}
 A^{[t_1]}A^{[t]}A^{[t']}\cdots A^{[t_n]}
 \label{eq:sum}
@@ -1128,12 +1127,12 @@ previous iterations are zeroed out of the new $\bm b$.
 To study evolving graphs and experiment with various graph types, we have
 developed EvolvingGraphs.jl~\cite{zhang15}, a software package for the creation,
 manipulation, and study of evolving graphs written in Julia~\cite{bkse12}.
-The implementation of the evolving graph BFS is
-freely available online at
+It is freely available online at 
 \begin{center}
 \url{https://github.com/weijianzhang/EvolvingGraphs.jl}
 \end{center}
-and available with the MIT ``Expat'' license.
+and available with the MIT ``Expat'' license. The package contains an implementation
+of the evolving graph BFS.
 
 %Julia is a high-level, high-performance dynamic programming language for technical
 %computing.
