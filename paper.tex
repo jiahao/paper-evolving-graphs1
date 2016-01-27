@@ -916,10 +916,10 @@ neighbors of $(1,t_1)$.
 
 \subsection{Evolving graphs as a blocked adjacency matrix}
 
-The proof of Theorem~\ref{thm:correct} provided a construction for representing
+The proof of Theorem~\ref{thm:correct} provides a construction for representing
 an evolving graph $G_n$ by a static graph $G$ with nodes corresponding to active
-nodes of $G_n$. The adjacency matrix $\mathbf A$ of $G$ then has block structure
-which is useful for understanding the nature of the $\odot$ operation.
+nodes of $G_n$. It turns out that the block structure of $G$ is useful for
+understanding the nature of the $\odot$ operation.
 
 Consider two iterations of the BFS on $G_n$ with root $(k, t_1)$. The second
 iteration requires computing the sequences
@@ -935,28 +935,90 @@ iteration requires computing the sequences
 \end{align}
 \end{subequations}
 %
-where $c_i = (A^{[i]})^Te_k$. Summing resultant vectors that share the same
+where $c_1 = (A^{[1]})^Te_k$ and $c_i = (A^{[i]})^T \odot e_k$ for $i>1$.
+Summing resultant vectors that share the same
 time stamp, we obtain vectors whose nonzero elements have indexes labeled by
 the forward neighbors of the nodes computed at step $1$.
 
-Define the block triangular adjacency matrix
+Compare this with the matrix
+
 \[
-\bm{A_n}^T =
-\begin{bmatrix}
-(A^{[1]})^T &   0            & \cdots  &  & 0 \\
-\sigma(A^{[2]})^T & (A^{[2]})^T & 0         &\cdots  & \vdots \\
-\sigma(A^{[3]})^T & \sigma(A^{[3]})^T & (A^{[3]})^T & \cdots \\
-   \vdots              &                              &      \vdots            &  &  \vdots \\
-\sigma(A^{[n]})^T &                  &       \cdots                      &  & (A^{[n]})^T
-\end{bmatrix},
+\bm M_n = \begin{bmatrix}
+A^{[t_1]} & M^{[t_1, t_2]} & ... & M^{[t_1, t_n]} \\
+        0 & A^{[t_2]}      & ... & M^{[t_2, t_n]} \\
+                           &   ... \\
+        0 & 0 & ... & A^{[t_n]}
+\end{bmatrix}
 \]
-where $\sigma(A^{[i]})^Tb = (A^{[i]})^T\odot b$, and the block vector
+%
+where $M^{[t_i, t_j]}$ is the matrix whose rows are labeled by $V^{[t_i]}$ and
+columns are labeled by $V^{[t_j]}$, and whose entries are
 \[
-\bm{b}^T = [b^T, 0, \cdots, 0  ].
+M^{[t_i, t_j]}_{uv} =
+\begin{cases}
+1 & \mbox{if $(u,v)\in E^\prime$,} \\
+0 & \mbox{otherwise.}
+\end{cases}
 \]
-Then, \eqref{eq:out_ne} is equivalent to the matrix--vector product
-$\bm{A_n}^T\bm{b}$ and the summation over \eqref{eq:5}-\eqref{eq:6} is equivalent
-to $\bm{A_n}^T(\bm{A_n}^T\bm{b})$.
+%
+The adjacency matrix blocks $A^{[t]}$ encode the edge set $\tilde E^{[t]}$,
+whereas the off-diagonal blocks $M^{[t_i, t_j]}$ together encode the edge set
+$E^\prime$ which capture temporal paths with subsequences of the form
+$\langle (v, t_i), (v, t_j) \rangle$. Then $\bm M_n$ is the adjacency matrix of
+the graph $(\cup_t V^{[t]}, E)$, which is the graph $G$ together with all the
+inactive nodes. From the definition, $\bm M_n$ has nonzero
+entries only in rows and columns that correspond to active nodes $V$, and so
+retaining only these rows and columns corresponding to $V$ produces the
+adjacency matrix $\bm A_n$ of $G = (V, E)$.
+
+The off-diagonal blocks $M^{[t_i, t_j]}$ provide an explicit matrix representation
+for the $\odot$ product in that $(M^{[t_i, t_j]})^T b = A^T \odot b$. The upper
+triangular structure of $\bm M_n$ (and hence $\bm A_n$) reflects the causal
+nature of temporal paths in that they cannot go backward in time.
+
+The BFS algorithm presented above can therefore be interpreted as
+computing the sequence of matrix--vector products $\bm b$, $\bm A^T \bm b$,
+$\bm (A^T)^2 \bm b$, formed by applying successive monomials of $\bm A^T$ to the
+block vector
+\[
+\bm b^T = [b^T, 0, \cdots, 0 ].
+\]
+
+For the example of Figure~\ref{fig:eg_shortest_path}, we have
+\begin{align*}
+V & = \{(1,\!t_1), (2,\!t_1), (1,\!t_2), (3,\!t_2), (2,\!t_3), (3,\!t_3)\},\\
+\cup_t\!E^{[t]} &= \{((1,\!t_1), (2,\!t_1)), ((1,\!t_2), (3,\!t_2)), ((2,\!t_3), (3,\!t_3))\},\\
+E'  &= \{((1,\!t_1), (1,\!t_2)), ((2,\!t_2), (2,\!t_3)), ((3,\!t_2), (3,\!t_3))\}.
+\end{align*}
+In the order specified for $V$, the adjacency matrix of $G$ is then
+\[
+\bm A_3 = \begin{bmatrix}
+0 & 1 & 1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & 1 \\
+0 & 0 & 0 & 0 & 0 & 1 \\
+0 & 0 & 0 & 0 & 0 & 0
+\end{bmatrix}
+\]
+
+Starting from the vector $\bm b = e_1$, the sequence of iterates is then
+\[
+\left\langle
+\begin{bmatrix}1 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix},
+\begin{bmatrix}0 \\ 1 \\ 1 \\ 0 \\ 0 \\ 0 \end{bmatrix},
+\begin{bmatrix}0 \\ 0 \\ 0 \\ 1 \\ 1 \\ 0 \end{bmatrix},
+\begin{bmatrix}0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 2 \end{bmatrix},
+\begin{bmatrix}0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \end{bmatrix},
+\dots
+\right\rangle.
+\]
+
+We see that $\bm (A^T)^2$ correctly encodes the collection of products in
+\eqref{eq:5}-\eqref{eq:6}. Furthermore, $\bm (A^T)^3 \bm b$ correctly counts the
+two allowed temporal paths from $(1, t_1)$ to $(3, t_3)$, and that the
+off-diagonal structure encoded in $E'$ and the $M^{[t,t']}$ blocks are critical
+to obtaining the correct count.
 
 
 \subsection{The algebraic formulation of BFS on evolving graphs}
