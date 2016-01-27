@@ -986,7 +986,42 @@ block vector
 \bm b^T = [b^T, 0, \cdots, 0 ].
 \]
 
-%XXX Would be nice to have a figure for $G$.
+\begin{figure}[h]
+ \begin{center}
+   \begin{tikzpicture}[scale=.36, line width =1.4pt]
+  \node[circle,fill=green1, minimum size=0.1cm, inner sep = 0pt] (n7) at (-5,7) 
+{\scriptsize $(2,t_1)$};
+  \node[circle,draw=red1, minimum size=0.2cm, inner sep = 0pt] (n8) at (-10,5) 
+{\scriptsize $(3,t_1)$};
+  \node[circle,fill=green1, minimum size=0.1cm, inner sep = 0pt] (n10) at (-8,10) {\scriptsize $(1,t_1)$};
+
+  \node[circle,draw=red1, minimum size=0.2cm, inner sep = 0pt] (n6) at (3,7) 
+{\scriptsize $(2,t_2)$};
+  \node[circle,fill=green1, minimum size=0.2cm,  inner sep = 0pt] (n4) at (-2,5) 
+{\scriptsize $(3,t_2)$};
+  \node[circle,fill=green1, minimum size=0.2cm,  inner sep = 0pt] (n1) at (0,10) 
+{\scriptsize $(1,t_2)$};
+
+   \node[circle,fill=green1, minimum size=0.2cm,  inner sep = 0pt] (n11) at (11,7) 
+{\scriptsize $(2,t_3)$};
+  \node[circle,fill=green1, minimum size=0.2cm,  inner sep = 0pt] (n12) at (6,5)  
+{\scriptsize $(3,t_3)$};
+  \node[circle,draw=red1, minimum size=0.2cm,  inner sep = 0pt] (n14) at (8,10) 
+{\scriptsize $(1,t_3)$};
+
+  \foreach \from/\to in {n10/n7, n1/n4, n11/n12}
+   \draw[every edge,->] (\from) -- (\to);
+     \draw[dotted,->](n7) to[out=80, in=40] (n11);
+  \draw[dotted,->](n10) to[out=10, in=180] (n1);
+   \draw[dotted,->](n4) to[out=-30,in=-150] (n12);
+    \end{tikzpicture}
+\end{center}
+\caption{The static graph representation of Figure \ref{fig:eg_shortest_path}. 
+The black lines are edges from the edge set $\cup_t E^{[t]}$ and the 
+doted lines are edges from the edge set $E'$.}
+\label{fig:static}
+\end{figure}
+
 For the example of Figure~\ref{fig:eg_shortest_path}, we have
 \begin{align*}
 V & = \{(1,\!t_1), (2,\!t_1), (1,\!t_2), (3,\!t_2), (2,\!t_3), (3,\!t_3)\},\\
