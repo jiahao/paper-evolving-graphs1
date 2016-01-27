@@ -186,7 +186,11 @@ of related graphs, but are not concerned with explicit time-dependent processes.
 Yet others focus on incremental updates to large graphs~\cite{bkmu12}.
 Here, we describe evolving graphs as a time-ordered sequence of graphs, similar
 to the study of metrized graphs by Tang and coworkers~\cite{ntmm13,tmml09,tsmm09,tmml10} and of 
-the dynamics of communities by Grindrod, Higham and coworkers~\cite{gphe11,grihig13}.
+the dynamics of communities by Grindrod, Higham and coworkers~\cite{gphe11,grihig13}. However, we emphasize a concept called
+\emph{node activeness} and we only study the active nodes on an evolving graph. 
+In real-life problems, the set of active nodes is usually sparse at a given timestamp. 
+Our model, as a result, can be used to model highly dynamic large evolving graph problems, where other models fail to.
+
 
 The game described at the beginning can be encoded in terms of analyzing the
 microscopic dynamics of an evolving graph. The spread of information to the
