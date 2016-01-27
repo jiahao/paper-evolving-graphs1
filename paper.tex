@@ -603,7 +603,7 @@ computed with a root at time $t_1$, the earliest time stamp in $G_n$.
    $nextfrontier = \emptyset$ \\
    \For{$(v,t) \in frontier$}{
      \For{$(v',t') \in$\nei{$(v,t)$}}{
-          \If{$(v',t') \notin d$}{
+          \If{$(v',t') \notin reached$}{
               $reached[(v',t')] = k$\\
               $nextfrontier = nextfrontier \cup \{(v',t')\}$ \\
               }
