@@ -133,9 +133,16 @@ weijian.zhang@manchester.ac.uk}
 \maketitle
 
 \begin{abstract}
-We present a correctly verified breadth first search (BFS) algorithm for evolving graphs. Using simple examples, we show na\"ive matrix-matrix multiplication on time-dependent adjacency matrices miscounts the number of temporal paths and therefore should be avoided if temporal path is a component of the algorithm. We formulate our
-evolving graph BFS using the language of linear algebra and present an adjacency matrix representation of the equivalent static graph, which is used to study
-interesting properties about the original evolving graphs. 
+Evolving graphs arise in many different contexts where the 
+interrelations between data elements change over time. 
+We present a breadth first search (BFS) algorithm for evolving graphs
+that can track (active) nodes correctly. 
+Using simple examples, we show na\"ive matrix-matrix multiplication on time-dependent adjacency matrices miscounts the number of temporal paths. 
+By mapping an evolving graph to an adjacency matrix of the equivalent static graph, 
+we  prove the properties of the BFS algorithm using the properties of the 
+adjacency matrix.
+We show an application of our algorithm in mining citation networks.
+
 % We generalize the breadth first search (BFS) algorithm to evolving graphs and
 % prove its correctness.
 % The BFS generates paths with nontrivial structure, which we term temporal paths.
