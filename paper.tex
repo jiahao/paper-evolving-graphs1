@@ -1112,6 +1112,19 @@ Lemma~\ref{thm:nilpotent} also holds for acyclic undirected graphs so long as
 the corresponding adjacency matrix representation is encoded in an asymmetric
 fashion akin to \eqref{eqn:adjacency}.
 
+The blocked matrix structure of the adjacency matrices presented here provide
+interesting relationships between their matrix properties and the algorithmic
+properties of BFS, made possible because of the reformulation of BFS as
+repeated power iterations of the adjacency matrix in Algorithm~\ref{alg:bfsla}.
+Note, however, that these matrices never need to be instantiated for practical
+computations. Rather, since Algorithm~\ref{alg:bfsla} only requires the matrix--
+vector product involving the adjacency matrix, the formulation of
+Algorithm~\ref{alg:bfs} provides an efficient way to exploit the block structure
+of $\bm A_n$. The $\odot$ operation provides an efficient way to compute the
+action of the off-diagonal products. Representing the diagonal blocks
+$A^{[t]}$ as sparse matrices product further reduces the cost of BFS by exploiting
+latent sparsity in graphs that show up in practical applications.
+
 
 \subsection{The algebraic formulation of BFS on evolving graphs}
 
