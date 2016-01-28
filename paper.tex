@@ -416,7 +416,7 @@ a time $t$.
 
 
 \begin{defn}
-A temporal node $(v,t)$ is an \textbf{active node} is there exists at least one
+A temporal node $(v,t)$ is an \textbf{active node} if there exists at least one
 edge $e\in E^{[t]}$ that connects $v\in V^{[t]}$ to another node $w\in V^{[t]}$,
 $w\ne v$.
 
@@ -1309,11 +1309,10 @@ $t\rightarrow -t$.
 
 \section{Conclusion}
 
-This paper contemplated one of basic archetypes of graph traversal algorithms
-for evolving graphs.
-Although rarely mentioned in previous papers,
-we showed the concept of node activeness is actually crucial for designing correct and efficient algorithms for evolving graphs. 
- 
+This paper contemplated one of basic archetypes of evolving graph traversal algorithms. The treatment interweaved graph theory with linear algebra. 
+Correct tracking of temporal paths on active nodes 
+provides the right way to search evolving graphs, 
+which can also be applied to other algorithms for evolving graphs.
 % This paper introduced the generalization of BFS to evolving graphs and presented
 % an equivalent formulation using linear algebra. The concept of temporal paths
 % connecting active nodes turns out to be critical for the correct generalization
