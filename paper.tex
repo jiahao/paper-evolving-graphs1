@@ -1117,8 +1117,8 @@ interesting relationships between their matrix properties and the algorithmic
 properties of BFS, made possible because of the reformulation of BFS as
 repeated power iterations of the adjacency matrix in Algorithm~\ref{alg:bfsla}.
 Note, however, that these matrices never need to be instantiated for practical
-computations. Rather, since Algorithm~\ref{alg:bfsla} only requires the matrix--
-vector product involving the adjacency matrix, the formulation of
+computations. Rather, since Algorithm~\ref{alg:bfsla} only requires the m
+matrix--vector product involving the adjacency matrix, the formulation of
 Algorithm~\ref{alg:bfs} provides an efficient way to exploit the block structure
 of $\bm A_n$. The $\odot$ operation provides an efficient way to compute the
 action of the off-diagonal products. Representing the diagonal blocks
@@ -1155,7 +1155,7 @@ explicitly, as only its matrix--vector product is required in the algorithm.
            $\bm{b}_k = 0$ \\
          }
       }
-       \For{$node \in \map{\bm{b}}$}{
+       \For{$node \in $\map{$\bm{b}$}}{
            $reached[node] = k$ \\
          }
        $k = k + 1$
