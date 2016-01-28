@@ -1309,12 +1309,16 @@ $t\rightarrow -t$.
 
 \section{Conclusion}
 
-This paper introduced the generalization of BFS to evolving graphs and presented
-an equivalent formulation using linear algebra. The concept of temporal paths
-connecting active nodes turns out to be critical for the correct generalization
-of BFS to evolving graphs. An efficient implementation of BFS on evolving
-graphs is now available as a open source Julia package.
-
+This paper contemplated one of basic archetypes of graph traversal algorithms
+for evolving graphs.
+Although rarely mentioned in previous papers,
+we showed the concept of node activeness is actually crucial for designing correct and efficient algorithms for evolving graphs. 
+ 
+% This paper introduced the generalization of BFS to evolving graphs and presented
+% an equivalent formulation using linear algebra. The concept of temporal paths
+% connecting active nodes turns out to be critical for the correct generalization
+% of BFS to evolving graphs. An efficient implementation of BFS on evolving
+% graphs is now available as a open source Julia package.
 % This paper leaves important extensions open for further research. First, extensions
 % of BFS to weighted evolving graphs can provide more valuable information when the degree of connectivity is available in the data.
 % Second, efficient algebraic representations and algorithms need to be addressed.
