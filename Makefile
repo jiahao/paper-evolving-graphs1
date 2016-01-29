@@ -3,7 +3,7 @@ MAIN=paper
 pdf:
 	latexmk -pdf $(MAIN) -auxdir=output -outdir=output
 
-arxiv:
+arxiv: pdf
 	mkdir -p arxiv
 	cp output/*.bbl paper.tex *.cls *.bst arxiv
 	#arXiv has algorithm 4.01 installed; minimum version needed for us is 5.0
@@ -11,5 +11,5 @@ arxiv:
 	cd arxiv && zip arxiv.zip *
 
 clean:
-	rm -rvf *.bbl *.blg *.aux *.fls *.fdb_latexmk *.log *.out *.toc $(MAIN).pdf aux output
+	rm -rvf *.bbl *.blg *.aux *.fls *.fdb_latexmk *.log *.out *.toc $(MAIN).pdf aux output arxiv
 
