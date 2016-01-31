@@ -1,7 +1,7 @@
 # The right way to search evolving graphs
 
 Jiahao Chen ([@jiahao](https://github.com/jiahao)), MIT CSAIL 
-and
+
 Weijian Zhang ([@weijianzhang](https://github.com/weijianzhang)), School of Mathematics, University of Manchester
 
 **Abstract**: Evolving graphs arise in many different contexts
