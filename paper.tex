@@ -1223,16 +1223,36 @@ It is freely available online at
 \url{https://github.com/weijianzhang/EvolvingGraphs.jl}
 \end{center}
 and available with the MIT ``Expat'' license. The package contains an implementation
-of the evolving graph BFS.
-
+of the evolving graph BFS. \texttt{IntEvolvingGraph}, a data type in EvolvingGraphs.jl,
+represents an evolving graph as adjacency lists. 
+For a random (directed) \texttt{IntEvolvingGraph} with $5$ time stamps (each edge is included in the graph with probability $0.5$), 
+Table \ref{tab:bfs} shows the time taken and 
+the total number of bytes allocated of Algorithm \ref{alg:bfs}.
+\begin{table}[h]
+\centering
+\begin{tabular}{c | c | c | c }
+\hline
+no. of nodes & no. of edges  & time(s) &  allocation(KB) \\\hline
+           10               &        233               & 0.000180   & 43  \\
+            15             &     510                  & 0.000285  &  73  \\
+            20             &   961                   & 0.000431 &  115 \\
+            25             &   1578                 & 0.000642 &   171 \\
+            30             &  2174                  & 0.000819 &  268 \\
+            35             &  3011                  & 0.001066 & 344
+\end{tabular}
+\caption{The time and the total number of bytes allocated for computing BFS
+on a random evolving graph with 5 time stamps. Each row shows the
+number of nodes, the number of edges, the time taken, and the memory requirements.}
+\label{tab:bfs}
+\end{table}
 %Julia is a high-level, high-performance dynamic programming language for technical
 %computing.
 % We make particular use of
 % the parameterizable type system and multiple dispatch in Julia.
-\texttt{MatrixList}, a data type in EvolvingGraphs.jl, represents an evolving graph
+\texttt{IntMatrixList}, a data type in EvolvingGraphs.jl, represents an evolving graph
 as a sequence of sparse matrices stored in compressed sparse column (CSC) format.
-Many basic graph functions are also implemented for \texttt{MatrixList}.
-
+We can convert an \texttt{IntMatrixList} to its corresponding block adjacency matrix
+using the function \texttt{spmatrix}.
 
 \section{Application to Citation Networks}
 \label{sec:applications}
