@@ -509,7 +509,8 @@ $frontier$ list which have not yet been reached by the algorithm.
 
 \begin{figure}[h]
  \begin{center}
-    \begin{tikzpicture}[scale=.36, line width =1.4pt]
+    \begin{tikzpicture}[scale=.31, line width =1.4pt]
+ \node[text width=3cm] at (-9.5, 7.5) {$k=1$};
   \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
   \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
   \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
@@ -534,7 +535,8 @@ $frontier$ list which have not yet been reached by the algorithm.
 \draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
 (11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
     \end{tikzpicture}
-   \begin{tikzpicture}[scale=.36, line width =1.4pt]
+   \begin{tikzpicture}[scale=.31, line width =1.4pt]
+ \node[text width=3cm] at (-9.5, 7.5) {$k=2$};
   \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
   \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
   \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
@@ -559,7 +561,8 @@ $frontier$ list which have not yet been reached by the algorithm.
 \draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
 (11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
     \end{tikzpicture}
-   \begin{tikzpicture}[scale=.36, line width =1.4pt]
+   \begin{tikzpicture}[scale=.31, line width =1.4pt]
+ \node[text width=3cm] at (-9.5, 7.5) {$k=3$};
   \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
   \node[circle,draw=red1, minimum size=0.2cm] (n8) at (-10,5) {3};
   \node[circle,fill=green1, minimum size=0.2cm] (n10) at (-8,10) {1};
@@ -586,7 +589,8 @@ $frontier$ list which have not yet been reached by the algorithm.
     \end{tikzpicture}
 \end{center}
 \caption{Breadth-first search (BFS) on the evolving graph shown in
-Figure~\ref{fig:eg_shortest_path} starting from the root $(1, t_2)$.
+Figure~\ref{fig:eg_shortest_path} starting from the root $(1, t_2)$ at iteration
+$k = 1, 2, 3$.
 Note that the time $t_1$ does not participate in the BFS. Black circles indicate
 the active nodes forming the $frontier$ and $nextfrontier$ sets in Algorithm~\ref{alg:bfs},
 connected by the dotted black lines.}
