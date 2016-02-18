@@ -105,7 +105,6 @@
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
 
-
 \begin{document}
 %
 % paper title
@@ -646,7 +645,7 @@ distance $k$ from the root.
 \end{algorithm}
 
 \begin{thm}[Correctness of the evolving graph BFS]
-Let $G_n$ be an evolving graph and $(v_1, t_1)$ be an active node of $G_n$.
+Let $G_n$ be a directed evolving graph and $(v_1, t_1)$ be an active node of $G_n$.
 Then Algorithm~\ref{alg:bfs} discovers every active node that is reachable from
 the root $(v_1, t_1)$, and $reached[(v, t)]$ is the distance from $(v_1, t_1)$
 to $(v, t)$.
@@ -861,10 +860,11 @@ elementary unit vector, then the nonzero entries of $A^T e_k$ have indices that
 are neighbors of $k$.
 The algebraic formulation of BFS on evolving graphs follows similarly, but
 requires a new kind of matrix--vector product, $\odot$, defined by
+
 \[
 A^T \!\odot b =
 \begin{cases}
-b & \mbox{if $A^Tb \ne 0$,} \\
+b & \mbox{if $A^Tb \ne 0$ or $Ab \ne 0$,} \\
 0 & \mbox{otherwise.}
 \end{cases}
 \]
