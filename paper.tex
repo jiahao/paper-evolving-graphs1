@@ -214,6 +214,14 @@ or edges, which we call \textit{temporal paths}.
 As a result, our treatment can be applied to any evolving graph, even those that
 are highly dynamic with arbitrary changes to the nodes and edges.
 
+Although it is well known that sparse matrix-vector product is equivalent to a 
+one-step BFS on the corresponding graph~\cite{kegi11},
+it is little known about the generalization of this duality for evolving graphs.
+In fact, previous works form the off-diagonal blocks wrongly~\cite{fehi15}. 
+We prove the generalization of this duality by finding
+the correct block sparse matrix representation of an evolving graph.
+This work forms the basis for many algebraic evolving graph algorithms.
+
 In Section~\ref{sec:breadth-first-search}, we explain how the BFS algorithm can be applied correctly on
 evolving graphs. Section~\ref{sec:temporal-paths} provides an example showing that considering
 only products of the time-dependent adjacency matrices can lead to incorrect enumeration
