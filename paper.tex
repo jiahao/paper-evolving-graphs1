@@ -1288,6 +1288,15 @@ $|E|$, i.e., $k = \Theta(|E|)$. Hence, the total running time is
 $\Theta(|E||V|^2)$. This is much worse than Algorithm \ref{alg:bfs}, which
 has linear running time.
 
+If $\bm A_n$ is sparse, forming $\bm A_n$ costs $\Theta(|E|)$ flops. 
+The gaxpy operation in line $7$ costs 
+$2m$ flops, where $m$ is the number of none zeros of $\bm A_n$ \cite[Sec.11]{golo13}. 
+Here $m$ is equal to $|E|$. Thus, in the worst case, the total running time is 
+$\Theta(|E|^2)$.
+
+% Storing $\bm A_n$ requires $\Theta(|V|^2)$ memory and if $\bm A_n$ is sparse, 
+% we need $O(|V|+|E|)$ memory.
+
 \section{Implementation in Julia}
 \label{sec:implementation-julia}
 
