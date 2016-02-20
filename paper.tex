@@ -1310,19 +1310,19 @@ It is freely available online at
 and available with the MIT ``Expat'' license. The package contains an implementation
 of the evolving graph BFS. \texttt{IntEvolvingGraph}, a data type in EvolvingGraphs.jl,
 represents an evolving graph as adjacency lists.
-We generate a group of  random (directed) \texttt{IntEvolvingGraph}s with $2000$ nodes and $4$ time stamps, where each edge is included in the graph with
+We generate a group of  random (directed) \texttt{IntEvolvingGraph}s with $8,000$ active nodes and $4$ time stamps, where each edge is included in the graph with
 probability $p$.
  Figure \ref{fig:time} shows the plots of  number of edges against the computation time
-for running Algorithm \ref{alg:bfs} in Julia. All experiments are conducted 
+for running Algorithm \ref{alg:bfs}
+in Julia. All experiments are conducted 
 in a Linux system with Intel(R) Core(TM) i7-3537U CPU @ $2.00$GHz.
 The results show Algorithm \ref{alg:bfs} can be computed in linear time, which agrees
 with Theorem \ref{thm:complexity}. A summary of the experiments is provided in Table \ref{tab:bfs}.
 \begin{figure}[h]
   \centering
   \includegraphics[scale=0.44]{time.png}
-  \caption{Experiments of computing Algorithm \ref{alg:bfs} on a group of 
-random evolving 
-graphs with $2000$ nodes and $4$ time stamps. The x-axis shows the 
+  \caption{Experiments of running Algorithm \ref{alg:bfs}
+on a group of random evolving graphs with $8,000$ active nodes and $4$ time stamps. The x-axis shows the
 number of edges of each evolving graph and the y-axis shows the corresponding
 computation time. The values in the x, y-axis increase linearly from left to 
 right and from bottom to top respectively.}
@@ -1340,10 +1340,8 @@ probability $p$ & no. of edges  & time (s) &  memory (MB) \\\hline
       0.31   &     4,956,969          & 1.504  &  494.833 \\
 \end{tabular}
 \caption{the computation time and the amount of memory allocated for 
-computing Algorithm \ref{alg:bfs} on a random evolving graph represented 
-adjacency lists with $4$ time stamps and $2000$ nodes.  
-Each edge is included in the graph with probability $p$. 
-This is a summery of Figure \ref{fig:time}.}
+computing Algorithm \ref{alg:bfs}. This is a summery of Figure \ref{fig:time}.  
+Each edge is included in the graph with probability $p$. }
 \label{tab:bfs}
 \end{table}
 %Julia is a high-level, high-performance dynamic programming language for technical
