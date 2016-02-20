@@ -4,6 +4,9 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{bm}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+\usepackage{lipsum}
 \usepackage[linesnumbered]{algorithm2e}
 \makeatletter
 \renewcommand{\@algocf@capt@plain}{above}
@@ -506,9 +509,17 @@ temporal nodes of distance $k$ from the root. The $nextfrontier$ list is populat
 with all temporal nodes that are forward neighbors of any temporal node in the
 $frontier$ list which have not yet been reached by the algorithm.
 
-
-\begin{figure}[h]
  \begin{center}
+\begin{figure}[h]
+\begin{tcolorbox}[width=3.4in,
+                  %%enhanced,
+                  %%frame hidden,
+                  %interior hidden,
+                  boxsep=0pt,
+                  left=0pt,
+                  right=0pt,
+                  top=4pt,
+                  ]%%
     \begin{tikzpicture}[scale=.31, line width =1.4pt]
  \node[text width=3cm] at (-9.5, 7.5) {$k=1$};
   \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
@@ -535,6 +546,16 @@ $frontier$ list which have not yet been reached by the algorithm.
 \draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
 (11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
     \end{tikzpicture}
+\end{tcolorbox}
+\begin{tcolorbox}[width=3.4in,
+                  %%enhanced,
+                  %%frame hidden,
+                  interior hidden,
+                  boxsep=0pt,
+                  left=0pt,
+                  right=0pt,
+                  top=4pt,
+                  ]%%
    \begin{tikzpicture}[scale=.31, line width =1.4pt]
  \node[text width=3cm] at (-9.5, 7.5) {$k=2$};
   \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
@@ -561,6 +582,16 @@ $frontier$ list which have not yet been reached by the algorithm.
 \draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
 (11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
     \end{tikzpicture}
+\end{tcolorbox}
+\begin{tcolorbox}[width=3.4in,
+                  %%enhanced,
+                  %%frame hidden,
+                  interior hidden,
+                  boxsep=0pt,
+                  left=0pt,
+                  right=0pt,
+                  top=4pt,
+                  ]%%
    \begin{tikzpicture}[scale=.31, line width =1.4pt]
  \node[text width=3cm] at (-9.5, 7.5) {$k=3$};
   \node[circle,fill=green1, minimum size=0.2cm] (n7) at (-5,7) {2};
@@ -587,7 +618,7 @@ $frontier$ list which have not yet been reached by the algorithm.
 \draw [decorate,decoration={brace,amplitude=5pt},xshift=-4pt,yshift=0pt]
 (11.5,3) -- (5.5,3) node [midway,yshift=-0.6cm]{ $t_3$};
     \end{tikzpicture}
-\end{center}
+\end{tcolorbox}
 \caption{Breadth-first search (BFS) on the evolving graph shown in
 Figure~\ref{fig:eg_shortest_path} starting from the root $(1, t_2)$ at iteration
 $k = 1, 2, 3$.
@@ -596,7 +627,7 @@ the active nodes forming the $frontier$ and $nextfrontier$ sets in Algorithm~\re
 connected by the dotted black lines.}
 \label{fig:example}
 \end{figure}
-
+\end{center}
 As a simple example, consider the BFS on the example graph in
 Figure~\ref{fig:eg_shortest_path} starting from the root $(1, t_2)$.
 The procedure is shown in Figure \ref{fig:example}.
@@ -1240,8 +1271,8 @@ with Theorem \ref{thm:complexity}. A summary of the experiments is provided in T
 random evolving 
 graphs with $2000$ nodes and $4$ time stamps. The x-axis shows the 
 number of edges of each evolving graph and the y-axis shows the corresponding
-computation time. The values in both axes increase linearly in the direction of 
-the arrow.}
+computation time. The values in the x, y-axis increase linearly from left to 
+right and from bottom to top respectively.}
   \label{fig:time}
 \end{figure}
 \begin{table}[h]
