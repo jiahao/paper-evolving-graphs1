@@ -704,6 +704,7 @@ asymptotic complexity of BFS on $G_n$ is the same as that for BFS on $G$, using
 the 1-1 construction of $G$ from $G_n$.
 
 \begin{thm}[Complexity of the evolving graph BFS]
+\label{thm:complexity}
 Let $G_n$ be an evolving graph represented using adjacency lists,
 $(v_1, t_1)$ be an active node of $G_n$, and $G=(V,E)$ be the static graph
 constructed from $G_n$ using the 1-1 correspondences defined in the proof of
@@ -1224,35 +1225,51 @@ It is freely available online at
 \end{center}
 and available with the MIT ``Expat'' license. The package contains an implementation
 of the evolving graph BFS. \texttt{IntEvolvingGraph}, a data type in EvolvingGraphs.jl,
-represents an evolving graph as adjacency lists. 
-For a random (directed) \texttt{IntEvolvingGraph} with $5$ time stamps (each edge is included in the graph with probability $0.5$), 
-Table \ref{tab:bfs} shows the time taken and 
-the total number of bytes allocated of Algorithm \ref{alg:bfs}.
+represents an evolving graph as adjacency lists.
+We generate a group of  random (directed) \texttt{IntEvolvingGraph}s with $2000$ nodes and $4$ time stamps, where each edge is included in the graph with
+probability $p$.
+ Figure \ref{fig:time} shows the plots of  number of edges against the computation time
+for running Algorithm \ref{alg:bfs} in Julia. All experiments are conducted 
+in a Linux system with Intel(R) Core(TM) i7-3537U CPU @ $2.00$GHz.
+The results show Algorithm \ref{alg:bfs} can be computed in linear time, which agrees
+with Theorem \ref{thm:complexity}. A summary of the experiments is provided in Table \ref{tab:bfs}.
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.44]{time.png}
+  \caption{Experiments of computing Algorithm \ref{alg:bfs} on a group of 
+random evolving 
+graphs with $2000$ nodes and $4$ time stamps. The x-axis shows the 
+number of edges of each evolving graph and the y-axis shows the corresponding
+computation time. The values in both axes increase linearly in the direction of 
+the arrow.}
+  \label{fig:time}
+\end{figure}
 \begin{table}[h]
 \centering
 \begin{tabular}{c | c | c | c }
 \hline
-no. of nodes & no. of edges  & time(s) &  allocation(KB) \\\hline
-           10               &        233               & 0.000180   & 43  \\
-            15             &     510                  & 0.000285  &  73  \\
-            20             &   961                   & 0.000431 &  115 \\
-            25             &   1578                 & 0.000642 &   171 \\
-            30             &  2174                  & 0.000819 &  268 \\
-            35             &  3011                  & 0.001066 & 344
+probability $p$ & no. of edges  & time (s) &  memory (MB) \\\hline
+      0.01  &         160,156      & 0.098   & 18.388  \\
+      0.09  &       1,440,895        & 0.446  &  134.253  \\
+      0.15   &     2,399,774         & 0.743 & 221.511 \\
+      0.23   &    3,676,959          & 1.206 &   337.688 \\
+      0.31   &     4,956,969          & 1.504  &  494.833 \\
 \end{tabular}
-\caption{The time and the total number of bytes allocated for computing BFS
-on a random evolving graph with 5 time stamps. Each row shows the
-number of nodes, the number of edges, the time taken, and the memory requirements.}
+\caption{the computation time and the amount of memory allocated for 
+computing Algorithm \ref{alg:bfs} on a random evolving graph represented 
+adjacency lists with $4$ time stamps and $2000$ nodes.  
+Each edge is included in the graph with probability $p$. 
+This is a summery of Figure \ref{fig:time}.}
 \label{tab:bfs}
 \end{table}
 %Julia is a high-level, high-performance dynamic programming language for technical
 %computing.
 % We make particular use of
 % the parameterizable type system and multiple dispatch in Julia.
-\texttt{IntMatrixList}, a data type in EvolvingGraphs.jl, represents an evolving graph
-as a sequence of sparse matrices stored in compressed sparse column (CSC) format.
-We can convert an \texttt{IntMatrixList} to its corresponding block adjacency matrix
-using the function \texttt{spmatrix}.
+% \texttt{IntMatrixList}, a data type in EvolvingGraphs.jl, represents an evolving graph
+% as a sequence of sparse matrices stored in compressed sparse column (CSC) format.
+% We can convert an \texttt{IntMatrixList} to its corresponding block adjacency matrix
+% using the function \texttt{spmatrix}.
 
 \section{Application to Citation Networks}
 \label{sec:applications}
