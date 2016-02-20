@@ -359,7 +359,7 @@ between the same node if it is active at different times.}
 \end{figure}
 
 The restriction that temporal paths may only traverse active nodes reflects
-underlying structure in many real world applications, such as analyzing the
+underlying causal structure in many real world applications, such as analyzing the
 influence of nodes over social networks. We will also show later in
 Section~\ref{sec:temp-paths-adjac}
 that the resulting structure of allowable temporal paths leads to nontrivial
@@ -501,8 +501,13 @@ the distance to $(w, s)$ from a temporal node $(v, t)$ there exists some finite
 integer $k$ for which $(w, s)$ is a $k$-forward neighbor of $(v, t)$.
 \end{defn}
 
+\subsection{Description of the Algorithm}
+\label{sec:descr-algor}
 
 The BFS on evolving graphs is described in Algorithm~\ref{alg:bfs}.
+Algorithm~\ref{alg:bfs} is identical to the BFS on static graphs expect 
+line $8$, where we visit the forward neighbors of a given temporal node
+in both space and time.
 Given an evolving graph $G_n$ and a root $(v_1, t_1)$,
 Algorithm~\ref{alg:bfs} returns all temporal notes reachable from the root and
 their distances from the root.
