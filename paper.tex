@@ -501,7 +501,7 @@ the distance to $(w, s)$ from a temporal node $(v, t)$ there exists some finite
 integer $k$ for which $(w, s)$ is a $k$-forward neighbor of $(v, t)$.
 \end{defn}
 
-\subsection{Description of the Algorithm}
+\subsection{Description of the BFS algorithm}
 \label{sec:descr-algor}
 
 The BFS on evolving graphs is described in Algorithm~\ref{alg:bfs}.
@@ -1201,8 +1201,7 @@ latent sparsity in graphs that show up in practical applications.
 
 The blocked matrix--vector products introduced in the previous section allows us
 to write down an elegant algebraic formulation of BFS on evolving graphs, as
-presented in Algorithm~\ref{alg:bfsla}. Note that $\bm A_n^T$ need never be formed
-explicitly, as only its matrix--vector product is required in the algorithm.
+presented in Algorithm~\ref{alg:bfsla}. 
 
 \begin{algorithm}[h]
  \SetKwFor{For}{for}{}{end}
@@ -1266,6 +1265,28 @@ the frontier nodes. Subsequently, active nodes that have already been visited in
 previous iterations are zeroed out of the new $\bm b$.
 \endproof
 
+\subsection{Computational complexity analysis of the algebraic BFS}
+\label{sec:comp-compl-analys}
+
+Given an evolving graph $G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]} \rangle$, let $V$ be the set of active nodes,
+$E = \cup_t \tilde E^{[t]} \cup E'$ be the set of edges, where
+$\tilde E^{[t]}$ represents the set of edges of $G^{[t]}$ and $E'$ represents the set
+of causal edges between time stamps. Let $\bm A_n$ be the corresponding
+adjacency matrix of $G_n$.
+
+Let's analyze the running time of Algorithm \ref{alg:bfsla}. 
+Suppose $\bm A_n$ is dense.
+Forming the block adjacency matrix $\bm A_n^T$ in line $3$
+requires $\Theta(|V|^2)$ operations. 
+We note, however, $\bm A_n^T$ need never be formed
+explicitly, as only its matrix-vector product is required in the algorithm.
+The matrix-vector product in line $7$ requires $O(|V|^2)$ operations.
+In the worst case, we need to reach all active nodes and reach only one 
+active node at each iteration. 
+So the number of iterations $k$ of the while loop at line $6$ is bounded by
+$|E|$, i.e., $k = \Theta(|E|)$. Hence, the total running time is 
+$\Theta(|E||V|^2)$. This is much worse than Algorithm \ref{alg:bfs}, which
+has linear running time.
 
 \section{Implementation in Julia}
 \label{sec:implementation-julia}
