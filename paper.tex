@@ -693,7 +693,7 @@ distance $k$ from the root.
 \end{algorithm}
 
 \begin{thm}[Correctness of the evolving graph BFS]
-Let $G_n$ be a directed evolving graph and $(v_1, t_1)$ be an active node of $G_n$.
+Let $G_n$ be an evolving graph and $(v_1, t_1)$ be an active node of $G_n$.
 Then Algorithm~\ref{alg:bfs} discovers every active node that is reachable from
 the root $(v_1, t_1)$, and $reached[(v, t)]$ is the distance from $(v_1, t_1)$
 to $(v, t)$.
@@ -701,6 +701,7 @@ to $(v, t)$.
 \end{thm}
 
 \IEEEproof
+Let's first consider the case when $G_n$ is directed.
 Define the set of temporal nodes
 $\tilde V_L^{[t]} = \{(v_1, t) | (v_1, v_2) \in E^{[t]}\}$, which
 consists of the active nodes at time $t$ which participate on the left side of an edge.
@@ -719,9 +720,8 @@ Define also $\tilde E^{[t]} = \{(e, t)|e\in E^{[t]}\}$, which are simply the edg
 sets in $G_n$ with time labels. Then $E = \bigcup_t \tilde E^{[t]} \cup E'$ is
 the set of all edges representing all allowed temporal paths of length 2.
 
-The node set $V$ and edge set $E$ now define a static graph $G=(V,E)$ that is in
-1-1 correspondence with the evolving graph $G_n$. The node set $V$ of $G$ is in
-1-1 correspondence with active nodes of $G_n$ while the edge set $E$ is in 1-1
+The node set $V$ and edge set $E$ now define a directed static graph $G=(V,E)$ 
+that is in 1-1 correspondence with the evolving graph $G_n$. The node set $V$ of $G$ is in 1-1 correspondence with active nodes of $G_n$ while the edge set $E$ is in 1-1
 correspondence with all temporal paths of length 2 on $G_n$.
 
 We now establish a similar 1-1 correspondence of forward neighbors of an active
@@ -734,6 +734,14 @@ $u\ne v$. Clearly, the former are elements of $E' \subseteq E$ while the latter
 are elements of $E^{[t]} \subseteq \bigcup_s \tilde E^{[s]} \subseteq E$.
 Thus each forward neighbor of an active node $(v, t) \in G_n$ is in 1-1
 correspondence with a node in $V$ that is a neighbor of $v_t \in V$.
+
+When $G_n$ is undirected, every edge in $\tilde E^{[t]}$ can be represented by 
+two edges in $G$: from an active node in $\tilde V_L^{[t]}$ to
+an active node in $\tilde V_R^{[t]}$ and the reverse.
+Every edge in $E'$ is in 1-1 correspondence with
+an edge in $G$ by causality. Therefore, the forward neighbors of an 
+active node is in 1-1 correspondence with a subset of $G$ and the analysis above
+follows.
 
 The correctness of BFS on the evolving graph $G_n$ now follows from the
 correctness of BFS on the static graph $G$, since we have also established a 1-1
