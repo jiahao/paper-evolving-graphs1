@@ -106,7 +106,7 @@
 
 \usepackage{url}
 % correct bad hyphenation here
-\hyphenation{op-tical net-works semi-conduc-tor}
+\hyphenation{}
 
 \begin{document}
 %
@@ -136,16 +136,15 @@ weijian.zhang@manchester.ac.uk}
 \maketitle
 
 \begin{abstract}
-Evolving graphs arise in many different contexts where the
-interrelations between data elements change over time.
-We present a breadth first search (BFS) algorithm for evolving graphs
-that can track (active) nodes correctly.
-Using simple examples, we show that na\"ive matrix-matrix multiplication on
-time-dependent adjacency matrices miscounts the number of temporal paths.
-By mapping an evolving graph to an adjacency matrix of the equivalent static graph,
-we prove the properties of the BFS algorithm using the properties of the
-adjacency matrix. Finally, demonstrate how the BFS over evolving graphs can be
-applied to mining citation networks.
+Evolving graphs arise in problems where interrelations between data change over
+time. We present a breadth first search (BFS) algorithm for evolving graphs
+that computes the most direct influences between nodes at two different times.
+Using simple examples, we show that na\"ive unfoldings of adjacency matrices
+miscount the number of temporal paths.
+By mapping an evolving graph to an adjacency matrix of an equivalent static graph,
+we prove that our generalization of the BFS algorithm is correct.
+Finally, we demonstrate how the BFS over evolving graphs can be applied to mine
+citation networks.
 
 % We generalize the breadth first search (BFS) algorithm to evolving graphs and
 % prove its correctness.
@@ -214,13 +213,11 @@ or edges, which we call \textit{temporal paths}.
 As a result, our treatment can be applied to any evolving graph, even those that
 are highly dynamic with arbitrary changes to the nodes and edges.
 
-Although it is well known that sparse matrix-vector product is equivalent to a 
-one-step BFS on the corresponding graph~\cite[Sec. 1.1]{kegi11},
-it is little known about the generalization of this duality for evolving graphs.
-In fact, previous works form the off-diagonal blocks wrongly~\cite{fehi15}. 
+It is well known that sparse matrix-vector product is equivalent to a
+one-step BFS on the corresponding graph~\cite[Sec. 1.1]{kegi11}.
+However, little is known about the generalization of this duality for evolving graphs.
 We prove the generalization of this duality by finding
 the correct block sparse matrix representation of an evolving graph.
-This work forms the basis for many algebraic evolving graph algorithms.
 
 In Section~\ref{sec:breadth-first-search}, we explain how the BFS algorithm can be applied correctly on
 evolving graphs. Section~\ref{sec:temporal-paths} provides an example showing that considering
@@ -455,8 +452,11 @@ $v_i = v_j$ iff $t_i \ne t_j$.
 \end{defn}
 
 This definition of a temporal path differs from that of the dynamic walk
-in \cite{gphe11,grihig13} in its explicit requirement of containing only active
-nodes. The definition implies that if either or both end points of a temporal
+in \cite{gphe11,grihig13} in that \textbf{causal edges}, i.e.\ sequences of the
+form $\langle (v, t), (v, t\prime)\rangle$ are included explicitly in temporal
+paths but are only implicitly included in dynamic walks and are not counted
+toward the length of dynamic walks.
+Our definition implies that if either or both end points of a temporal
 path are inactive, then the entire temporal path must be the empty sequence
 $\langle \rangle$. Keeping track explicitly of the time labels of each temporal
 node allows greater generality to cases where the node sets change over time.
@@ -490,6 +490,14 @@ The \textbf{distance} from a temporal node $(v, t)$ to a temporal node $(w, s)$ 
 the $k$ for which $(w, s)$ is a $k$-forward neighbor of $(v, t)$.
 \end{defn}
 
+Our definition of distance, again, differs from the definition of distance
+in the formulation of \cite{gphe11,grihig13} in that we explicitly count causal
+edges toward the distance. It also differs from the notion of temporal distance
+in the work of Tang and coworkers~\cite{tmml10}, which is the number of time
+steps between $t$ and $s$ (inclusive). In this respect, our formulation of the
+BFS on evolving graphs differs from these other works by minimizing a different
+notion of distance over an evolving graph.
+
 Note that this notion of distance is not a metric, since the distance from $(v, t)$
 to $(w, s)$ will in general differ from the distance of $(v, t)$ from $(w, s)$
 owing to time ordering.
@@ -505,7 +513,7 @@ integer $k$ for which $(w, s)$ is a $k$-forward neighbor of $(v, t)$.
 \label{sec:descr-algor}
 
 The BFS on evolving graphs is described in Algorithm~\ref{alg:bfs}.
-Algorithm~\ref{alg:bfs} is identical to the BFS on static graphs expect 
+Algorithm~\ref{alg:bfs} is identical to the BFS on static graphs except for
 line $8$, where we visit the forward neighbors of a given temporal node
 in both space and time.
 Given an evolving graph $G_n$ and a root $(v_1, t_1)$,
@@ -711,35 +719,38 @@ $\tilde V^{[t]} = \tilde V_L^{[t]} \cup \tilde V_R^{[t]}$ is the set of active
 nodes at time $t$, and $V = \bigcup_t \tilde V^{[t]}$ is the set of all
 active nodes in $G_n$.
 
-Similarly, define an edge set $E' = \{(u_s,v_t)|u_s=(u,s)\in V,
+Similarly, define the set of \textbf{causal edges} $E' = \{(u_s,v_t)|u_s=(u,s)\in V,
 v_t=(v,t)\in V, v=u, s<t\}$, which consists of temporal nodes that connect
 active nodes sharing the same node at different times. Each edge in $E'$ is then
 in 1-1 correspondence with a temporal path of length 2,
 $\langle (v,s), (v,t) \rangle$.
-Define also $\tilde E^{[t]} = \{(e, t)|e\in E^{[t]}\}$, which are simply the edge
-sets in $G_n$ with time labels. Then $E = \bigcup_t \tilde E^{[t]} \cup E'$ is
-the set of all edges representing all allowed temporal paths of length 2.
+Define also the set of \textbf{static edges at time $t$},
+$\tilde E^{[t]} = \{(e, t)|e\in E^{[t]}\}$, which are simply the edge
+sets in $G_n$ with time labels, and the set of \textbf{static edges} $\tilde E$,
+being simply the union over all times, $\bigcup_t \tilde E^{[t]}$.
+Then $E = \tilde E \cup E'$ is the set of all edges representing all allowed
+temporal paths of length 2.
 
-The node set $V$ and edge set $E$ now define a directed static graph $G=(V,E)$ 
+The node set $V$ and edge set $E$ now define a directed static graph $G=(V,E)$
 that is in 1-1 correspondence with the evolving graph $G_n$. The node set $V$ of $G$ is in 1-1 correspondence with active nodes of $G_n$ while the edge set $E$ is in 1-1
 correspondence with all temporal paths of length 2 on $G_n$.
 
 We now establish a similar 1-1 correspondence of forward neighbors of an active
-node with a subset of $G$. By induction, we can show that at iteration $k$,
-all new nodes populated into the key set of $reached$ by definition are of
-distance $k$ from the root. By definition,
+node with a subset of $G$. By induction, all new nodes populated into the key
+set of $reached$ at iteration $k$ are of distance $k$ from the root. By definition,
 the forward neighbors of some active node $(v, t) \in G_n$ are
 active nodes of either the form $(v, t')$ for some $t' > t$ or $(u, t)$ for some
-$u\ne v$. Clearly, the former are elements of $E' \subseteq E$ while the latter
-are elements of $E^{[t]} \subseteq \bigcup_s \tilde E^{[s]} \subseteq E$.
+$u\ne v$. In other words, they are connected either by a causal edge or a static edge.
+Clearly, the former are elements of $E' \subseteq E$ while the latter
+are elements of $\tilde E \subseteq E$.
 Thus each forward neighbor of an active node $(v, t) \in G_n$ is in 1-1
 correspondence with a node in $V$ that is a neighbor of $v_t \in V$.
 
-When $G_n$ is undirected, every edge in $\tilde E^{[t]}$ can be represented by 
+When $G_n$ is undirected, every edge in $\tilde E^{[t]}$ can be represented by
 two edges in $G$: from an active node in $\tilde V_L^{[t]}$ to
 an active node in $\tilde V_R^{[t]}$ and the reverse.
 Every edge in $E'$ is in 1-1 correspondence with
-an edge in $G$ by causality. Therefore, the forward neighbors of an 
+an edge in $G$ by causality. Therefore, the forward neighbors of an
 active node is in 1-1 correspondence with a subset of $G$ and the analysis above
 follows.
 
@@ -755,12 +766,12 @@ adjacency lists, one for each active node in $G_n$. Then we have that the
 asymptotic complexity of BFS on $G_n$ is the same as that for BFS on $G$, using
 the 1-1 construction of $G$ from $G_n$.
 
-\begin{thm}[Complexity of the evolving graph BFS]
+\begin{thm}[Computational complexity of the evolving graph BFS]
 \label{thm:complexity}
 Let $G_n$ be an evolving graph represented using adjacency lists,
 $(v_1, t_1)$ be an active node of $G_n$, and $G=(V,E)$ be the static graph
 constructed from $G_n$ using the 1-1 correspondences defined in the proof of
-Theorem~\ref{thm:correct}. Then the asymptotic complexity of
+Theorem~\ref{thm:correct}. Then the asymptotic computational complexity of
 Algorithm~\ref{alg:bfs} is $O(|E| + |V|)$.
 \end{thm}
 
@@ -771,20 +782,23 @@ on the static graph $G$. The number of operations of BFS on $G$ is $O(|E| + |V|)
 and so the result follows.
 \endproof
 
-Note the edge set $E$ is $\cup_t\tilde E^{[t]} \cup E'$, which contains edges that
-are causal structured.
+Note that in the theorems in this section construct an equivalent static graph
+$G$ corresponding to the evolving graph $G_n$. However, $G$ contains more edges
+than the union of all the static parts of $G_n$, as we also add causal edges
+$E'$. To our knowledge, our formulation of the BFS represents the first attempt
+to include these edges explicitly in the treatment of evolving graphs.
 
 \section{Formulating the Evolving Graph BFS with Linear Algebra}
 \label{sec:representation}
 
 
-\subsection{Not all temporal paths are counted by products of adjacency matrices}
+\subsection{The importance of causal edges}
 \label{sec:temp-paths-adjac}
 
 For each static graph $G^{[t]} = (V^{[t]}, E^{[t]})$ that constitutes the
 evolving graph $G_n$, define its corresponding
 $\left\vert V^{[t]}\right\vert \times \left\vert V^{[t]}\right\vert$
-adjacency matrix with elements
+one-sided adjacency matrix with elements
 \begin{equation}
 A^{[t]}_{ij} =
 \begin{cases}
@@ -873,8 +887,8 @@ is a clearly a valid temporal path as shown in Figure~\ref{fig:active} which
 cannot be expressed by a product of adjacency matrices.
 
 Sums $S^{[t]}$ of the form \eqref{eq:sum} produce an incorrect count of temporal
-paths because they do not capture temporal paths with subpaths of the form
-$\langle (v, s), (v, t) \rangle$, $s < t$.
+paths because they do not capture temporal paths with causal edges, i.e.\ subpaths
+of the form $\langle (v, s), (v, t) \rangle$, $s < t$.
 One might attempt to amend the sums $S^{[t]}$ in \eqref{eq:sum} by redefining
 the adjacency matrices to include ones along the diagonal, hence allowing
 paths containing the sequence $\langle (i, t_1), (i, t_2) \rangle$. However, the resulting
@@ -895,7 +909,8 @@ counterexamples which demonstrate why sums over products of adjacency matrices o
 the form \eqref{eq:sum} do not count temporal paths correctly. The interpretation
 from considering powers of $A$ for static graphs therefore does not extend to
 evolving graphs, and sums like \eqref{eq:sum} cannot form the basis of correct
-analyses of evolving graphs.
+analyses of evolving graphs as they neglect the combinatorics associated with
+the causal edge set $E'$.
 
 % But it provides no information about the nodes in between. In addition, the temporal path must pass at least
 %  one node at each timestamps. We believe this requirement is too restrictive. For example,
@@ -927,6 +942,9 @@ b & \mbox{if $A^Tb \ne 0$ or $Ab \ne 0$,} \\
 0 & \mbox{otherwise.}
 \end{cases}
 \]
+The condition $A^Tb \ne 0$ ensures that the product is nonzero in components
+involving left active nodes $\cup_t \tilde V_L^{[t]}$, and the condition
+$Ab \ne 0$ is the analogue for right active nodes $\cup_t \tilde V_R^{[t]}$.
 The forward neighbors of a temporal node $(k, t_1)$ in $A_n$ can then be determined
 from the indices and time stamps of the nonzero elements in the sequence
 \begin{equation}
@@ -1048,9 +1066,9 @@ M^{[t_i, t_j]}_{uv} =
 \end{cases}
 \]
 %
-The adjacency matrix blocks $A^{[t]}$ encode the edge set $\tilde E^{[t]}$,
-whereas the off-diagonal blocks $M^{[t_i, t_j]}$ together encode the edge set
-$E^\prime$ which capture temporal paths with subsequences of the form
+The adjacency matrix blocks $A^{[t]}$ encode the static edge set $\tilde E$,
+whereas the off-diagonal blocks $M^{[t_i, t_j]}$ together encode the causal edge
+set $E^\prime$, which capture temporal paths with subsequences of the form
 $\langle (v, t_i), (v, t_j) \rangle$. Then $\bm M_n$ is the adjacency matrix of
 the graph $(\cup_t V^{[t]}, E)$, which is the graph $G$ together with all the
 inactive nodes. From the definition, $\bm M_n$ has nonzero
@@ -1155,7 +1173,9 @@ two allowed temporal paths from $(1, t_1)$ to $(3, t_3)$, and that the
 off-diagonal structure encoded in $E'$ and the $M^{[t,t']}$ blocks are critical
 to obtaining the correct count.
 
-Finally, we prove a simple lemma that the block adjacency matrix $\bm A_n$ is
+Finally, we note that some results regarding the BFS on evolving graphs can be
+derived easily using properties of the block adjacency matrix $\bm A_n$. For
+example, we can prove a simple lemma that the block adjacency matrix $\bm A_n$ is
 nilpotent whenever all the subgraphs $G^{[t]}$ of $G_n$ are acyclic.
 
 \begin{lemma}[Acyclicity implies nilpotence]
@@ -1165,6 +1185,8 @@ let all the directed graphs $G^{[t]}$ be acyclic. Then $\bm A_n$ is nilpotent.
 \end{lemma}
 
 \IEEEproof
+Recall from the definition of the matrix $\bm A_n$ that it is block upper
+triangular, reflecting causality.
 Since each directed graph $G^{[t]}$ is acyclic, its corresponding adjacency
 matrix $A^{[t]}$ is strictly upper triangular. As a result, $\bm A_n$ must be
 upper triangular.
@@ -1186,13 +1208,13 @@ The blocked matrix structure of the adjacency matrices presented here provide
 interesting relationships between their matrix properties and the algorithmic
 properties of BFS, made possible because of the reformulation of BFS as
 repeated power iterations of the adjacency matrix in Algorithm~\ref{alg:bfsla}.
-Note, however, that these matrices never need to be instantiated for practical
+Note, however, that these matrices need never be instantiated for practical
 computations. Rather, since Algorithm~\ref{alg:bfsla} only requires the
 matrix--vector product involving the adjacency matrix, the formulation of
 Algorithm~\ref{alg:bfs} provides an efficient way to exploit the block structure
 of $\bm A_n$. The $\odot$ operation provides an efficient way to compute the
 action of the off-diagonal products. Representing the diagonal blocks
-$A^{[t]}$ as sparse matrices product further reduces the cost of BFS by exploiting
+$A^{[t]}$ as sparse matrices further reduces the cost of BFS by exploiting
 latent sparsity in graphs that show up in practical applications.
 
 
@@ -1201,7 +1223,7 @@ latent sparsity in graphs that show up in practical applications.
 
 The blocked matrix--vector products introduced in the previous section allows us
 to write down an elegant algebraic formulation of BFS on evolving graphs, as
-presented in Algorithm~\ref{alg:bfsla}. 
+presented in Algorithm~\ref{alg:bfsla}.
 
 \begin{algorithm}[h]
  \SetKwFor{For}{for}{}{end}
@@ -1246,10 +1268,17 @@ Algorithm~\ref{alg:bfsla} terminates.
 \end{thm}
 
 \IEEEproof
+First, we prove that the BFS terminates in the case of acyclic evolving graphs.
 Recall from Lemma~\ref{thm:nilpotent} that $\bm A_n$ is nilpotent, i.e.\
 there exists some positive integer $k$ for which $\bm A_n^k = 0$.
 Hence, after iteration $k$, $\bm b$ is assigned the value $\bm A_n^k \bm b = 0$.
 Therefore, Algorithm~\ref{alg:bfsla} must terminate after iteration $k$.
+
+For evolving graphs with cycles, lines 9-11 of Algorithm \ref{alg:bfsla} enforce
+that the BFS visits each active node at most once. Since the $k$th block of
+$\bm b$ is zeroed out if an active node has already been visited, the subgraph
+traversed in the BFS cannot have cycles. Thus all that is required is the
+previous result that the BFS on an acyclic graph terminates.
 \endproof
 
 \begin{thm}
@@ -1268,33 +1297,84 @@ previous iterations are zeroed out of the new $\bm b$.
 \subsection{Computational complexity analysis of the algebraic BFS}
 \label{sec:comp-compl-analys}
 
-Given an evolving graph $G_n = \langle G^{[1]}, G^{[2]}, \ldots, G^{[n]} \rangle$, let $V$ be the set of active nodes,
-$E = \cup_t \tilde E^{[t]} \cup E'$ be the set of edges, where
-$\tilde E^{[t]}$ represents the set of edges of $G^{[t]}$ and $E'$ represents the set
-of causal edges between time stamps. Let $\bm A_n$ be the corresponding
-adjacency matrix of $G_n$.
+The complexity of the algebraic BFS of Algorithm \ref{alg:bfsla} is significantly
+more complicated that that of Algorithm \ref{alg:bfs}. While the latter uses the
+usual adjacency list representation for graphs, the computational cost of the
+former depends critically on the actual representation of the matrices.
+Furthermore, the average case analysis is complicated by the expected fill-in of
+the vector $\bm b$, which influences the cost of the matrix-vector product on line 7
+and the expected number of iterations of the \textbf{while} loop beginning on line6.
 
-Let's analyze the running time of Algorithm \ref{alg:bfsla}. 
-Suppose $\bm A_n$ is dense.
-Forming the block adjacency matrix $\bm A_n^T$ in line $3$
-requires $\Theta(|V|^2)$ operations. 
-We note, however, $\bm A_n^T$ need never be formed
-explicitly, as only its matrix-vector product is required in the algorithm.
-The matrix-vector product in line $7$ requires $O(|V|^2)$ operations.
-In the worst case, we need to reach all active nodes and reach only one 
-active node at each iteration. 
-So the number of iterations $k$ of the while loop at line $6$ is bounded by
-$|E|$, i.e., $k = \Theta(|E|)$. Hence, the total running time is 
-$\Theta(|E||V|^2)$. This is much worse than Algorithm \ref{alg:bfs}, which
-has linear running time.
+While a full complexity analysis is beyond the scope of this paper, it is
+straightforward to present worst-case results for dense and compressed sparse
+column (CSC) matrices.
 
-If $\bm A_n$ is sparse, forming $\bm A_n$ costs $\Theta(|E|)$ flops. 
-The gaxpy operation in line $7$ costs 
-$2m$ flops, where $m$ is the number of none zeros of $\bm A_n$ \cite[Sec.11]{golo13}. 
-Here $m$ is equal to $|E|$. Thus, in the worst case, the total running time is 
-$\Theta(|E|^2)$.
+\begin{lemma}[Number of iterations]
+In the worst case, the number of iterations in the \textbf{while} loop of
+Algorithm~\ref{alg:bfsla} is $k = O(|E|)$.
+\end{lemma}
 
-% Storing $\bm A_n$ requires $\Theta(|V|^2)$ memory and if $\bm A_n$ is sparse, 
+\IEEEproof
+In the worst case, the BFS must traverse every active node, and only one new
+active node is discovered in each iteration. The number of active
+nodes is bounded above by the cardinality of the full edge set, $|E|$.
+\endproof
+
+The average case analysis for the number of iterations is considerably more
+complicated and is beyond the scope of this paper.
+
+\begin{thm}[Dense matrices]
+Suppose $\bm A_n$ is represented as a dense matrix. Then the computational
+complexity of Algorithm~\ref{alg:bfsla} is $O(k |V|^2)$, which in the worst case is
+$O(|E| |V|^2)$.
+\end{thm}
+
+\IEEEproof
+Since $\bm A_n$ is a $|V| \times |V|$ matrix, the matrix-vector product
+$\bm A_n \bm b$ takes $O(|V|^2)$ operations to compute. Thus the cost of
+Algorithm~\ref{alg:bfsla} is $O(k |V|^2) = O(|E| |V|^2)$ in the worst case.
+\endproof
+
+It is clear that practical implementations of the BFS should never construct
+the full matrix $\bm A_n$ in memory. What happens if we use a sparse blocked
+representation?
+
+\begin{thm}[Block diagonal sparse matrices]
+Suppose $\bm A_n$ is represented by a collection of compressed sparse column
+matrices for each diagonal block $A^{[t]}$. Then the
+computational complexity of Algorithm~\ref{alg:bfsla} is $O(k(|\tilde E| + |V|))$, which in
+the worst case is $O(|E|(|\tilde E| + |V|))$.
+\end{thm}
+
+\IEEEproof
+The gaxpy operation for CSC matrices costs $2n_{nz}$ flops, where $n_{nz}$ is the
+number of stored values in the matrix. The cost of each diagonal subblock calculation
+$A^{[t]} b_t$ is therefore $O(|E^{[t]}|)$, since $A^{[t]}$ by construction has
+nonzero entries only when a static edge exists.
+
+The off-diagonal products
+$M^{[t,t\prime]} b_{t\prime}$ can be computed in $O(|V^{[t]}| + |E^{[t]}|)$ time
+for all $t\prime \ge t$
+since it can be implemented by the $\cdot$ operation, which constructs either a
+zero vector or keeps the same vector.
+The cost of checking the condition $(A^{[t]})^T b_{t^\prime} \ne 0$ is
+$O(|E^{t}|)$ in the worst case since all that is required is to check whether or
+not each column of $A$ is empty.
+Similarly, checking the condition $A^{[t]} b_{t^\prime} \ne 0$ reduces to
+checking if each row of $A$ is empty, and thus is of cost $O(|V^{t}|)$.
+
+Thus, the cost of multiplying one block row of $\bm A^T$ (for some time $t$)
+with $\bm b$ is $O(|V^{[t]}| + |E^{[t]}|)$. Summing over all times yields the
+desired result.
+\endproof
+
+We can see that even implementing the BFS algebraically using CSC matrices is
+insufficient to reduce the running time to linear, which can be achieved for
+the adjacency list representation in Algorithm \ref{alg:bfs}.
+This result strongly suggests that additional work is needed to produce true
+algorithmic equivalence at the computational level.
+
+% Storing $\bm A_n$ requires $\Theta(|V|^2)$ memory and if $\bm A_n$ is sparse,
 % we need $O(|V|+|E|)$ memory.
 
 \section{Implementation in Julia}
@@ -1308,15 +1388,19 @@ It is freely available online at
 \url{https://github.com/weijianzhang/EvolvingGraphs.jl}
 \end{center}
 and available with the MIT ``Expat'' license. The package contains an implementation
-of the evolving graph BFS. \texttt{IntEvolvingGraph}, a data type in EvolvingGraphs.jl,
+of the evolving graph BFS of Algorithm~\ref{alg:bfs}. \texttt{IntEvolvingGraph}, a data type in EvolvingGraphs.jl,
 represents an evolving graph as adjacency lists.
+
+We now present some simple timing data to show that our implementation of
+Algorithm~\ref{alg:bfs} is indeed linear scaling in computational cost.
+
 We generate a group of  random (directed) \texttt{IntEvolvingGraph}s
 with $8,000$ active nodes and $4$ time stamps.
 At each time stamp $i$, an edge is included in $G^{[i]} \in G_4$ with probability $p$.
- Figure \ref{fig:time} shows the plots of  number of edges against the computation time
-for running Algorithm \ref{alg:bfs}
-in Julia. All experiments are conducted 
-in a Linux system with Intel(R) Core(TM) i7-3537U CPU @ $2.00$GHz.
+Figure \ref{fig:time} shows the plots of number of edges against the computation time
+for running Algorithm \ref{alg:bfs} in Julia. All experiments are conducted
+on a Linux system with Intel(R) Core(TM) i7-3537U CPU @ $2.00$GHz.
+
 The results show Algorithm \ref{alg:bfs} can be computed in linear time, which agrees
 with Theorem \ref{thm:complexity}. A summary of the experiments is provided in Table \ref{tab:bfs}.
 \begin{figure}[h]
@@ -1325,7 +1409,7 @@ with Theorem \ref{thm:complexity}. A summary of the experiments is provided in T
   \caption{Experiments of running Algorithm \ref{alg:bfs}
 on a group of random evolving graphs with $8,000$ active nodes and $4$ time stamps. The x-axis shows the
 number of edges of each evolving graph and the y-axis shows the corresponding
-computation time. The values in the x, y-axis increase linearly from left to 
+computation time. The values in the x, y-axis increase linearly from left to
 right and from bottom to top respectively.}
   \label{fig:time}
 \end{figure}
@@ -1340,8 +1424,8 @@ probability $p$ & no. of edges  & time (s) &  memory (MB) \\\hline
       0.23   &    3,676,959          & 1.206 &   337.688 \\
       0.31   &     4,956,969          & 1.504  &  494.833 \\
 \end{tabular}
-\caption{the computation time and the amount of memory allocated for 
-computing Algorithm \ref{alg:bfs}. This is a summery of Figure \ref{fig:time}.  
+\caption{the computation time and the amount of memory allocated for
+computing Algorithm \ref{alg:bfs}. This is a summery of Figure \ref{fig:time}.
 Each edge is included in the graph with probability $p$. }
 \label{tab:bfs}
 \end{table}
@@ -1357,8 +1441,10 @@ Each edge is included in the graph with probability $p$. }
 \section{Application to Citation Networks}
 \label{sec:applications}
 
-In this section, we show that evolving graph formalism presented above can be
-used to capture the structure of citation networks. Consider
+Evolving graphs have found many applications to analyzing networks that change
+over time \cite{gphe11,grihig13}. In this section, we focus specifically on
+citation networks, and show that evolving graph formalism presented above can be
+used to capture the dynamical structure of citation networks. Consider
 the evolving graph $G_n=\langle G^{[t]} \rangle_t$ such that $G^{[t]}$ has
 node set corresponding to authors active at time $t$ and directed edge set
 $E^{[t]} \ni (i, j)$ representing a citation of author $j$ by author $i$ in a
@@ -1439,28 +1525,31 @@ $t\rightarrow -t$.
 % at timestamp $n+1$. How to update the tree components while minimize the computation?
 % The forward-neighbors at timestamp $$
 
+We are currently investigating the use of our evolving graph BFS on citation
+networks.
+
 
 \section{Conclusion}
 
 The correct generalization of BFS to evolving graphs necessitates a careful
-enumeration of temporal paths which is not always captured by products of
-successive adjacency matrices from the snapshots. BFS over any evolving graph $G_n$
-is formally equivalent to BFS on a related static graph $G$ formed by connecting only
-active nodes across different times. The adjacency matrix $\bm A_n$ of $G$ correctly
-encodes causality of the temporal paths. When specialized to acyclic $G_n$, the matrix
-$\bm A_n$ is also nilpotent, thus providing a simple proof that BFS terminates.
-Nevertheless, the BFS can be computed efficiently without ever explicitly constructing
-$\bm A_n$, as only its action on a vector is required for the power iterations.
-The new concepts of activeness, temporal paths, and the explicit construction of
-an equivalent static graph $G$ that make possible a correct implementation of BFS
-to evolving graphs provide powerful new insignts into how similar graphical
+enumeration of temporal paths. The structure associated with causal edges $E'$
+turns out to be of vital importance, and cannot be capture simply by products of
+successive adjacency matrices, which by construction can only capture the
+topologies of the static edges $\tilde E$. Only by considering both causal edges
+and static edges can we show that BFS over any evolving graph $G_n$ computes the
+correct result for our notion of distance.
+The new concepts of activeness, temporal paths, and causal edges make possible a
+correct implementation of BFS to evolving graphs and we expect that these
+ideas will continue to provide powerful new insights into how similar graphical
 algorithms may be generalized correctly.
 
-% This paper introduced the generalization of BFS to evolving graphs and presented
-% an equivalent formulation using linear algebra. The concept of temporal paths
-% connecting active nodes turns out to be critical for the correct generalization
-% of BFS to evolving graphs. An efficient implementation of BFS on evolving
-% graphs is now available as a open source Julia package.
+Furthermore, we show that BFS on evolving graphs admits an algebraic formulation
+that easily provides nontrivial results, such as termination of the algorithm.
+However, our current understanding tells us that the BFS over evolving graphs
+is most efficiently computed in the adjacency list representation, thus never
+forming explicit matrix-vector products. Further work is needed to elucidate
+more efficient formulations of the algebraic BFS for evolving graphs.
+
 % This paper leaves important extensions open for further research. First, extensions
 % of BFS to weighted evolving graphs can provide more valuable information when the degree of connectivity is available in the data.
 % Second, efficient algebraic representations and algorithms need to be addressed.
