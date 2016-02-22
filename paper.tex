@@ -1310,8 +1310,9 @@ It is freely available online at
 and available with the MIT ``Expat'' license. The package contains an implementation
 of the evolving graph BFS. \texttt{IntEvolvingGraph}, a data type in EvolvingGraphs.jl,
 represents an evolving graph as adjacency lists.
-We generate a group of  random (directed) \texttt{IntEvolvingGraph}s with $8,000$ active nodes and $4$ time stamps, where each edge is included in the graph with
-probability $p$.
+We generate a group of  random (directed) \texttt{IntEvolvingGraph}s
+with $8,000$ active nodes and $4$ time stamps.
+At each time stamp $i$, an edge is included in $G^{[i]} \in G_4$ with probability $p$.
  Figure \ref{fig:time} shows the plots of  number of edges against the computation time
 for running Algorithm \ref{alg:bfs}
 in Julia. All experiments are conducted 
