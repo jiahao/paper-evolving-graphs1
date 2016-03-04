@@ -1394,14 +1394,15 @@ represents an evolving graph as adjacency lists.
 We now present some simple timing data to show that our implementation of
 Algorithm~\ref{alg:bfs} is indeed linear scaling in computational cost.
 
-We generate a group of random (directed) \texttt{IntEvolvingGraph}s
+We generate a sequence of random (directed) \texttt{IntEvolvingGraph}s
 with $1.0\times 10^5$ active nodes and $10$ time stamps.
-The first random \texttt{IntEvolvingGraph} in the group has 
+The first \texttt{IntEvolvingGraph} in the sequence has about
 $1.0 \times 10^8$ static edges.
-We consecutively add $5.0\times 10^7$
+We consecutively add new
 random static edges to this \texttt{IntEvolvingGraph}. For example, 
-the second random \texttt{IntEvolvingGraph} in the group has about $1.5 \times 10^8$ static edges and the third
-has about $2.0 \times 10^8$ static edges.
+the second random \texttt{IntEvolvingGraph} in the sequence 
+has about $1.5 \times 10^8$ static edges and the third
+has $1.8 \times 10^8$ static edges.
 % At each time stamp $i$, a static edge is included in $G^{[i]} \in G_4$ with
 % probability $p$. 
 Note that in this experiment, we do not have direct control
@@ -1413,9 +1414,6 @@ for running Algorithm \ref{alg:bfs} in Julia. All experiments are conducted
 on a Linux system with Intel(R) Xeon(R) CPU E7-8850 @ $2.00$GHz.
 The results show Algorithm \ref{alg:bfs} can be computed in linear time, which agrees
 with the result of Theorem \ref{thm:complexity}.
-By doing this experiment, we find that it takes longer and longer time to 
-add new static edges, since we also need to include
-all the causal edges introduced by these new static edges.
 
 \begin{figure}[h]
   \centering
