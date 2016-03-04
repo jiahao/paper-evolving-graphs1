@@ -1409,8 +1409,11 @@ has $1.8 \times 10^8$ static edges.
 % At each time stamp $i$, a static edge is included in $G^{[i]} \in G_4$ with
 % probability $p$.
 Note that in this experiment, we do not have direct control
-over the full edge set $E$, only the static edge set $\tilde E$. However, the
-causal edge set $E'$ can grow at most by $O(\tilde E)$, so it suffices to demonstrate
+over the full edge set $E$, only the static edge set $\tilde E$. 
+When we add new static edges, new causal edges may be added as well
+(if the corresponding temporal nodes were not active before).
+However, the number of newly introduced causal edges for each active node 
+is bounded by the number of time stamps, so it suffices to demonstrate
 linear scaling in $|\tilde E|$.
 Figure \ref{fig:time} shows the plots of number of edges against the computation time
 for running Algorithm \ref{alg:bfs} in Julia. All experiments are conducted
@@ -1423,7 +1426,7 @@ with the result of Theorem \ref{thm:complexity}.
   \centering
   \includegraphics[scale=0.58]{time.pdf}
   \caption{Experimental run time of Algorithm \ref{alg:bfs}
-on a collection of random evolving graphs with $1.0\times 10^5$ active nodes and $10$ time
+on a collection of random evolving graphs with $10^5$ active nodes and $10$ time
 stamps, showing linear scaling in $|\tilde E|$. The horizontal axis shows the
 number of edges ($|\tilde E|$, including only the static edges) of each evolving
 graph, while the vertical axis shows the corresponding
