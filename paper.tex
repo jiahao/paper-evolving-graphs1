@@ -912,7 +912,7 @@ The simple example of Figure~\ref{fig:eg_shortest_path} demonstrates why sums
 over products of adjacency matrices of the form \eqref{eq:sum} do not count
 temporal paths correctly: they neglect the combinatorics associated with
 the causal edge set $E'$. In the next section, we show how to account for these
-causal edges by introducing a new matrix--vector product $\ocirc$.
+causal edges by introducing a new matrix--vector product $\odot$.
 
 % But it provides no information about the nodes in between. In addition, the temporal path must pass at least
 %  one node at each timestamps. We believe this requirement is too restrictive. For example,
@@ -1171,7 +1171,7 @@ Starting from the vector $\bm b = e_1$, the sequence of iterates is then
 
 We see that $(\bm A_n^T)^2$ encodes all the products in
 \eqref{eq:5}-\eqref{eq:6}, including both the ordinary matrix--vector product
-and the $\ocirc$ product. Furthermore, $(\bm A_3^T)^3 \bm b$ correctly counts the
+and the $\odot$ product. Furthermore, $(\bm A_3^T)^3 \bm b$ correctly counts the
 two allowed temporal paths from $(1, t_1)$ to $(3, t_3)$, and that the
 off-diagonal structure encoded in $E'$ and the $M^{[t,t']}$ blocks are critical
 to obtaining the correct count.
