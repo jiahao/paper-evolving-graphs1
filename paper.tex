@@ -222,7 +222,7 @@ In this paper, we demonstrate a correct corresponding result for an evolving
 graph by constructing a block triangular matrix representation of the graph that
 takes into account both static and causal connections between active nodes.
 In Section~\ref{sec:breadth-first-search}, we explain how the BFS algorithm can
-be applied to evolving graph to enumerate paths that traverse edges across time
+be applied to an evolving graph to enumerate paths that traverse edges across time
 and space. Section~\ref{sec:temporal-paths} provides an example showing that considering
 only products of the time-dependent adjacency matrices fails to enumerate certain
 temporal paths. We present and demonstrate the BFS algorithm over evolving graphs
@@ -735,7 +735,7 @@ being simply the union over all times, $\bigcup_t \tilde E^{[t]}$.
 Then $E = \tilde E \cup E'$ is the set of all edges representing all allowed
 temporal paths of length 2.
 
-The node set $V$ and edge set $E$ now define a directed static graph $G=(V,E)$
+The node set $V$ and edge set $E$ now define a static directed graph $G=(V,E)$
 that is in 1-1 correspondence with the evolving graph $G_n$. The node set $V$ of $G$ is in 1-1 correspondence with active nodes of $G_n$ while the edge set $E$ is in 1-1
 correspondence with all temporal paths of length 2 on $G_n$.
 
@@ -812,7 +812,7 @@ A^{[t]}_{ij} =
 \label{eqn:adjacency}
 \end{equation}
 
-We can then represent $G_n$ using the sequence of adjacency matrices
+We can then represent $G_n$ using a sequence of adjacency matrices
 $A_n = \langle A^{[1]}, A^{[2]}, \ldots, A^{n]}\rangle$. The example in
 Figure~\ref{fig:eg_shortest_path} can be represented as
 \[
