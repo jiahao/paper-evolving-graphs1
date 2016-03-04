@@ -1395,26 +1395,35 @@ We now present some simple timing data to show that our implementation of
 Algorithm~\ref{alg:bfs} is indeed linear scaling in computational cost.
 
 We generate a group of random (directed) \texttt{IntEvolvingGraph}s
-with $8,000$ active nodes and $4$ time stamps.
-At each time stamp $i$, a static edge is included in $G^{[i]} \in G_4$ with
-probability $p$. Note that in this experiment, we do not have direct control
+with $1.0\times 10^5$ active nodes and $10$ time stamps.
+The first random \texttt{IntEvolvingGraph} in the group has 
+$1.0 \times 10^8$ static edges.
+We consecutively add $5.0\times 10^7$
+random static edges to this \texttt{IntEvolvingGraph}. For example, 
+the second random \texttt{IntEvolvingGraph} in the group has about $1.5 \times 10^8$ static edges and the third
+has about $2.0 \times 10^8$ static edges.
+% At each time stamp $i$, a static edge is included in $G^{[i]} \in G_4$ with
+% probability $p$. 
+Note that in this experiment, we do not have direct control
 over the full edge set $E$, only the static edge set $\tilde E$. However, the
 causal edge set $E'$ can grow at most by $O(\tilde E)$, so it suffices to demonstrate
-linear scaling in $|\tilde E|$.
+linear scaling in $|\tilde E|$. 
 Figure \ref{fig:time} shows the plots of number of edges against the computation time
 for running Algorithm \ref{alg:bfs} in Julia. All experiments are conducted
-on a Linux system with Intel(R) Core(TM) i7-3537U CPU @ $2.00$GHz.
-
+on a Linux system with Intel(R) Xeon(R) CPU E7-8850 @ $2.00$GHz.
 The results show Algorithm \ref{alg:bfs} can be computed in linear time, which agrees
 with the result of Theorem \ref{thm:complexity}.
+By doing this experiment, we find that it takes longer and longer time to 
+add new static edges, since we also need to include
+all the causal edges introduced by these new static edges.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[scale=0.44]{time.pdf}
+  \includegraphics[scale=0.58]{time.pdf}
   \caption{Experimental run time and memory use of Algorithm \ref{alg:bfs}
-on a collection of random evolving graphs with $8,000$ active nodes and $4$ time
+on a collection of random evolving graphs with $1.0\times 10^5$ active nodes and $10$ time
 stamps, showing linear scaling in $|\tilde E|$. The horizontal axis shows the
-number of edges ($|\tilde E|$, including both static and causal edges) of each evolving
+number of edges ($|\tilde E|$, including only the causal edges) of each evolving
 graph, while the vertical axis shows the corresponding
 computation time.}
   \label{fig:time}
