@@ -1409,16 +1409,16 @@ has $1.8 \times 10^8$ static edges.
 % At each time stamp $i$, a static edge is included in $G^{[i]} \in G_4$ with
 % probability $p$.
 Note that in this experiment, we do not have direct control
-over the full edge set $E$, only the static edge set $\tilde E$. 
+over the full edge set $E$, only the static edge set $\tilde E$.
 When we add new static edges, new causal edges may be added as well
 (if the corresponding temporal nodes were not active before).
-However, the number of newly introduced causal edges for each active node 
+However, the number of newly introduced causal edges for each active node
 is bounded by the number of time stamps, so it suffices to demonstrate
 linear scaling in $|\tilde E|$.
 Figure \ref{fig:time} shows the plots of number of edges against the computation time
 for running Algorithm \ref{alg:bfs} in Julia. All experiments are conducted
-on a single core of a Linux system with an Intel(R) Xeon(R) E7-8850 CPU running
-at 2.00 GHz clock speed.
+on a single core of a Linux system with 1TB of RAM and 80 cores of Intel(R)
+Xeon(R) E7-8850s running at 2.00 GHz clock speed.
 The results show Algorithm \ref{alg:bfs} can be computed in linear time, which agrees
 with the result of Theorem \ref{thm:complexity}.
 
